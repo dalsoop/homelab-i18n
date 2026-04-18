@@ -1,0 +1,33 @@
+diff --git a/frontend/src/locales.ts b/frontend/src/locales.ts
+index e2c13f0..6017485 100644
+--- a/frontend/src/locales.ts
++++ b/frontend/src/locales.ts
+@@ -15,9 +15,10 @@ export type SupportedLocales =
+     | "tr"
+     | "hu"
+     | "pl"
+-    | "se";
++    | "se"
++    | "ko";
+ 
+-export const availableLocales = ["en", "de", "fr", "it", "nl", "pt", "es", "zh-cn", "zh-hk", "pt-br", "vi", "tr", "hu", "pl", "se"];
++export const availableLocales = ["en", "de", "fr", "it", "nl", "pt", "es", "zh-cn", "zh-hk", "pt-br", "vi", "tr", "hu", "pl", "se", "ko"];
+ 
+ export const localeToFlagEmojiMap: Record<SupportedLocales, string> = {
+     en: '🇬🇧',
+@@ -35,6 +36,7 @@ export const localeToFlagEmojiMap: Record<SupportedLocales, string> = {
+     hu: '🇭🇺',
+     pl: '🇵🇱',
+     se: '🇸🇪',
++    ko: '🇰🇷',
+ };
+ 
+ export const localeToNameMap: Record<SupportedLocales, string> = {
+@@ -53,6 +55,7 @@ export const localeToNameMap: Record<SupportedLocales, string> = {
+     hu: `Hungarian`,
+     pl: `Polish`,
+     se: `Swedish`,
++    ko: `한국어`,
+ };
+ 
+ export const getLocaleName = (locale: SupportedLocales) => {

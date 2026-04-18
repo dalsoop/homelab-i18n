@@ -1,0 +1,13 @@
+diff --git a/frontend/src/components/common/LanguageSwitcher/index.tsx b/frontend/src/components/common/LanguageSwitcher/index.tsx
+index da08edb..e523ba4 100644
+--- a/frontend/src/components/common/LanguageSwitcher/index.tsx
++++ b/frontend/src/components/common/LanguageSwitcher/index.tsx
+@@ -40,6 +40,8 @@ export const LanguageSwitcher = () => {
+                 return t`Polish`;
+             case "se":
+                 return t`Swedish`;
++            case "ko":
++                return t`Korean`;
+         }
+     };
+ 
