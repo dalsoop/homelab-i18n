@@ -1,71 +1,93 @@
-# ainovel — 한국어 번역
+# ainovel — 한국어 번역 (Phase A + B)
 
-[inliver233/Ai-Novel](https://github.com/inliver233/Ai-Novel) UI 중국어 → 한국어.
+[inliver233/Ai-Novel](https://github.com/inliver233/Ai-Novel) 한국어화.
 
-## 범위
+## 현황
 
-- **대상 파일**: `frontend/src/lib/uiCopy.ts` (중앙 UI 사전, 508줄)
-- **번역 수**: 378 문자열 → 376 적용 (99.5%)
-- **번역 모델**: Claude Sonnet 4.6 (OpenRouter, 배치 25)
-- **톤**: 해요체, UI 전문 용어 일관성 유지
+| Phase | 범위 | 도구 | 파일 | 문자열 | 상태 |
+|---|---|---|---|---|---|
+| A | 핵심 UI (`uiCopy.ts`) | Claude Sonnet 4.6 (OpenRouter) | 1 | 376 | ✅ 완료 |
+| B | Backend Python | TranslateGemma 27B (local, 4-GPU) | 337 | ~1,100 | ✅ 완료 |
+| B | JSON/env/yml | TranslateGemma | 18 | 172 | ✅ 완료 |
+| B | 메타 (lang, TZ, FastAPI) | 수동 | 3 | - | ✅ 완료 |
+| Frontend .tsx/.ts | (rolled back) | TranslateGemma | 0 | 0 | 🟡 syntax 이슈로 보류 |
+
+**총**: 약 **1,297 유니크 문자열** 번역 (translations/full-translations.json).
 
 ## 구조
 
 ```
 ainovel/
-├── src/
-│   ├── uiCopy.zh.ts         # 원본 (upstream 스냅샷)
-│   └── uiCopy.ko.ts         # 한국어 번역본
+├── src/                              # Phase A: uiCopy.ts 원본·번역본
+│   ├── uiCopy.zh.ts
+│   └── uiCopy.ko.ts
 ├── patches/
-│   └── 001-ko-uiCopy.patch  # diff (재적용용)
-├── scripts-translate-uicopy.py  # 재번역 스크립트
-├── deploy.sh                # LXC 자동 배포
+│   └── 001-ko-uiCopy.patch           # Phase A diff
+├── translations/                     # Phase B 결과물
+│   ├── full-translations.json        # 1,297 키 zh→ko 사전
+│   ├── skip-files.txt                # LLM 프롬프트 파일 (번역 금지)
+│   └── translated-files.txt          # 번역 완료 파일 목록
+├── scripts/                          # 재현 스크립트
+│   ├── translate-all.py              # TranslateGemma 기반 배치 번역
+│   ├── scan-cjk.sh                   # 중국어 포함 파일 스캔
+│   ├── find-skip.sh                  # LLM 프롬프트 파일 식별
+│   ├── rollback-broken.sh            # syntax 깨진 파일 복구
+│   └── apply-translations.sh         # LXC 반영
+├── scripts-translate-uicopy.py       # Phase A Claude 번역 스크립트
+├── deploy.sh                          # Phase A 배포 (uiCopy만)
 └── README.md
 ```
 
-## 배포 (LXC 50176 기준)
+## 배포
 
+### Phase A 만 (안전)
 ```bash
-# 직접 파일 교체 방식 (간편)
-bash deploy.sh
-
-# 또는 패치 방식
-cd /opt/ainovel
-patch -p1 < /path/to/patches/001-ko-uiCopy.patch
-docker compose --env-file .env.docker build frontend
-docker compose --env-file .env.docker up -d frontend
+bash deploy.sh                         # uiCopy.ts 교체 + rebuild
 ```
 
-## 번역 재실행 (upstream 변경 시)
+### Phase B 전체 (고급)
+⚠️ **Frontend .tsx/.ts 는 syntax 깨짐 위험** 있어 현재 skip. Python/JSON/env는 OK.
 
 ```bash
-# 1. upstream uiCopy.ts 최신화
-pct pull 50176 /opt/ainovel/frontend/src/lib/uiCopy.ts src/uiCopy.zh.ts
+# 1. 전체 번역 재실행 (~1시간)
+export OPENROUTER_API_KEY=...  # Phase A용
+bash scripts/scan-cjk.sh > /tmp/all-cjk.txt
+bash scripts/find-skip.sh > /tmp/skip.txt
+python3 scripts/translate-all.py frontend   # uiCopy 외에는 주의
+python3 scripts/translate-all.py backend    # Python 안전
 
-# 2. 번역 실행 (OpenRouter 키 필요)
-export OPENROUTER_API_KEY=...
-python3 scripts-translate-uicopy.py
-
-# 3. diff 검토 후 적용
-diff src/uiCopy.ko.ts /tmp/uiCopy.ko.ts
-cp /tmp/uiCopy.ko.ts src/uiCopy.ko.ts
-
-# 4. 재배포
-bash deploy.sh
+# 2. 선별 적용
+bash scripts/apply-translations.sh
 ```
 
-## 남은 작업 (추후)
+## 번역 스킵 정책 (skip-files.txt)
 
-이 번역은 **A 플랜 (핵심 UI)** 만 커버. 아직 중국어가 남아있는 부분:
+Backend Python 파일 중 **LLM 시스템 프롬프트** 포함한 것은 번역 금지.
+번역 시 AI 출력 품질·포맷 깨질 위험.
 
-- `pages/*/use*PageState.ts` (비즈니스 로직 내 문자열)
-- `components/**/*.tsx` (인라인 메시지·에러 텍스트)
-- 총 38K 문자열 중 이 번역은 378개 (~1%)
+예:
+- `backend/app/services/prompt*.py`
+- `backend/app/services/prompting.py`
+- `backend/app/api/routes/chapters.py` 등 긴 프롬프트 포함 파일
 
-B 플랜 (전체 자동 번역) 는 별도 PR로 진행.
+(전체 31개 파일, `translations/skip-files.txt` 참조)
 
-## 참고
+## 알려진 한계
 
-- 원본 라이선스: Apache 2.0 (Ai-Novel)
-- 번역 방식·비용: 약 $0.15 (Claude Sonnet 4.6)
-- 최초 적용일: 2026-04-19
+| 이슈 | 원인 | 대응 |
+|---|---|---|
+| Frontend .tsx/.ts syntax 깨짐 | TranslateGemma 가 TypeScript 리터럴 경계 넘어 번역 | 원본 복구, uiCopy.ts(Claude)만 사용 |
+| Mojibake `category` | UTF-8→GBK 잘못된 재해석 | 하드코딩 매핑 (`본문 최적화`, `윤색`) |
+| 고유명사 일관성 | Gemma 단일 요청 컨텍스트 없음 | glossary 보강 필요 |
+| 8082 shim 일시 down | 부팅 중 llama-server 하나 로드 실패 | fallback 라우팅으로 완주 |
+
+## 메트릭
+
+- 총 번역 소요: **약 25분** (frontend + backend 합산, 4-GPU 병렬)
+- 비용: **0원** (TranslateGemma 로컬) + $0.15 (Phase A Claude)
+- 에러율: frontend 0%, backend 8/345 = **2.3% 롤백**
+
+## 업데이트 이력
+
+- 2026-04-18: Phase A uiCopy.ts (Claude Sonnet 4.6)
+- 2026-04-19: Phase B backend + JSON/env + 메타 수정 (TranslateGemma)

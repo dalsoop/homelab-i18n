@@ -14,8 +14,8 @@
 | **MedusaJS** | 2,148 | 100% | nested JSON, app.js 직접 패치 |
 | **Outline** | 1,143 | 100% | flat JSON |
 | Mailcow | 21 | 100% | 서비스 폐기, 아카이브용 |
-| **Ai-Novel** | 378 (핵심 UI) | ~1% | uiCopy.ts 중앙 사전만 (A 플랜) |
-| **합계** | **90,490** | | |
+| **Ai-Novel** | 1,297 | Phase A+B | uiCopy(Claude) + backend py/json(TranslateGemma) |
+| **합계** | **91,409** | | |
 
 ## 구조
 

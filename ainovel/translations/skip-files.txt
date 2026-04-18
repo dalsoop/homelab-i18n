@@ -1,0 +1,31 @@
+# LLM 프롬프트가 박혀있어 번역 skip (backend 기준)
+# 번역하면 AI 출력 품질에 직접 영향
+backend/app/models/prompt_block.py
+backend/app/models/prompt_preset.py
+backend/app/api/routes/prompts.py
+backend/app/services/prompt_task_catalog.py
+backend/app/services/prompt_store.py
+backend/app/services/prompt_preset_canary.py
+backend/app/services/prompt_presets.py
+backend/app/services/prompt_preset_integrity.py
+backend/app/services/prompt_preset_resources.py
+backend/app/services/prompting.py
+backend/app/services/llm_profile_template.py
+backend/app/services/prompt_budget.py
+backend/app/schemas/prompt_presets.py
+backend/tests/test_prompt_preset_resources.py
+backend/tests/test_prompt_preset_reset_endpoints.py
+backend/tests/test_prompt_preset_integrity.py
+backend/tests/test_prompt_task_reachability_registry.py
+backend/tests/test_table_ai_update_prompt_numeric_focus.py
+backend/tests/test_prompt_block_cache.py
+backend/tests/test_graph_context_prompt_block_limits.py
+backend/app/api/routes/chapters.py
+backend/app/api/routes/outline.py
+backend/app/api/routes/memory.py
+backend/app/core/config.py
+backend/app/services/fractal_memory_service.py
+backend/app/services/worldbook_auto_update_service.py
+backend/app/services/graph_auto_update_service.py
+backend/app/services/output_parsers.py
+backend/app/services/context_optimizer.py
