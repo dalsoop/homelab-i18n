@@ -9,6 +9,7 @@
 | **Sentry** | 15,173 entries | 100% | ✅ 완료 |
 | **Mattermost** | 1,970 / 2,603 | 75% | 🔄 633개 남음 |
 | Outline | 1,143 / 1,143 | 100% | ✅ 공식 번역 완료 |
+| **Hi.events** | 2,140 / 2,308 | 93% | ✅ 배포 완료 (LXC 50174) |
 | Formbricks | — | — | ⏳ 예정 |
 | MedusaJS | — | — | ⏳ 예정 |
 
@@ -28,6 +29,14 @@ homelab-i18n/
 │   └── (번역 후 ko-patched.json 생성)
 │
 ├── outline/                    (예정)
+├── hi-events/
+│   ├── src/
+│   │   ├── ko.po               frontend Lingui (2,308 msgid, 93%)
+│   │   ├── ko.json             backend app-specific (690 entries)
+│   │   ├── lang-ko/*.php       Laravel 기본 (auth/validation 등)
+│   │   └── patches/*.patch     upstream 소스 패치 5개 (버그 수정 포함)
+│   └── deploy.sh               clone + patch + build + swap
+│
 ├── formbricks/                 (예정)
 ├── medusa/                     (예정)
 │
@@ -47,6 +56,9 @@ sudo bash sentry/deploy.sh --pct 50105
 # Mattermost (번역 후)
 pct push 50202 mattermost/ko-patched.json /opt/mattermost/i18n/ko.json
 pct exec 50202 -- systemctl restart mattermost
+
+# Hi.events (빌드 + LXC 50174 컨테이너 교체)
+bash hi-events/deploy.sh --vmid 50174
 ```
 
 ## 번역 인프라

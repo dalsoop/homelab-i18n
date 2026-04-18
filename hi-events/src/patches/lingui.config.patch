@@ -1,0 +1,13 @@
+diff --git a/frontend/lingui.config.ts b/frontend/lingui.config.ts
+index a9e4769..90330fb 100644
+--- a/frontend/lingui.config.ts
++++ b/frontend/lingui.config.ts
+@@ -18,7 +18,7 @@ const config: LinguiConfig = {
+         "it", // Italian
+         "pl", // Polish
+         // "ja", // Japanese
+-        // "ko", // Korean
++        "ko", // Korean
+         // "id", // Indonesian
+         "zh-hk", // Cantonese Chinese (Hong Kong)
+         // "cs", // Czech
