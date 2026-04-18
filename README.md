@@ -4,72 +4,102 @@
 
 ## 앱별 현황
 
-| 앱 | 번역 | 커버리지 | 상태 |
-|----|------|---------|------|
-| **Sentry** | 15,173 entries | 100% | ✅ 완료 |
-| **Mattermost** | 1,970 / 2,603 | 75% | 🔄 633개 남음 |
-| Outline | 1,143 / 1,143 | 100% | ✅ 공식 번역 완료 |
-<<<<<<< HEAD
-| **Hi.events** | 3,090 | ~100% | ✅ 공식 번역 완료 |
-=======
-| **Hi.events** | 2,140 / 2,308 | 93% | ✅ 배포 완료 (LXC 50174) |
->>>>>>> 13f61e8fbcb33836b32a76bbd14b7f520bd380e5
-| Formbricks | — | — | ⏳ 예정 |
-| MedusaJS | — | — | ⏳ 예정 |
+| 앱 | 키 수 | 커버리지 | 비고 |
+|----|-------|---------|------|
+| **Kibana** | 46,177 | 100% | ja-JP → ko-KR 번역. deploy.sh 포함 |
+| **Sentry** | 30,248 | 100% | webpack chunk (ko.js) + deploy/bust-cache |
+| **Dify** | 4,682 | 100% | 30개 JSON (GitLab에서 수거) |
+| **Hi.events** | 3,090 | 100% | frontend Lingui + backend Laravel |
+| **Mattermost** | 2,603 | 100% | JSON array 포맷 |
+| **MedusaJS** | 2,148 | 100% | nested JSON, app.js 직접 패치 |
+| **Outline** | 1,143 | 100% | flat JSON |
+| Mailcow | 21 | 100% | 서비스 폐기, 아카이브용 |
+| **합계** | **90,112** | | |
 
 ## 구조
 
 ```
 homelab-i18n/
+├── kibana/
+│   ├── ko-KR.json           Kibana 번역 (5.4 MB, 46K messages)
+│   ├── ja-JP.json            원본 참조 (일본어)
+│   ├── messages-ko.json      flat messages
+│   └── deploy.sh             LXC 배포 (locale + supportedLocale + i18nrc 등록)
+│
 ├── sentry/
-│   ├── dist/ko.js              drop-in webpack chunk (1.3 MB)
-│   ├── src/translations.json   {msgid: msgstr}
-│   ├── src/state.json          pipeline state
-│   ├── deploy.sh / bust-cache.sh
+│   ├── dist/ko.js            webpack chunk (2.0 MB)
+│   ├── src/translations.json
+│   ├── src/state.json        30,248 entries
+│   └── deploy.sh / bust-cache.sh
+│
+├── dify/
+│   ├── common.json           627 keys
+│   ├── workflow.json          1,049 keys
+│   └── ... (30 JSON files)
+│
+├── hi-events/
+│   ├── src/ko.po             frontend (2,308 msgid)
+│   ├── src/ko.json           backend (690 entries)
+│   └── deploy.sh
 │
 ├── mattermost/
-│   ├── ko.json                 현재 공식 ko (1,970 entries)
-│   ├── en.json                 원본 en (2,603 entries)
-│   └── (번역 후 ko-patched.json 생성)
+│   ├── en.json / ko.json
+│   └── ko-patched.json       100% 완성본
 │
-├── outline/                    (예정)
-├── hi-events/
-│   ├── src/
-│   │   ├── ko.po               frontend Lingui (2,308 msgid, 93%)
-│   │   ├── ko.json             backend app-specific (690 entries)
-│   │   ├── lang-ko/*.php       Laravel 기본 (auth/validation 등)
-│   │   └── patches/*.patch     upstream 소스 패치 5개 (버그 수정 포함)
-│   └── deploy.sh               clone + patch + build + swap
+├── medusa/
+│   ├── en.json / ko.json
+│   └── ko-patched.json       100% 완성본
 │
-├── formbricks/                 (예정)
-├── medusa/                     (예정)
+├── outline/
+│   ├── en.json / ko.json
+│
+├── mailcow/
+│   └── ko.json               21 keys (아카이브)
 │
 ├── shared/
-│   └── glossary.json           574 표준 UI 용어
+│   └── glossary.json          574 표준 UI 용어
 │
 └── scripts/
-    └── translate-missing.sh    누락 키 추출 → pxi-translate → 병합
+    └── translate-missing.sh   누락 키 추출 → 번역 → 병합
 ```
 
 ## 사용
 
 ```bash
+# Kibana
+bash kibana/deploy.sh 50190
+
 # Sentry
 sudo bash sentry/deploy.sh --pct 50105
 
-# Mattermost (번역 후)
-pct push 50202 mattermost/ko-patched.json /opt/mattermost/i18n/ko.json
-pct exec 50202 -- systemctl restart mattermost
+# Mattermost
+bash scripts/translate-missing.sh mattermost --deploy 50202
 
-# Hi.events (빌드 + LXC 50174 컨테이너 교체)
+# MedusaJS (app.js 직접 패치)
+# medusa/ko-patched.json → LXC 50172 node_modules + app.js 교체
+
+# Hi.events
 bash hi-events/deploy.sh --vmid 50174
 ```
 
 ## 번역 인프라
 
-번역 서버: `translate.50.internal.kr` (TranslateGemma 27B, llama.cpp, 4× RTX 3090)
+[gemma-translate](https://github.com/dalsoop/gemma-translate) — TranslateGemma 27B, 4x RTX 3090, ~12 req/s
 
 ```bash
+# 서버 상태 확인
+gemma-translate status
+
 # 누락 키 번역
-translate -i mattermost/missing.json -o mattermost/translated.json -w 16
+gemma-translate translate -i missing.json -o translated.json -w 16 -s en -t ko
+
+# 앱별 일괄 번역
+bash scripts/translate-missing.sh <app> --workers 16
 ```
+
+## 번역 품질
+
+- 글로서리 (574 용어) — `Save→저장`, `Cancel→취소` 등 표준화
+- 프리픽스 규칙 — `New ...` → `신규 ...` 자동 치환
+- 플레이스홀더 보존 — `%s`, `{name}`, `{{count}}`, `<code>` 위치 유지
+- 제품 고유명사 — `Discover`, `Kibana`, `Elasticsearch` 등 영문 유지
