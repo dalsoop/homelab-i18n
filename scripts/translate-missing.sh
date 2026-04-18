@@ -4,7 +4,7 @@
 # 지원 포맷:
 #   mattermost  [{id, translation}, ...]    (JSON array)
 #   outline     {key: value}                (flat JSON)
-#   sentry      phs-sentry-i18n 파이프라인   (별도)
+#   sentry      pxi-sentry-i18n 파이프라인   (별도)
 #
 # 사용:
 #   bash scripts/translate-missing.sh mattermost [--workers 16] [--deploy LXC_ID]
@@ -61,7 +61,7 @@ PY
     # 2) 번역
     echo "[2/4] 번역 ($COUNT개, workers=$WORKERS)"
     TRANSLATE_API="$TRANSLATE_API" \
-      phs-translate -i "$APP_DIR/missing.json" -o "$APP_DIR/translated.json" \
+      pxi-translate -i "$APP_DIR/missing.json" -o "$APP_DIR/translated.json" \
         -w "$WORKERS" -c "$CONTEXT" -s en -t ko
 
     # 3) 글로서리 오버라이드
@@ -125,7 +125,7 @@ PY
 
     echo "[2/3] 번역 ($COUNT개)"
     TRANSLATE_API="$TRANSLATE_API" \
-      phs-translate -i "$APP_DIR/missing.json" -o "$APP_DIR/translated.json" \
+      pxi-translate -i "$APP_DIR/missing.json" -o "$APP_DIR/translated.json" \
         -w "$WORKERS" -c "$CONTEXT" -s en -t ko
 
     echo "[3/3] 병합 → ko-patched.json"
@@ -140,8 +140,8 @@ PY
     ;;
 
   sentry)
-    echo "sentry 는 phs-sentry-i18n 파이프라인 사용:"
-    echo "  phs-sentry-i18n --bust sync"
+    echo "sentry 는 pxi-sentry-i18n 파이프라인 사용:"
+    echo "  pxi-sentry-i18n --bust sync"
     exit 0
     ;;
 

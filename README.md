@@ -9,6 +9,7 @@
 | **Sentry** | 15,173 entries | 100% | ✅ 완료 |
 | **Mattermost** | 1,970 / 2,603 | 75% | 🔄 633개 남음 |
 | Outline | 1,143 / 1,143 | 100% | ✅ 공식 번역 완료 |
+| **Hi.events** | 3,090 | ~100% | ✅ 공식 번역 완료 |
 | Formbricks | — | — | ⏳ 예정 |
 | MedusaJS | — | — | ⏳ 예정 |
 
@@ -35,7 +36,7 @@ homelab-i18n/
 │   └── glossary.json           574 표준 UI 용어
 │
 └── scripts/
-    └── translate-missing.sh    누락 키 추출 → phs-translate → 병합
+    └── translate-missing.sh    누락 키 추출 → pxi-translate → 병합
 ```
 
 ## 사용
