@@ -1,0 +1,262 @@
+#!/usr/bin/env bash
+# pxi-ainovel — Ai-Novel (LXC 50176, novel.50.internal.kr) 관리 CLI
+# 컴포즈 수명 + 자동 한국어화 (프론트엔드 + DB)
+# 스크립트 정본: /root/homelab-i18n/ainovel/scripts/zh-to-ko.py, db-zh-to-ko.py
+set -euo pipefail
+
+VMID="${AINOVEL_VMID:-50176}"
+APP_ROOT="/opt/ainovel"
+HOMELAB_I18N="/root/homelab-i18n/ainovel"
+FRONTEND_SCRIPT="$HOMELAB_I18N/scripts/zh-to-ko.py"
+DB_SCRIPT="$HOMELAB_I18N/scripts/db-zh-to-ko.py"
+TIMER_UNIT="ainovel-translate.timer"
+SERVICE_UNIT="ainovel-translate.service"
+
+c_r(){ printf '\033[0;31m%s\033[0m' "$*"; }
+c_g(){ printf '\033[0;32m%s\033[0m' "$*"; }
+c_b(){ printf '\033[0;34m%s\033[0m' "$*"; }
+c_y(){ printf '\033[0;33m%s\033[0m' "$*"; }
+log(){ echo "$(c_b '[ainovel]') $*" >&2; }
+ok(){ echo "$(c_g '✓') $*" >&2; }
+warn(){ echo "$(c_y '⚠') $*" >&2; }
+die(){ echo "$(c_r '✗') $*" >&2; exit 1; }
+
+in_lxc(){ pct exec "$VMID" -- bash -lc "$*"; }
+
+require_up(){
+  pct config "$VMID" >/dev/null 2>&1 || die "LXC $VMID 없음"
+  [ "$(pct status "$VMID" 2>/dev/null | awk '{print $2}')" = "running" ] \
+    || die "LXC $VMID 중지됨. pct start $VMID"
+}
+
+require_scripts(){
+  [ -x "$FRONTEND_SCRIPT" ] || die "$FRONTEND_SCRIPT 없음 (git clone https://github.com/dalsoop/homelab-i18n /root/homelab-i18n)"
+  [ -x "$DB_SCRIPT" ] || die "$DB_SCRIPT 없음"
+}
+
+compose(){ in_lxc "cd $APP_ROOT && docker compose --env-file .env.docker $*"; }
+
+# ── 수명 ─────────────────────────────────────────────────────────────────
+cmd_install(){
+  command -v pxi >/dev/null || die "pxi 필요"
+  local skip_translate=""
+  local skip_auto=""
+  local deploy_args=()
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --no-translate) skip_translate="1"; shift ;;
+      --no-auto) skip_auto="1"; shift ;;
+      *) deploy_args+=("$1"); shift ;;
+    esac
+  done
+  log "ainovel.toml 레시피로 배포"
+  pxi run deploy recipe ainovel "${deploy_args[@]}"
+  ok "LXC 배포 완료"
+
+  if [ -z "$skip_translate" ]; then
+    log "한국어 번역 자동 실행"
+    cmd_translate --include-templates
+  fi
+
+  if [ -z "$skip_auto" ]; then
+    log "자동 번역 타이머 활성화 (daily)"
+    cmd_auto_on daily
+  fi
+
+  ok "설치 완료 — https://novel.50.internal.kr"
+}
+
+cmd_up(){ require_up; compose "up -d"; ok "up"; }
+cmd_down(){ require_up; compose "down"; ok "down"; }
+cmd_ps(){ require_up; compose "ps"; }
+cmd_logs(){
+  require_up
+  local svc="${1:-backend}"
+  compose "logs -f --tail=100 $svc"
+}
+cmd_rebuild(){
+  require_up
+  local svc="${1:-frontend}"
+  log "rebuild $svc"
+  compose "up -d --build $svc"
+  ok "rebuild 완료"
+}
+
+# ── 번역 ─────────────────────────────────────────────────────────────────
+cmd_scan(){
+  require_up; require_scripts
+  log "프론트엔드 한자 스캔"
+  "$FRONTEND_SCRIPT" scan --lxc "$VMID" || true
+  echo
+  log "DB 한자 스캔"
+  "$DB_SCRIPT" scan || true
+}
+
+cmd_translate_frontend(){
+  require_up; require_scripts
+  log "프론트엔드 번역 (TranslateGemma 4-way, run until zero)"
+  "$FRONTEND_SCRIPT" run --lxc "$VMID" --max-rounds 5 "$@"
+  ok "프론트엔드 번역 완료"
+}
+
+cmd_translate_db(){
+  require_up; require_scripts
+  log "DB 번역"
+  "$DB_SCRIPT" translate "$@"
+  ok "DB 번역 완료"
+}
+
+cmd_translate(){
+  require_up; require_scripts
+  local include_llm=""
+  local rebuild_after="1"
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --include-templates) include_llm="--include-templates"; shift ;;
+      --no-rebuild) rebuild_after=""; shift ;;
+      *) break ;;
+    esac
+  done
+  log "=== 1단계: 프론트엔드 번역 ==="
+  "$FRONTEND_SCRIPT" run --lxc "$VMID" --max-rounds 5
+  log "=== 2단계: DB 번역 ==="
+  "$DB_SCRIPT" translate $include_llm
+  if [ -n "$rebuild_after" ]; then
+    log "=== 3단계: frontend 재빌드 ==="
+    compose "up -d --build frontend" >/dev/null
+    ok "재빌드 완료"
+  fi
+  log "=== 4단계: 최종 스캔 ==="
+  "$FRONTEND_SCRIPT" scan --lxc "$VMID" | tail -3
+  "$DB_SCRIPT" scan | tail -3
+  ok "translate 완료"
+}
+
+# ── 자동 번역 timer (pve 호스트) ─────────────────────────────────────────
+cmd_auto_on(){
+  local interval="${1:-daily}"
+  log "systemd timer 설치 (간격: $interval)"
+  cat > "/etc/systemd/system/$SERVICE_UNIT" <<EOF
+[Unit]
+Description=Ai-Novel 한자 자동 번역 (zh → ko)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pxi-ainovel translate --include-templates
+TimeoutStartSec=2h
+StandardOutput=journal
+StandardError=journal
+EOF
+  cat > "/etc/systemd/system/$TIMER_UNIT" <<EOF
+[Unit]
+Description=Ai-Novel 자동 번역 타이머
+
+[Timer]
+OnCalendar=$interval
+Persistent=true
+RandomizedDelaySec=15min
+
+[Install]
+WantedBy=timers.target
+EOF
+  systemctl daemon-reload
+  systemctl enable --now "$TIMER_UNIT"
+  ok "자동 번역 활성화 ($interval)"
+  systemctl list-timers "$TIMER_UNIT" --no-pager
+}
+
+cmd_auto_off(){
+  log "자동 번역 비활성"
+  systemctl disable --now "$TIMER_UNIT" 2>/dev/null || true
+  rm -f "/etc/systemd/system/$TIMER_UNIT" "/etc/systemd/system/$SERVICE_UNIT"
+  systemctl daemon-reload
+  ok "자동 번역 해제"
+}
+
+cmd_auto_status(){
+  if [ -f "/etc/systemd/system/$TIMER_UNIT" ]; then
+    systemctl status "$TIMER_UNIT" --no-pager | head -15
+    echo
+    systemctl list-timers "$TIMER_UNIT" --no-pager | head -3
+  else
+    warn "자동 번역 설치 안 됨 (pxi-ainovel auto-on 으로 활성화)"
+  fi
+}
+
+cmd_auto_run_now(){
+  log "타이머 서비스 수동 실행"
+  systemctl start "$SERVICE_UNIT"
+  journalctl -u "$SERVICE_UNIT" -n 30 --no-pager
+}
+
+# ── 상태/헬스 ─────────────────────────────────────────────────────────────
+cmd_status(){
+  require_up
+  log "LXC $VMID 상태"
+  pct status "$VMID"
+  echo
+  log "컨테이너"
+  compose "ps"
+  echo
+  log "한자 수"
+  "$FRONTEND_SCRIPT" scan --lxc "$VMID" 2>/dev/null | tail -1
+  "$DB_SCRIPT" scan 2>/dev/null | tail -1
+  echo
+  local http=$(curl -sk -o /dev/null -w '%{http_code}' "https://novel.50.internal.kr/" || echo "??")
+  log "novel.50.internal.kr: HTTP $http"
+}
+
+cmd_help(){
+  cat <<'EOF'
+pxi-ainovel — Ai-Novel 관리 CLI (LXC 50176)
+
+수명:
+  install [...opts]                  ainovel.toml 레시피 기반 배포
+  up                                 docker compose up -d
+  down                               docker compose down
+  ps                                 컨테이너 목록
+  logs [svc]                         로그 (기본 backend)
+  rebuild [svc]                      이미지 재빌드 (기본 frontend)
+  status                             컨테이너 + 한자 수 + HTTP 상태
+
+번역 (zh → ko):
+  scan                               프론트엔드 + DB 한자 카운트
+  translate-frontend [...]           프론트 번역만 (한자 0까지)
+  translate-db [...]                 DB 번역만
+  translate [--include-templates]    프론트 + DB 번역 + rebuild
+                                     --include-templates: LLM 프롬프트까지
+                                     --no-rebuild: 재빌드 스킵
+
+자동 번역 (pve 호스트 systemd timer):
+  auto-on [interval]                 타이머 활성 (기본 daily, "hourly" / "*:0/30" 등 지원)
+  auto-off                           타이머 제거
+  auto-status                        타이머 상태
+  auto-run-now                       지금 한 번 돌리기
+
+환경:
+  AINOVEL_VMID=50176 (LXC VMID 오버라이드)
+
+예시:
+  pxi-ainovel status
+  pxi-ainovel translate --include-templates
+  pxi-ainovel auto-on daily
+EOF
+}
+
+main(){
+  local cmd="${1:-help}"
+  shift || true
+  case "$cmd" in
+    install|up|down|ps|logs|rebuild|status|scan|translate|help) "cmd_$cmd" "$@" ;;
+    translate-frontend) cmd_translate_frontend "$@" ;;
+    translate-db) cmd_translate_db "$@" ;;
+    auto-on) cmd_auto_on "$@" ;;
+    auto-off) cmd_auto_off "$@" ;;
+    auto-status) cmd_auto_status "$@" ;;
+    auto-run-now) cmd_auto_run_now "$@" ;;
+    *) die "알 수 없는 서브커맨드: $cmd (help 참조)" ;;
+  esac
+}
+
+main "$@"

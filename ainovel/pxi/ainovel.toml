@@ -1,0 +1,86 @@
+[service]
+name = "ainovel"
+description = "Ai-Novel — Claude+RAG+지식그래프+복선관리 장편 소설 플랫폼 (React+FastAPI+pgvector+Redis)"
+
+[lxc]
+cores = "2"
+memory = "4096"
+disk = "20"
+
+[install]
+packages = ["docker.io", "git", "curl", "openssl"]
+
+[[install.steps]]
+name = "Docker daemon enable"
+run = "systemctl enable --now docker"
+
+[[install.steps]]
+name = "docker compose v2 plugin 설치 (Debian 13 대응)"
+run = """
+if ! docker compose version >/dev/null 2>&1; then
+  mkdir -p /usr/local/lib/docker/cli-plugins
+  curl -fsSL https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-x86_64 \
+    -o /usr/local/lib/docker/cli-plugins/docker-compose
+  chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+fi
+docker compose version
+"""
+
+[[install.steps]]
+name = "Ai-Novel clone"
+run = """
+cd /opt
+[ -d ainovel ] || git clone --depth 1 https://github.com/inliver233/Ai-Novel ainovel
+"""
+
+[[install.steps]]
+name = ".env.docker 생성 (시크릿 자동 생성)"
+run = """
+cd /opt/ainovel
+if [ ! -f .env.docker ]; then
+  cp .env.docker.example .env.docker
+  ADMIN_PW=$(openssl rand -base64 24 | tr -d '=/+' | cut -c1-20)
+  PG_PW=$(openssl rand -base64 24 | tr -d '=/+' | cut -c1-24)
+  SEC_KEY=$(openssl rand -hex 32)
+  SESS_KEY=$(openssl rand -hex 32)
+  sed -i "s|^AUTH_ADMIN_PASSWORD=.*|AUTH_ADMIN_PASSWORD=${ADMIN_PW}|" .env.docker
+  sed -i "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=${PG_PW}|" .env.docker
+  sed -i "s|^DATABASE_URL=.*|DATABASE_URL=postgresql+psycopg2://ainovel:${PG_PW}@postgres:5432/ainovel|" .env.docker
+  sed -i "s|^SECRET_ENCRYPTION_KEY=.*|SECRET_ENCRYPTION_KEY=${SEC_KEY}|" .env.docker
+  sed -i "s|^AUTH_SESSION_SIGNING_KEY=.*|AUTH_SESSION_SIGNING_KEY=${SESS_KEY}|" .env.docker
+  # 외부 접속용 포트 (프론트 5173 → LXC 노출)
+  echo "CORS_ORIGINS=http://localhost:5173" >> .env.docker
+  # 관리자 크리덴셜 기록 (LXC 내부)
+  cat > /root/ainovel-admin.txt <<EOF
+=== Ai-Novel 관리자 정보 ===
+URL     : http://<LXC-IP>:5173
+User ID : admin
+Password: ${ADMIN_PW}
+EOF
+  chmod 600 /root/ainovel-admin.txt
+fi
+"""
+
+[[install.steps]]
+name = "compose build + up (pgvector+redis+backend+rq_worker+frontend)"
+run = """
+cd /opt/ainovel
+docker compose --env-file .env.docker up -d --build
+"""
+
+[[install.steps]]
+name = "검증 (프론트 5173 + 백엔드 /api/health, 최대 180초)"
+run = """
+for i in $(seq 1 90); do
+  FE=$(curl -fsS -o /dev/null -w '%{http_code}' http://localhost:5173/ 2>&1 || echo fail)
+  BE=$(curl -fsS -o /dev/null -w '%{http_code}' http://localhost:8000/api/health 2>&1 || echo fail)
+  if [ "$FE" = "200" ] && [ "$BE" = "200" ]; then
+    echo '✓ ainovel 동작 (프론트: http://localhost:5173, API: http://localhost:8000)'
+    echo '  관리자 크리덴셜: /root/ainovel-admin.txt'
+    exit 0
+  fi
+  sleep 2
+done
+echo '✗ ainovel 시작 실패 — docker compose logs 확인' >&2
+exit 1
+"""
