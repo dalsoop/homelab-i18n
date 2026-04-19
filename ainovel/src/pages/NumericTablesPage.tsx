@@ -1,0 +1,198 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+
+import { DebugDetails, DebugPageShell } from "../components/atelier/DebugPageShell";
+import { TablesPanelInline } from "../components/writing/TablesPanel";
+import { useToast } from "../components/ui/toast";
+import { copyText } from "../lib/copyText";
+import { UI_COPY } from "../lib/uiCopy";
+import { ApiError, apiJson } from "../services/apiClient";
+
+type ProjectTable = {
+  id: string;
+  project_id: string;
+  table_key: string;
+  name: string;
+  row_count?: number;
+  updated_at?: string | null;
+};
+
+export function NumericTablesPage() {
+  const { projectId } = useParams();
+  const toast = useToast();
+  const pid = String(projectId || "");
+
+  const [tablesLoading, setTablesLoading] = useState(false);
+  const [tablesError, setTablesError] = useState<string | null>(null);
+  const [tables, setTables] = useState<ProjectTable[]>([]);
+  const [selectedTableId, setSelectedTableId] = useState<string>("");
+
+  const [focus, setFocus] = useState<string>("");
+  const [scheduling, setScheduling] = useState(false);
+  const [lastTaskId, setLastTaskId] = useState<string>("");
+
+  const selectedTable = useMemo(() => tables.find((t) => t.id === selectedTableId) ?? null, [selectedTableId, tables]);
+
+  const loadTables = useCallback(async () => {
+    if (!pid) return;
+    setTablesLoading(true);
+    setTablesError(null);
+    try {
+      const res = await apiJson<{ tables: ProjectTable[] }>(`/api/projects/${pid}/tables?include_schema=false`);
+      const next = Array.isArray(res.data?.tables) ? res.data.tables : [];
+      setTables(next);
+      setSelectedTableId((prev) => {
+        if (prev && next.some((t) => t.id === prev)) return prev;
+        return next[0]?.id ?? "";
+      });
+    } catch (e) {
+      const err =
+        e instanceof ApiError
+          ? e
+          : new ApiError({ code: "UNKNOWN", message: String(e), requestId: "unknown", status: 0 });
+      setTablesError(`${err.message} (${err.code})${err.requestId ? ` request_id:${err.requestId}` : ""}`);
+    } finally {
+      setTablesLoading(false);
+    }
+  }, [pid]);
+
+  useEffect(() => {
+    if (!pid) return;
+    void loadTables();
+  }, [loadTables, pid]);
+
+  const scheduleAiUpdate = useCallback(async () => {
+    if (!pid) return;
+    const tableId = selectedTableId.trim();
+    if (!tableId) {
+      toast.toastError("먼저 표를 하나 선택해 주세요.");
+      return;
+    }
+    setScheduling(true);
+    try {
+      const res = await apiJson<{ task_id: string; chapter_id?: string | null; table_id?: string | null }>(
+        `/api/projects/${pid}/tables/${encodeURIComponent(tableId)}/ai_update`,
+        {
+          method: "POST",
+          body: JSON.stringify({ focus: focus.trim() || null }),
+        },
+      );
+      const taskId = String(res.data?.task_id || "").trim();
+      if (taskId) setLastTaskId(taskId);
+      toast.toastSuccess("AI 업데이트 작업이 생성되었습니다.", res.request_id);
+    } catch (e) {
+      const err =
+        e instanceof ApiError
+          ? e
+          : new ApiError({ code: "UNKNOWN", message: String(e), requestId: "unknown", status: 0 });
+      toast.toastError(`${err.message} (${err.code})`, err.requestId);
+    } finally {
+      setScheduling(false);
+    }
+  }, [focus, pid, selectedTableId, toast]);
+
+  if (!pid) return <div className="text-subtext">缺少 projectId</div>;
+
+  return (
+    <DebugPageShell
+      title={UI_COPY.nav.numericTables}
+      description="수치 테이블(NumericTables)은 금전, 시간, 레벨, 자원 등과 같이 수치화할 수 있는 상태를 기록하는 데 사용되며, 이는 구조화된 메모리(StructuredMemory)와는 다릅니다."
+    >
+      <DebugDetails title="설명.">
+        <div className="grid gap-1 text-xs text-subtext">
+          <div>
+            本页为「数值表格（NumericTables）」的 AdvancedDebug：用表格记录钱/时间/等级/资源；不是图谱底座数据。
+          </div>
+          <div>支持直接编辑表与行（project_tables / project_table_rows）。</div>
+        </div>
+      </DebugDetails>
+
+      <DebugDetails title="AI 업데이트 (table_ai_update)">
+        <div className="grid gap-3">
+          <div className="grid gap-1 text-xs text-subtext">
+            <div>点击后会创建一个 ProjectTask（可在 Task Center 查看结果、失败可重试）。</div>
+            <div>任务成功后会产出一个 ChangeSet（可 apply / rollback）。</div>
+          </div>
+
+          <div className="grid gap-2 lg:grid-cols-[1fr,2fr]">
+            <label className="grid gap-1">
+              <div className="text-xs text-subtext">目标表</div>
+              <select
+                className="select"
+                id="numeric_tables_select_table"
+                name="numeric_tables_select_table"
+                value={selectedTableId}
+                onChange={(e) => setSelectedTableId(e.target.value)}
+                aria-label="목표 테이블 선택 (numeric_tables_select_table)"
+              >
+                <option value="" disabled>
+                  {tablesLoading ? "불러오는 중..." : tablesError ? "불러오기 실패." : "선택해 주세요."}
+                </option>
+                {tables.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name} ({t.table_key})
+                  </option>
+                ))}
+              </select>
+              {tablesError ? <div className="text-xs text-danger">{tablesError}</div> : null}
+              <div className="flex flex-wrap items-center gap-2">
+                <button className="btn btn-secondary btn-sm" onClick={() => void loadTables()} type="button">
+                  刷新表列表
+                </button>
+              </div>
+            </label>
+
+            <label className="grid gap-1">
+              <div className="text-xs text-subtext">Focus（可选）</div>
+              <textarea
+                className="textarea min-h-[88px]"
+                id="numeric_tables_ai_focus"
+                name="numeric_tables_ai_focus"
+                value={focus}
+                onChange={(e) => setFocus(e.target.value)}
+                placeholder="예를 들어, 최신 업데이트 내용을 바탕으로 게임 내 화폐 및 장비의 수량을 정확하게 반영해야 하며, 허위 정보를 만들거나 날조해서는 안 됩니다."
+                aria-label="AI 업데이트: 표 형식 데이터에 집중 (AI 업데이트: 표 형식 데이터에 집중)"
+              />
+            </label>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              className="btn btn-primary"
+              onClick={() => void scheduleAiUpdate()}
+              disabled={scheduling || !selectedTableId}
+              aria-label="AI 업데이트 작업을 생성합니다 (numeric_tables_ai_schedule)."
+              type="button"
+            >
+              {scheduling ? "생성 중..." : `AI 提议更新${selectedTable ? `：${selectedTable.name}` : ""}`}
+            </button>
+
+            {lastTaskId ? (
+              <>
+                <Link
+                  className="btn btn-secondary"
+                  to={`/projects/${pid}/tasks?project_task_id=${encodeURIComponent(lastTaskId)}`}
+                >
+                  打开 Task Center（定位本次任务）
+                </Link>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => void copyText(lastTaskId, { title: "복사가 실패했습니다. task_id를 직접 복사해 주세요." })}
+                  type="button"
+                >
+                  复制 task_id
+                </button>
+              </>
+            ) : (
+              <Link className="btn btn-secondary" to={`/projects/${pid}/tasks`}>
+                打开 Task Center
+              </Link>
+            )}
+          </div>
+        </div>
+      </DebugDetails>
+
+      <TablesPanelInline projectId={pid} />
+    </DebugPageShell>
+  );
+}
