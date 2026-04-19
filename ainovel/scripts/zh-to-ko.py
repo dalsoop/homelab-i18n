@@ -82,8 +82,9 @@ def translate_segment(text: str, idx: int, cache: dict[str, str]) -> str | None:
         ko = call_shim(text, idx)
     except Exception:
         return None
-    # syntax-breaking 문자는 모두 거부
-    if any(c in ko for c in ("\n", "\r", "\t", "`")) or "${" in ko:
+    # syntax-breaking 문자는 모두 거부 (backend 와 동일 기준)
+    # H1: backslash 는 strip 하지 말고 reject — escape sequence 손상 방지
+    if any(c in ko for c in ("\n", "\r", "\t", "`", "\\")) or "${" in ko:
         return None
     if len(ko) > len(text) * 6 + 80:
         return None
@@ -170,8 +171,9 @@ def process_file(relpath: str, idx: int, lxc: str, cache: dict[str, str]) -> tup
             if ko is None:
                 misses += 1
                 return seg
-            # 코드 안전: 따옴표/백틱/백슬래시 무독화
-            ko_safe = ko.replace('"', "'").replace("`", "'").replace("\\", "")
+            # 코드 안전: translate_segment 가 이미 백틱/백슬래시를 reject 했으므로
+            # 남은 위험은 따옴표뿐 — single quote 로 정규화 (backslash strip 제거)
+            ko_safe = ko.replace('"', "'").replace("`", "'")
             hits += 1
             return ko_safe
 
@@ -180,7 +182,12 @@ def process_file(relpath: str, idx: int, lxc: str, cache: dict[str, str]) -> tup
     if hits == 0:
         return (relpath, "no-hit", 0, misses)
 
-    local.write_text("\n".join(lines))
+    new_content = "\n".join(lines)
+    # C1: bracket/quote balance 검증 — TS parser 없이 저비용 sanity check
+    if not _balanced(new_content, content):
+        return (relpath, "unbalanced", 0, misses)
+
+    local.write_text(new_content)
     try:
         subprocess.run(
             ["pct", "push", lxc, str(local), src_path],
@@ -189,6 +196,16 @@ def process_file(relpath: str, idx: int, lxc: str, cache: dict[str, str]) -> tup
     except Exception:
         return (relpath, "push-fail", hits, misses)
     return (relpath, "ok", hits, misses)
+
+
+def _balanced(new: str, orig: str) -> bool:
+    """bracket·quote 카운트가 원본과 동일하면 통과.
+    번역으로 도입된 구조적 변화를 감지하는 저비용 가드.
+    """
+    for ch in ("(", ")", "{", "}", "[", "]", "`"):
+        if new.count(ch) != orig.count(ch):
+            return False
+    return True
 
 
 def translate_cmd(lxc: str, include_tests: bool, workers: int) -> int:
