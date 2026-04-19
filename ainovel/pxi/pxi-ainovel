@@ -11,6 +11,9 @@ FRONTEND_SCRIPT="$HOMELAB_I18N/scripts/zh-to-ko.py"
 DB_SCRIPT="$HOMELAB_I18N/scripts/db-zh-to-ko.py"
 BACKEND_SCRIPT="$HOMELAB_I18N/scripts/backend-zh-to-ko.py"
 BACKEND_FIX_SCRIPT="$HOMELAB_I18N/scripts/backend-final-fix.py"
+AUDIT_SCRIPT="$HOMELAB_I18N/scripts/project-audit.py"
+EXPORT_SCRIPT="$HOMELAB_I18N/scripts/project-export.py"
+IMPORT_SCRIPT="$HOMELAB_I18N/scripts/project-import.py"
 TIMER_UNIT="ainovel-translate.timer"
 SERVICE_UNIT="ainovel-translate.service"
 
@@ -270,6 +273,78 @@ cmd_llm_mode(){
   esac
 }
 
+# ── 프로젝트 데이터 API (audit / export / import / reset) ────────────────
+# DB SQL 레이어로 프로젝트 메타·본편·그래프·기억·분석 전부 다루는 커맨드.
+# audit 으로 빈 곳 확인 → import 로 JSON 주입하는 흐름.
+
+cmd_project(){
+  local sub="${1:-help}"
+  shift || true
+  case "$sub" in
+    list)
+      require_up
+      compose "exec -T postgres psql -U ainovel -d ainovel -c 'SELECT id, name, genre FROM projects ORDER BY updated_at DESC;'"
+      ;;
+    audit)
+      [ -n "${1:-}" ] || die "프로젝트 id 필요: pxi run ainovel project audit <id>"
+      "$AUDIT_SCRIPT" "$1"
+      ;;
+    export)
+      [ -n "${1:-}" ] || die "pxi run ainovel project export <id> [out.json]"
+      if [ -n "${2:-}" ]; then
+        "$EXPORT_SCRIPT" "$1" > "$2"
+        ok "export → $2 ($(wc -c <"$2") bytes)"
+      else
+        "$EXPORT_SCRIPT" "$1"
+      fi
+      ;;
+    import)
+      [ -n "${1:-}" ] && [ -n "${2:-}" ] || die "pxi run ainovel project import <id> <file.json> [--dry-run]"
+      "$IMPORT_SCRIPT" "$1" "$2" "${3:-}"
+      ;;
+    reset-tasks)
+      [ -n "${1:-}" ] || die "pxi run ainovel project reset-tasks <id>"
+      local pid="$1"
+      require_up
+      compose "exec -T postgres psql -U ainovel -d ainovel -c \"
+        DELETE FROM project_task_events WHERE task_id IN (SELECT id FROM project_tasks WHERE project_id='$pid' AND status IN ('failed','cancelled'));
+        DELETE FROM project_tasks WHERE project_id='$pid' AND status IN ('failed','cancelled');
+        DELETE FROM memory_change_set_items WHERE change_set_id IN (SELECT id FROM memory_change_sets WHERE project_id='$pid' AND status='proposed');
+        DELETE FROM memory_change_sets WHERE project_id='$pid' AND status='proposed';
+        SELECT status, COUNT(*) FROM project_tasks WHERE project_id='$pid' GROUP BY status;\""
+      ok "failed·cancelled task + proposed change_set 정리 완료"
+      ;;
+    help|"")
+      cat <<'EOF'
+pxi run ainovel project <cmd>
+
+  list                                모든 프로젝트 (id/name/genre)
+  audit <id>                          빈 테이블·불완전 지점 JSON 리포트
+  export <id> [out.json]              프로젝트 전체 상태 JSON 덤프
+  import <id> <in.json> [--dry-run]   JSON 을 테이블에 upsert
+  reset-tasks <id>                    failed·cancelled task + proposed change_set 청소
+
+JSON 스키마 (export/import 공통):
+  meta           — name, genre, logline
+  settings       — world_setting, style_guide, constraints
+  outline        — title, content_md
+  chapters[]     — number, title, plan, summary, content_md, status
+  characters[]   — name, role, profile, notes
+  entities[]     — type, name, summary, attributes
+  relations[]    — from(name), to(name), type, description
+  worldbook[]    — title, content_md, priority, enabled, constant, keywords
+  foreshadows[]  — chapter, resolved_at_chapter, title, content, resolved
+  glossary[]     — term, aliases, sources
+  evidence[]     — chapter, quote, attributes
+  story_memories[] — chapter, type, title, content, importance, tags
+  plot_analysis[]  — chapter, overall, coherence, engagement, pacing, report, analysis
+  numeric_tables[] — key, name, schema, rows
+EOF
+      ;;
+    *) die "알 수 없는 project 서브커맨드: $sub"; ;;
+  esac
+}
+
 # ── 상태/헬스 ─────────────────────────────────────────────────────────────
 cmd_status(){
   require_up
@@ -310,6 +385,13 @@ pxi-ainovel — Ai-Novel 관리 CLI (LXC 50176)
                                      --include-templates: LLM 프롬프트까지
                                      --no-rebuild: 재빌드 스킵
 
+프로젝트 데이터 API (빈 곳 찾고 JSON으로 채우기):
+  project list                       모든 프로젝트 목록
+  project audit <id>                 빈 테이블·미흡 지점 JSON 리포트
+  project export <id> [out.json]     현재 상태 JSON 덤프
+  project import <id> <file.json>    JSON 으로 테이블 upsert (--dry-run 지원)
+  project reset-tasks <id>           failed·cancelled task + proposed cs 청소
+
 LLM 모드 (Gemma 4 ↔ TG 토글):
   llm-mode status                    현재 모드 (Gemma 4 / TG / off)
   llm-mode gemma                     Gemma 4 단독 (TG stop, 타이머 off) — 소설 생성용
@@ -340,6 +422,7 @@ main(){
     translate-frontend) cmd_translate_frontend "$@" ;;
     translate-db) cmd_translate_db "$@" ;;
     translate-backend) cmd_translate_backend "$@" ;;
+    project) cmd_project "$@" ;;
     llm-mode|llm) cmd_llm_mode "$@" ;;
     auto-on) cmd_auto_on "$@" ;;
     auto-off) cmd_auto_off "$@" ;;
