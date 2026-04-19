@@ -14,6 +14,7 @@ BACKEND_FIX_SCRIPT="$HOMELAB_I18N/scripts/backend-final-fix.py"
 AUDIT_SCRIPT="$HOMELAB_I18N/scripts/project-audit.py"
 EXPORT_SCRIPT="$HOMELAB_I18N/scripts/project-export.py"
 IMPORT_SCRIPT="$HOMELAB_I18N/scripts/project-import.py"
+NOVELIZE_SCRIPT="$HOMELAB_I18N/scripts/novelize-chapter.py"
 TIMER_UNIT="ainovel-translate.timer"
 SERVICE_UNIT="ainovel-translate.service"
 
@@ -456,6 +457,28 @@ cmd_chapter_delete(){
   ok "ch$n 삭제"
 }
 
+# src 대본 → dst 소설 산문화 (LLM 호출, 기본 Gemma 4 로컬)
+cmd_chapter_novelize(){
+  local src="$1" dst="$2" n="$3"; shift 3 || die "pxi run ainovel chapter novelize <src_proj> <dst_proj> <n|all> [--style-file F]"
+  _require_proj "$src"
+  _require_proj "$dst"
+  local style_args=""
+  while [ $# -gt 0 ]; do case "$1" in --style-file) style_args="--style-file $2"; shift 2;; *) shift;; esac; done
+  require_up
+  log "novelize $src ch$n → $dst (LLM via preset)"
+  # backend container 에 스크립트 복사 후 실행
+  pct exec "$VMID" -- bash -c "CID=\$(cd $APP_ROOT && docker compose --env-file .env.docker ps -q backend) && docker cp '$NOVELIZE_SCRIPT' \$CID:/tmp/novelize-chapter.py"
+  compose "exec -T backend python3 /tmp/novelize-chapter.py $src $dst $n $style_args"
+}
+
+# md 파일을 chapter content_md 로 주입 (chapter update --from-file 편의형 별칭)
+cmd_chapter_import_md(){
+  local pid="$1" n="$2" file="$3"
+  [ -n "$pid" ] && [ -n "$n" ] && [ -n "$file" ] || die "pxi run ainovel chapter import-md <proj> <n> <file.md>"
+  [ -f "$file" ] || die "파일 없음: $file"
+  cmd_chapter_update "$pid" "$n" --from-file "$file"
+}
+
 # ── 캐릭터 / 월드북 / 복선 / 용어집 / 기억 CRUD ──────────────────────────
 
 cmd_character_add(){
@@ -543,6 +566,8 @@ cmd_chapter(){
     add) cmd_chapter_add "$@" ;;
     update) cmd_chapter_update "$@" ;;
     delete|rm) cmd_chapter_delete "$@" ;;
+    novelize) cmd_chapter_novelize "$@" ;;
+    import-md) cmd_chapter_import_md "$@" ;;
     list)
       [ -n "${1:-}" ] || die "pxi run ainovel chapter list <proj_id>"
       compose "exec -T postgres psql -U ainovel -d ainovel -c \"SELECT number, title, status, LENGTH(content_md) AS len FROM chapters WHERE project_id='$1' ORDER BY number;\""
@@ -732,6 +757,9 @@ pxi-ainovel — Ai-Novel 관리 CLI (LXC 50176)
   chapter set-status <proj> <n> <s>  drafting|done
   chapter generate <proj> <n>        Gemma 4로 auto_update 스케줄
   chapter analyze <proj> <n>         plot_analysis 재생성
+  chapter novelize <src> <dst> <n|all> [--style-file F]
+                                     src 대본 → dst 소설 산문화 (LLM preset 사용)
+  chapter import-md <proj> <n> <file> .md 파일을 content_md 로 주입
 
 그래프·메모리 요소:
   character add <proj> <name> [--role R] [--profile-file F]
