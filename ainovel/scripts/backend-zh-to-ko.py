@@ -19,6 +19,7 @@ Python 특수성:
 from __future__ import annotations
 import argparse
 import concurrent.futures
+import hashlib
 import json
 import re
 import subprocess
@@ -43,8 +44,20 @@ CJK_BLOCK = re.compile(
 )
 
 cache_lock = Lock()
-cache: dict[str, str] = json.loads(CACHE_FILE.read_text()) if CACHE_FILE.exists() else {}
-print(f"캐시: {len(cache)}개", file=sys.stderr)
+# N7: cache 를 import 시점이 아닌 main() 에서 load 하도록 지연
+cache: dict[str, str] = {}
+
+# N8: shim circuit breaker — 연속 실패 5회면 번역 포기
+_shim_fail_lock = Lock()
+_shim_fail_count = [0]
+_SHIM_FAIL_THRESHOLD = 5
+
+
+def _load_cache() -> None:
+    global cache
+    if CACHE_FILE.exists():
+        cache = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
+    print(f"캐시: {len(cache)}개", file=sys.stderr)
 
 
 def save_cache() -> None:
@@ -67,9 +80,19 @@ def translate_segment(text: str, idx: int) -> str | None:
     with cache_lock:
         if text in cache:
             return cache[text]
+    # N8: circuit breaker 발동 시 즉시 None
+    with _shim_fail_lock:
+        if _shim_fail_count[0] >= _SHIM_FAIL_THRESHOLD:
+            return None
     try:
         ko = call_shim(text, idx)
+        with _shim_fail_lock:
+            _shim_fail_count[0] = 0  # 성공 시 리셋
     except Exception:
+        with _shim_fail_lock:
+            _shim_fail_count[0] += 1
+            if _shim_fail_count[0] == _SHIM_FAIL_THRESHOLD:
+                print(f"  ! shim 연속 실패 {_SHIM_FAIL_THRESHOLD}회 — 이후 번역 포기", file=sys.stderr)
         return None
     # 개행·탭·백틱은 Python 문자열 경계를 깨뜨릴 수 있어 reject
     if any(c in ko for c in ("\n", "\r", "\t", "`", "\\")):
@@ -128,16 +151,22 @@ print(f'TOTAL files={files} chars={total}')
 
 def process_file(relpath: str, idx: int) -> tuple[str, str, int, int]:
     src_path = f"/opt/ainovel/{relpath}"
-    local = WORK / relpath.replace("/", "__")
+    # N2: `foo__bar.py` 와 `foo/bar.py` 충돌 방지 — sha1 prefix 포함
+    safe = hashlib.sha1(relpath.encode()).hexdigest()[:12] + "_" + Path(relpath).name
+    local = WORK / safe
+    local.unlink(missing_ok=True)  # C2: stale file 방지
     try:
         subprocess.run(
             ["pct", "pull", LXC, src_path, str(local)],
             check=True, capture_output=True, timeout=30,
         )
-        content = local.read_text()
+        if not local.exists() or local.stat().st_size == 0:
+            return (relpath, "pull-empty", 0, 0)
+        content = local.read_text(encoding="utf-8")  # N6
     except Exception:
         return (relpath, "pull-fail", 0, 0)
 
+    trailing_nl = "\n" if content.endswith("\n") else ""  # N1
     lines = content.split("\n")
     hits = misses = 0
 
@@ -165,13 +194,13 @@ def process_file(relpath: str, idx: int) -> tuple[str, str, int, int]:
         return (relpath, "no-hit", 0, misses)
 
     # Python syntax 검증 — 변역 후 파일이 valid Python 인지
-    new_content = "\n".join(lines)
+    new_content = "\n".join(lines) + trailing_nl  # N1
     try:
         compile(new_content, relpath, "exec")
     except SyntaxError as e:
         return (relpath, f"syntax-err-{e.lineno}", 0, misses)
 
-    local.write_text(new_content)
+    local.write_text(new_content, encoding="utf-8")  # N6
     try:
         subprocess.run(
             ["pct", "push", LXC, str(local), src_path],
@@ -240,6 +269,7 @@ def main() -> int:
     ap.add_argument("command", choices=["scan", "translate", "run", "restart"])
     ap.add_argument("--workers", type=int, default=4)
     args = ap.parse_args()
+    _load_cache()  # N7: main 시점에 캐시 로드
     if args.command == "scan":
         return 0 if scan_cmd() == 0 else 1
     if args.command == "translate":
