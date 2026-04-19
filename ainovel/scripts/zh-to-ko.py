@@ -121,7 +121,7 @@ rx = re.compile(r'[\\u4e00-\\u9fff]')
 total = 0; files = 0; details = []
 for p in pathlib.Path('/opt/ainovel/frontend/src').rglob('*'):
     if p.suffix in ('.ts','.tsx') and p.is_file():
-        if {include_tests} is False and '.test.' in p.name:
+        if {include_tests} is False and bool(re.search(r'\.test\.(ts|tsx)$', p.name)):
             continue
         t = p.read_text(errors='ignore')
         c = len(rx.findall(t))
@@ -143,16 +143,25 @@ print(f'TOTAL files={{files}} chars={{total}}')
 
 
 def process_file(relpath: str, idx: int, lxc: str, cache: dict[str, str]) -> tuple[str, str, int, int]:
+    import hashlib
     src_path = f"/opt/ainovel/frontend/src/{relpath}"
-    local = WORK / relpath.replace("/", "__")
+    # N2: hash prefix 로 경로 충돌 방지
+    safe = hashlib.sha1(relpath.encode()).hexdigest()[:12] + "_" + Path(relpath).name
+    local = WORK / safe
+    # C2 패턴: pct pull 이 실패해도 exit 0 을 반환할 수 있어 stale file 선제거
+    local.unlink(missing_ok=True)
     try:
         subprocess.run(
             ["pct", "pull", lxc, src_path, str(local)],
             check=True, capture_output=True, timeout=30,
         )
-        content = local.read_text()
+        if not local.exists() or local.stat().st_size == 0:
+            return (relpath, "pull-empty", 0, 0)
+        content = local.read_text(encoding="utf-8")  # N6: encoding 명시
     except Exception as e:
         return (relpath, "pull-fail", 0, 0)
+    # N1: 원본의 trailing newline 기억 (나중에 복원)
+    trailing_nl = "\n" if content.endswith("\n") else ""
 
     lines = content.split("\n")
     hits = misses = 0
@@ -177,17 +186,22 @@ def process_file(relpath: str, idx: int, lxc: str, cache: dict[str, str]) -> tup
             hits += 1
             return ko_safe
 
-        lines[i] = CJK_BLOCK.sub(repl, line)
+        new_line = CJK_BLOCK.sub(repl, line)
+        # H2: 치환 후 원본에 없던 `${` (template literal interpolation) 가
+        # 새로 생기면 revert — segment 끝 `$` 와 주변 `{` 결합 등으로 발생 가능.
+        if new_line.count("${") > line.count("${"):
+            continue
+        lines[i] = new_line
 
     if hits == 0:
         return (relpath, "no-hit", 0, misses)
 
-    new_content = "\n".join(lines)
+    new_content = "\n".join(lines) + trailing_nl  # N1: trailing newline 복원
     # C1: bracket/quote balance 검증 — TS parser 없이 저비용 sanity check
     if not _balanced(new_content, content):
         return (relpath, "unbalanced", 0, misses)
 
-    local.write_text(new_content)
+    local.write_text(new_content, encoding="utf-8")  # N6
     try:
         subprocess.run(
             ["pct", "push", lxc, str(local), src_path],
@@ -255,20 +269,29 @@ def strip_parenthetical_cmd(lxc: str, include_tests: bool) -> int:
     사용자가 한자를 전혀 쓰지 않으므로 병기 자체가 불필요.
     """
     inc_tests = "True" if include_tests else "False"
+    # H6: 치환 후 bracket/quote balance 및 크기 축소율 검증 — 깨진 파일은 revert
     code = f"""
 import pathlib, re
-# "한글류((한자)+) optional 추가부호" 형태
 pat = re.compile(r'([^\\s(])\\s*\\(\\s*([\\u4e00-\\u9fff]+)\\s*\\)\\.?')
 changed = 0
+reverted = 0
 for p in pathlib.Path('/opt/ainovel/frontend/src').rglob('*'):
     if p.suffix not in ('.ts','.tsx'): continue
-    if {inc_tests} is False and '.test.' in p.name: continue
+    if {inc_tests} is False and bool(re.search(r'\.test\.(ts|tsx)$', p.name)): continue
     t = p.read_text(errors='ignore')
     new = pat.sub(r'\\1', t)
-    if new != t:
-        p.write_text(new)
-        changed += 1
-print(f'stripped_files={{changed}}')
+    if new == t:
+        continue
+    # 안전망 1: bracket/quote 개수 보존 (문자열 리터럴 깨짐 감지)
+    balanced = all(new.count(c) == t.count(c) for c in '()[]{{}}`\"\\'')
+    # 안전망 2: 크기가 30% 이상 줄면 suspect
+    shrank = len(new) < len(t) * 0.7
+    if not balanced or shrank:
+        reverted += 1
+        continue
+    p.write_text(new)
+    changed += 1
+print(f'stripped_files={{changed}} reverted={{reverted}}')
 """
     rc, out, err = run_on_lxc(lxc, code)
     print(out)
@@ -294,7 +317,7 @@ patterns = [
 changed = 0
 for p in pathlib.Path('/opt/ainovel/frontend/src').rglob('*'):
     if p.suffix not in ('.ts','.tsx'): continue
-    if {inc_tests} is False and '.test.' in p.name: continue
+    if {inc_tests} is False and bool(re.search(r'\.test\.(ts|tsx)$', p.name)): continue
     t = p.read_text(errors='ignore')
     orig = t
     for rx, repl in patterns:

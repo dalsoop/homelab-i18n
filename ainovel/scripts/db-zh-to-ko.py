@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import secrets
 import subprocess
 import sys
 import urllib.request
@@ -200,8 +201,10 @@ def translate_table(table: str, col: str, is_json: bool, is_llm: bool, dry_run: 
                 print(f"    ! JSON broken after translate (id={pk}), skip")
                 continue
 
-        # 업데이트 SQL — $$ dollar quoting으로 안전
-        delim = f"ko{idx}"
+        # H4: dollar-quoting delim 랜덤화 — 번역 결과에 $ko{idx}$ 가 포함되어도 충돌 없게
+        delim = f"ko_{secrets.token_hex(4)}"
+        while f"${delim}$" in new:
+            delim = f"ko_{secrets.token_hex(4)}"
         stmt = f"UPDATE {table} SET {col} = ${delim}${new}${delim}$ WHERE id = '{pk}';"
         if dry_run:
             print(f"    [DRY] {table}.{col} id={pk[:8]}… len {len(val)}→{len(new)}")

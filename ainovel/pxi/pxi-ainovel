@@ -69,17 +69,26 @@ cmd_install(){
   ok "설치 완료 — https://novel.50.internal.kr"
 }
 
+# H9: svc 인자 whitelist — pct exec bash -lc 인젝션 방지
+VALID_SVCS_RE='^(frontend|backend|postgres|redis|rq_worker)$'
+require_svc(){
+  local svc="$1"
+  [[ "$svc" =~ $VALID_SVCS_RE ]] || die "유효한 service: frontend|backend|postgres|redis|rq_worker (입력: $svc)"
+}
+
 cmd_up(){ require_up; compose "up -d"; ok "up"; }
 cmd_down(){ require_up; compose "down"; ok "down"; }
 cmd_ps(){ require_up; compose "ps"; }
 cmd_logs(){
   require_up
   local svc="${1:-backend}"
+  require_svc "$svc"
   compose "logs -f --tail=100 $svc"
 }
 cmd_rebuild(){
   require_up
   local svc="${1:-frontend}"
+  require_svc "$svc"
   log "rebuild $svc"
   compose "up -d --build $svc"
   ok "rebuild 완료"
