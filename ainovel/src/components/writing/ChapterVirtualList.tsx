@@ -125,7 +125,7 @@ export function ChapterVirtualList(props: {
   if (chapters.length === 0) {
     return (
       <div className={clsx("flex h-full min-h-[160px] items-center justify-center", className)}>
-        {emptyState ?? <div className="p-3 text-sm text-subtext">暂无章节</div>}
+        {emptyState ?? <div className="p-3 text-sm text-subtext">아직 챕터가 없습니다.</div>}
       </div>
     );
   }

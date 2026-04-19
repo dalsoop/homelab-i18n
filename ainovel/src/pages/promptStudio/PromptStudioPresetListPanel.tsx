@@ -72,9 +72,9 @@ export function PromptStudioPresetListPanel(props: {
 
   return (
     <div className="panel p-4">
-      <div className="mb-3 text-sm font-semibold">预设列表</div>
+      <div className="mb-3 text-sm font-semibold">미리 설정된 목록.</div>
       <div className="grid gap-2">
-        <div className="text-xs text-subtext">新建预设</div>
+        <div className="text-xs text-subtext">새 프리셋 만들기.</div>
         <div className="flex gap-2">
           <input
             className="input"
@@ -93,11 +93,11 @@ export function PromptStudioPresetListPanel(props: {
             }}
             disabled={busy}
           >
-            新建
+            새로 만들기.
           </button>
         </div>
 
-        <div className="text-xs text-subtext">导入/导出（当前预设）</div>
+        <div className="text-xs text-subtext">가져오기./내보내기 (현재 설정)</div>
         <div className="flex gap-2">
           <input
             ref={importInputRef}
@@ -128,18 +128,18 @@ export function PromptStudioPresetListPanel(props: {
             onClick={() => importInputRef.current?.click()}
             disabled={importBusy || busy}
           >
-            导入
+            가져오기.
           </button>
           <button
             className="btn btn-secondary w-full"
             onClick={() => void exportPreset()}
             disabled={busy || !selectedPresetId}
           >
-            导出
+            내보내기.
           </button>
         </div>
 
-        <div className="text-xs text-subtext">导入/导出（整套）</div>
+        <div className="text-xs text-subtext">가져오기./전체 세트 내보내기.</div>
         <div className="flex gap-2">
           <button
             className="btn btn-secondary w-full"
@@ -147,7 +147,7 @@ export function PromptStudioPresetListPanel(props: {
             disabled={bulkBusy || importBusy || busy}
             type="button"
           >
-            导入整套
+            전체 세트를 가져오다.
           </button>
           <button
             className="btn btn-secondary w-full"
@@ -155,19 +155,19 @@ export function PromptStudioPresetListPanel(props: {
             disabled={bulkBusy || busy}
             type="button"
           >
-            导出整套
+            전체 세트를 내보냅니다.
           </button>
         </div>
 
         <div className="grid gap-1">
-          <div className="text-xs text-subtext">分类</div>
+          <div className="text-xs text-subtext">분류.</div>
           <select
             className="select"
             value={effectiveCategoryFilter}
             onChange={(e) => setCategoryFilter(e.currentTarget.value)}
             disabled={busy || bulkBusy}
           >
-            <option value="__all__">全部分类</option>
+            <option value="__all__">전체 카테고리.</option>
             {presetCategoryGroups.map(([key]) => (
               <option key={key} value={key}>
                 {key}
@@ -217,12 +217,12 @@ export function PromptStudioPresetListPanel(props: {
                 </div>
               ))
             ) : (
-              <div className="text-xs text-subtext">暂无预设</div>
+              <div className="text-xs text-subtext">아직 설정되지 않았습니다.</div>
             )}
           </div>
         </LayoutGroup>
 
-        <div className="mt-2 text-xs text-subtext">拖拽块可调整排序；预览走后端渲染。</div>
+        <div className="mt-2 text-xs text-subtext">블록을 드래그하여 순서를 변경할 수 있으며, 최종 결과는 서버 측에서 렌더링됩니다.。</div>
       </div>
     </div>
   );

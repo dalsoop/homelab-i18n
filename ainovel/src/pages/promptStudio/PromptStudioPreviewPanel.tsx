@@ -36,7 +36,7 @@ export function PromptStudioPreviewPanel(props: {
     <div className="panel p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-sm font-semibold">预览（后端渲染）</div>
+          <div className="text-sm font-semibold">미리 보기 (서버 측 렌더링)</div>
           {requestId ? <RequestIdBadge className="mt-2" requestId={requestId} /> : null}
         </div>
         <div className="flex gap-2">
@@ -67,7 +67,7 @@ export function PromptStudioPreviewPanel(props: {
         <div className="grid gap-3">
           {templateErrors.length ? (
             <div className="rounded-atelier border border-border bg-surface/50 p-3 text-xs">
-              <div className="font-semibold">模板渲染错误</div>
+              <div className="font-semibold">템플릿 렌더링 오류.</div>
               <div className="mt-2 grid gap-1 text-subtext">
                 {templateErrors.map((item) => (
                   <div key={`${item.identifier}:${item.error}`}>
@@ -81,23 +81,23 @@ export function PromptStudioPreviewPanel(props: {
 
           {preview.missing?.length ? (
             <div className="rounded-atelier border border-border bg-surface/50 p-3 text-xs">
-              <div className="font-semibold">缺失变量</div>
+              <div className="font-semibold">누락된 변수.</div>
               <div className="mt-1 text-subtext">{preview.missing.join(", ")}</div>
             </div>
           ) : null}
 
           <div className="rounded-atelier border border-border bg-surface/50 p-3 text-xs">
-            <div className="font-semibold">Token 估算</div>
+            <div className="font-semibold">Token 예상, 추정, 견적. (문맥에 따라 적절한 단어 선택)</div>
             <div className="mt-1 text-subtext">
-              总计：{preview.prompt_tokens_estimate ?? 0}
-              {preview.prompt_budget_tokens ? ` / 预算：${preview.prompt_budget_tokens}` : ""}
+              총계:{preview.prompt_tokens_estimate ?? 0}
+              {preview.prompt_budget_tokens ? ` / 예산:${preview.prompt_budget_tokens}` : ""}
             </div>
           </div>
 
           {renderLog ? (
             <details className="rounded-atelier border border-border bg-surface/50 p-3">
               <summary className="ui-transition-fast cursor-pointer text-sm hover:text-ink">
-                查看 render_log（裁剪/原因/错误）
+                확인하다. render_log（다듬다, 자르다, 편집하다./이유./오류)
               </summary>
               <div className="mt-2 flex justify-end">
                 <button
@@ -107,7 +107,7 @@ export function PromptStudioPreviewPanel(props: {
                   }}
                   type="button"
                 >
-                  复制 render_log
+                  복사하다. render_log
                 </button>
               </div>
               <pre className="mt-2 max-h-[260px] overflow-auto whitespace-pre-wrap break-words rounded-atelier border border-border bg-surface p-3 text-xs">
@@ -136,7 +136,7 @@ export function PromptStudioPreviewPanel(props: {
           </div>
 
           <details className="rounded-atelier border border-border bg-surface/50 p-3">
-            <summary className="ui-transition-fast cursor-pointer text-sm hover:text-ink">查看分块渲染结果</summary>
+            <summary className="ui-transition-fast cursor-pointer text-sm hover:text-ink">분할 렌더링 결과를 확인합니다.</summary>
             <div className="mt-3 grid gap-2">
               {(preview.blocks ?? []).map((pb) => (
                 <div key={pb.id} className="surface p-3">
@@ -158,7 +158,7 @@ export function PromptStudioPreviewPanel(props: {
           </details>
         </div>
       ) : (
-        <div className="text-sm text-subtext">选择任务并点击“渲染预览”。</div>
+        <div className="text-sm text-subtext">작업을 선택하고 “렌더링 미리보기”를 클릭하세요.”。</div>
       )}
     </div>
   );

@@ -292,7 +292,7 @@ export function ChapterReaderPage() {
       <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
         <div className="inline-flex items-center gap-2 text-sm text-ink">
           <BookOpen size={16} />
-          {"장(章)."}
+          {"장(章)"}
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -334,7 +334,7 @@ export function ChapterReaderPage() {
       <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
         <div className="inline-flex items-center gap-2 text-sm text-ink">
           <StickyNote size={16} />
-          记忆标注
+          기억 주석.
         </div>
         <button
           className={clsx("btn btn-secondary", memoryCollapsed ? null : "xl:hidden")}
@@ -342,16 +342,16 @@ export function ChapterReaderPage() {
           type="button"
         >
           <ChevronLeft size={16} />
-          关闭
+          닫기.
         </button>
       </div>
 
       <div className="flex-1 overflow-auto p-3">
-        {!activeChapter ? <div className="text-sm text-subtext">请选择章节以查看命中。</div> : null}
-        {effectiveMemoryLoading ? <div className="text-sm text-subtext">加载中...</div> : null}
+        {!activeChapter ? <div className="text-sm text-subtext">어떤 장을 선택하여 운세를 확인하시겠습니까?。</div> : null}
+        {effectiveMemoryLoading ? <div className="text-sm text-subtext">불러오는 중입니다....</div> : null}
         {effectiveMemoryError ? (
           <div className="rounded-atelier border border-border bg-surface p-3 text-sm text-subtext">
-            <div className="text-ink">记忆标注加载失败</div>
+            <div className="text-ink">메모리 데이터 로딩에 실패했습니다.</div>
             <div className="mt-1 text-xs text-subtext">
               {effectiveMemoryError.message} ({effectiveMemoryError.code})
               {effectiveMemoryError.requestId ? (
@@ -364,7 +364,7 @@ export function ChapterReaderPage() {
         <div className="mt-3 grid gap-3">
           <div className="panel p-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="text-sm text-ink">剧情记忆（story_memory）</div>
+              <div className="text-sm text-ink">이야기 속 기억 (story_memory）</div>
               <div className="text-xs text-subtext">{storyItems.length} items</div>
             </div>
             <div className="mt-1 text-[11px] text-subtext">
@@ -390,7 +390,7 @@ export function ChapterReaderPage() {
                       <div className="min-w-0 truncate">
                         {it.title?.trim() ? it.title : it.memory_type?.trim() ? `[${it.memory_type}]` : "StoryMemory"}
                       </div>
-                      <div className="shrink-0 text-[11px] text-subtext">去写作</div>
+                      <div className="shrink-0 text-[11px] text-subtext">글을 쓰러 가다.</div>
                     </div>
                     {it.content_preview?.trim() ? (
                       <div className="mt-1 line-clamp-3 text-xs text-subtext">{it.content_preview}</div>
@@ -399,13 +399,13 @@ export function ChapterReaderPage() {
                 ))}
               </div>
             ) : (
-              <div className="mt-2 text-sm text-subtext">暂无命中</div>
+              <div className="mt-2 text-sm text-subtext">아직 인연을 찾지 못했습니다.</div>
             )}
           </div>
 
           <div className="panel p-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="text-sm text-ink">未回收伏笔（foreshadow_open_loops）</div>
+              <div className="text-sm text-ink">회수되지 않은 복선.foreshadow_open_loops）</div>
               <div className="text-xs text-subtext">{foreshadowItems.length} items</div>
             </div>
             <div className="mt-1 text-[11px] text-subtext">
@@ -429,7 +429,7 @@ export function ChapterReaderPage() {
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0 truncate">{it.title?.trim() ? it.title : "Foreshadow"}</div>
-                      <div className="shrink-0 text-[11px] text-subtext">去写作</div>
+                      <div className="shrink-0 text-[11px] text-subtext">글을 쓰러 가다.</div>
                     </div>
                     {it.content_preview?.trim() ? (
                       <div className="mt-1 line-clamp-3 text-xs text-subtext">{it.content_preview}</div>
@@ -438,12 +438,12 @@ export function ChapterReaderPage() {
                 ))}
               </div>
             ) : (
-              <div className="mt-2 text-sm text-subtext">暂无命中</div>
+              <div className="mt-2 text-sm text-subtext">아직 인연을 찾지 못했습니다.</div>
             )}
           </div>
 
           <div className="panel p-3">
-            <div className="text-sm text-ink">结构化记忆（structured）</div>
+            <div className="text-sm text-ink">구조화된 기억 (structured）</div>
             <div className="mt-1 text-[11px] text-subtext">
               {getSectionEnabled(structuredSection) ? (
                 <>enabled</>
@@ -459,13 +459,13 @@ export function ChapterReaderPage() {
                   </span>
                 ))
               ) : (
-                <span>暂无结构化命中</span>
+                <span>구조화된 데이터 일치 결과가 없습니다.</span>
               )}
             </div>
             {structuredText ? (
               <details className="mt-2">
                 <summary className="ui-transition-fast cursor-pointer text-xs text-subtext hover:text-ink">
-                  查看原始 text_md
+                  원본 확인하기. text_md
                 </summary>
                 <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-atelier border border-border bg-surface p-2 text-xs text-ink">
                   {structuredText}
@@ -478,7 +478,7 @@ export function ChapterReaderPage() {
     </div>
   );
 
-  if (!chapterListQuery.hasLoaded && chapterListQuery.loading) return <div className="text-subtext">加载中...</div>;
+  if (!chapterListQuery.hasLoaded && chapterListQuery.loading) return <div className="text-subtext">불러오는 중입니다....</div>;
 
   return (
     <ToolContent className="grid gap-4">
@@ -486,7 +486,7 @@ export function ChapterReaderPage() {
         <div className="flex flex-wrap items-center gap-2">
           <button className="btn btn-secondary lg:hidden" onClick={() => setMobileListOpen(true)} type="button">
             <List size={16} />
-            章节列表
+            목차.
           </button>
           <button
             className={clsx("btn btn-secondary", memoryCollapsed ? null : "xl:hidden")}
@@ -494,7 +494,7 @@ export function ChapterReaderPage() {
             type="button"
           >
             <StickyNote size={16} />
-            记忆标注
+            기억 주석.
           </button>
           <button
             className="btn btn-secondary hidden xl:inline-flex"
@@ -519,7 +519,7 @@ export function ChapterReaderPage() {
             onClick={() => (prevChapter ? openChapter(prevChapter.id) : undefined)}
             type="button"
           >
-            上一章
+            이전 장.
           </button>
           <button
             className="btn btn-secondary"
@@ -527,19 +527,19 @@ export function ChapterReaderPage() {
             onClick={() => (nextChapter ? openChapter(nextChapter.id) : undefined)}
             type="button"
           >
-            下一章
+            다음 장.
           </button>
-          <span className="text-[11px] text-subtext">快捷键：← / →</span>
+          <span className="text-[11px] text-subtext">단축키:← / →</span>
         </div>
 
         <div className="min-w-0 truncate text-xs text-subtext">
-          {activeChapterSummary ? `正在阅读：第 ${activeChapterSummary.number} 章` : "장을 선택하세요."}
+          {activeChapterSummary ? `현재 읽고 있는 페이지: 제 ${activeChapterSummary.number} 장(章)` : "장을 선택하세요."}
         </div>
 
         {activeChapterSummary ? (
           <button className="btn btn-secondary" onClick={() => openEditor(activeChapterSummary.id)} type="button">
             <Edit3 size={16} />
-            去写作
+            글을 쓰러 가다.
           </button>
         ) : null}
       </div>
@@ -557,12 +557,12 @@ export function ChapterReaderPage() {
               <>
                 <div className="mb-4">
                   <div className="font-content text-2xl text-ink">
-                    第 {activeChapterSummary.number} 章
+                    제. {activeChapterSummary.number} 장(章)
                     {activeChapterSummary.title?.trim() ? ` · ${activeChapterSummary.title}` : ""}
                   </div>
                   {activeChapterSummary.status !== "done" ? (
                     <div className="mt-1 text-xs text-subtext">
-                      提示：本章状态为 {humanizeChapterStatusZh(activeChapterSummary.status)}。
+                      참고: 이 장의 상태는 다음과 같습니다. {humanizeChapterStatusZh(activeChapterSummary.status)}。
                     </div>
                   ) : null}
                 </div>
@@ -573,7 +573,7 @@ export function ChapterReaderPage() {
                 </div>
               </>
             ) : (
-              <div className="text-subtext">暂无可阅读内容</div>
+              <div className="text-subtext">읽을 내용이 아직 없습니다.</div>
             )}
           </div>
         </section>
@@ -594,10 +594,10 @@ export function ChapterReaderPage() {
         panelClassName="h-[85vh] w-full overflow-hidden rounded-atelier border border-border bg-surface shadow-sm"
       >
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
-          <div className="text-sm text-ink">章节列表</div>
+          <div className="text-sm text-ink">목차.</div>
           <button className="btn btn-secondary" onClick={() => setMobileListOpen(false)} type="button">
             <ChevronLeft size={16} />
-            关闭
+            닫기.
           </button>
         </div>
         {list}

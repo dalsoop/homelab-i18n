@@ -1316,7 +1316,7 @@ export function usePromptsPageState(): PromptsPageState {
         setTaskApiKeyDrafts((prev) => ({ ...prev, [taskKey]: "" }));
         await refreshWizard();
         bumpWizardLocal();
-        toast.toastSuccess(`配置库「${profile.name}」Key 已保存`, res.request_id);
+        toast.toastSuccess(`구성 라이브러리.「${profile.name}」Key 저장됨.`, res.request_id);
         return true;
       } catch (e) {
         const err = e as ApiError;
@@ -1373,7 +1373,7 @@ export function usePromptsPageState(): PromptsPageState {
         setTaskApiKeyDrafts((prev) => ({ ...prev, [taskKey]: "" }));
         await refreshWizard();
         bumpWizardLocal();
-        toast.toastSuccess(`模块「${taskLabel}」绑定配置的 Key 已清除`, res.request_id);
+        toast.toastSuccess(`모듈.「${taskLabel}」바인딩된 설정. Key 제거 완료.`, res.request_id);
         return true;
       } catch (e) {
         const err = e as ApiError;
@@ -1456,7 +1456,7 @@ export function usePromptsPageState(): PromptsPageState {
         });
         const preview = (res.data.text ?? "").trim();
         toast.toastSuccess(
-          `模块「${taskLabel}」连接成功（延迟 ${res.data.latency_ms}ms${preview ? `，输出：${preview}` : ""}）`,
+          `모듈.「${taskLabel}」연결 성공 (지연 발생). ${res.data.latency_ms}ms${preview ? `，출력:${preview}` : ""}）`,
           res.request_id,
         );
         return true;
@@ -1515,7 +1515,7 @@ export function usePromptsPageState(): PromptsPageState {
       });
       const preview = (res.data.text ?? "").trim();
       toast.toastSuccess(
-        `连接成功（延迟 ${res.data.latency_ms}ms${preview ? `，输出：${preview}` : ""}）`,
+        `연결 성공 (지연 발생). ${res.data.latency_ms}ms${preview ? `，출력:${preview}` : ""}）`,
         res.request_id,
       );
       if (projectId) {
@@ -1659,7 +1659,7 @@ export function usePromptsPageState(): PromptsPageState {
       primaryAction:
         wizard.progress.nextStep?.key === "llm"
           ? {
-              label: llmCtaBlockedReason ?? `测试连接并下一步：${nextAfterLlm ? nextAfterLlm.title : "계속하세요. / 계속 진행하세요. / 계속합니다. (문맥에 따라 적절하게 선택)"}`,
+              label: llmCtaBlockedReason ?? `연결 테스트를 진행하고 다음 단계로 넘어갑니다.${nextAfterLlm ? nextAfterLlm.title : "계속하세요. / 계속 진행하세요. / 계속합니다. (문맥에 따라 적절하게 선택)"}`,
               disabled: Boolean(savingPreset || testing || llmCtaBlockedReason),
               onClick: testAndGoNext,
             }

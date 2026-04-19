@@ -55,7 +55,7 @@ export function SettingsQueryPreprocessingSection(props: SettingsQueryPreprocess
           </label>
 
           <div className="text-[11px] text-subtext">
-            当前生效：{props.baselineSettings.query_preprocessing_effective?.enabled ? "enabled" : "disabled"}；来源：
+            현재 유효:{props.baselineSettings.query_preprocessing_effective?.enabled ? "enabled" : "disabled"}；출처:
             {props.baselineSettings.query_preprocessing_effective_source ?? "unknown"}
           </div>
 
@@ -72,7 +72,7 @@ export function SettingsQueryPreprocessingSection(props: SettingsQueryPreprocess
                     onChange={(e) =>
                       props.setSettingsForm((value) => ({ ...value, query_preprocessing_tags: e.target.value }))
                     }
-                    placeholder={"例如：\nfoo\nbar"}
+                    placeholder={"예를 들어:\nfoo\nbar"}
                   />
                   <div className="text-[11px] text-subtext">{SETTINGS_COPY.queryPreprocess.tagsHint}</div>
                   {props.queryPreprocessErr && props.queryPreprocessErrField === "tags" ? (
@@ -93,7 +93,7 @@ export function SettingsQueryPreprocessingSection(props: SettingsQueryPreprocess
                         query_preprocessing_exclusion_rules: e.target.value,
                       }))
                     }
-                    placeholder={"例如：\n忽略这段\nREMOVE"}
+                    placeholder={"예를 들어:\n이 부분은 무시하세요.\nREMOVE"}
                   />
                   <div className="text-[11px] text-subtext">{SETTINGS_COPY.queryPreprocess.exclusionRulesHint}</div>
                   {props.queryPreprocessErr && props.queryPreprocessErrField === "exclusion_rules" ? (

@@ -11,7 +11,7 @@ import { useSettingsPageState } from "./settings/useSettingsPageState";
 function SettingsPageSkeleton() {
   return (
     <div className="grid gap-6 pb-24" aria-busy="true" aria-live="polite">
-      <span className="sr-only">正在加载设置…</span>
+      <span className="sr-only">설정 로딩 중입니다.…</span>
       <section className="panel p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="grid gap-2">
@@ -87,7 +87,7 @@ function SettingsPageErrorState(props: { message: string; code: string; requestI
   return (
     <div className="grid gap-6 pb-24">
       <div className="error-card">
-        <div className="state-title">加载失败</div>
+        <div className="state-title">불러오기 실패.</div>
         <div className="state-desc">{`${props.message} (${props.code})`}</div>
         {props.requestId ? (
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-subtext">
@@ -97,13 +97,13 @@ function SettingsPageErrorState(props: { message: string; code: string; requestI
               onClick={() => void copyText(props.requestId!, { title: "요청 ID를 복사합니다." })}
               type="button"
             >
-              复制 request_id
+              복사하다. request_id
             </button>
           </div>
         ) : null}
         <div className="mt-4 flex flex-wrap gap-2">
           <button className="btn btn-primary" onClick={props.onRetry} type="button">
-            重试
+            다시 시도하세요.
           </button>
         </div>
       </div>
@@ -133,7 +133,7 @@ export function SettingsPage() {
       <SettingsCoreSections {...state.coreSectionsProps} />
       <SettingsVectorRagSection {...state.vectorRagSectionProps} />
       <SettingsQueryPreprocessingSection {...state.queryPreprocessingSectionProps} />
-      <div className="text-xs text-subtext">快捷键：Ctrl/Cmd + S 保存</div>
+      <div className="text-xs text-subtext">단축키:Ctrl/Cmd + S 저장.</div>
       <WizardNextBar {...state.wizardBarProps} />
       <SettingsFeatureDefaultsSection {...state.featureDefaultsSectionProps} />
     </div>

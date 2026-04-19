@@ -88,13 +88,13 @@ export function ProjectSwitcher() {
                   navigate(`/`);
                 }}
               >
-                + 新建项目
+                + 새 프로젝트 생성.
               </button>
             </div>
             <div className="h-px bg-border" />
             <div className="max-h-80 overflow-auto p-1">
               {projects.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-subtext">暂无项目</div>
+                <div className="px-3 py-2 text-sm text-subtext">현재 진행 중인 프로젝트가 없습니다.</div>
               ) : (
                 projects.map((p) => (
                   <button

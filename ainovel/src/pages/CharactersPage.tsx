@@ -234,8 +234,8 @@ export function CharactersPage() {
         <div className="flex flex-wrap items-center gap-3">
           <div className="text-sm text-subtext">
             {searchText.trim()
-              ? `共 ${filteredCharacters.length}/${characters.length} 位角色`
-              : `共 ${characters.length} 位角色`}
+              ? `함께. ${filteredCharacters.length}/${characters.length} 역할.`
+              : `함께. ${characters.length} 역할.`}
           </div>
           <input
             className="input-underline w-full sm:w-64"
@@ -246,12 +246,12 @@ export function CharactersPage() {
           />
           {searchText.trim() ? (
             <button className="btn btn-ghost px-3 py-2 text-xs" onClick={() => setSearchText("")} type="button">
-              清空搜索
+              검색 결과 삭제.
             </button>
           ) : null}
         </div>
         <button className="btn btn-primary" onClick={openNew} type="button">
-          新增角色
+          새로운 캐릭터 추가.
         </button>
       </div>
 
@@ -272,7 +272,7 @@ export function CharactersPage() {
 
       {!loading && charactersQuery.data === null && loadError ? (
         <div className="error-card">
-          <div className="state-title">加载失败</div>
+          <div className="state-title">불러오기 실패.</div>
           <div className="state-desc">{`${loadError.message} (${loadError.code})`}</div>
           {loadError.requestId ? (
             <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-subtext">
@@ -282,13 +282,13 @@ export function CharactersPage() {
                 onClick={() => void copyText(loadError.requestId!, { title: "요청 ID를 복사합니다." })}
                 type="button"
               >
-                复制 request_id
+                복사하다. request_id
               </button>
             </div>
           ) : null}
           <div className="mt-4 flex flex-wrap gap-2">
             <button className="btn btn-primary" onClick={() => void load()} type="button">
-              重试
+              다시 시도하세요.
             </button>
           </div>
         </div>
@@ -296,22 +296,22 @@ export function CharactersPage() {
 
       {!loading && !loadError && characters.length === 0 ? (
         <div className="panel p-6">
-          <div className="font-content text-xl text-ink">暂无角色</div>
+          <div className="font-content text-xl text-ink">아직 역할이 지정되지 않았습니다.</div>
           <div className="mt-2 text-sm text-subtext">
-            建议先创建 3-5 个关键角色（主角 / 反派 / 关键 NPC），再进入「大纲」生成章节。
+            먼저 생성하는 것을 권장합니다. 3-5 주요 등장인물 (주인공) / 악당. / 핵심. NPC），다시 「개요」에 들어가서 장을 생성합니다.。
           </div>
           <button className="btn btn-primary mt-4" onClick={openNew} type="button">
-            新增角色
+            새로운 캐릭터 추가.
           </button>
         </div>
       ) : null}
 
       {!loading && !loadError && characters.length > 0 && filteredCharacters.length === 0 ? (
         <div className="panel p-6">
-          <div className="font-content text-xl text-ink">没有匹配的角色</div>
-          <div className="mt-2 text-sm text-subtext">尝试修改搜索关键词，或清空搜索后再查看全部角色。</div>
+          <div className="font-content text-xl text-ink">해당하는 역할이 없습니다.</div>
+          <div className="mt-2 text-sm text-subtext">검색어를 변경하거나 검색 결과를 모두 지우고 다시 시도해 보세요.。</div>
           <button className="btn btn-secondary mt-4" onClick={() => setSearchText("")} type="button">
-            清空搜索
+            검색 결과 삭제.
           </button>
         </div>
       ) : null}
@@ -378,7 +378,7 @@ export function CharactersPage() {
                 }}
                 type="button"
               >
-                删除
+                삭제하다.
               </button>
             </div>
             {c.profile ? <div className="mt-3 line-clamp-4 text-sm text-subtext">{c.profile}</div> : null}
@@ -399,7 +399,7 @@ export function CharactersPage() {
           </div>
           <div className="flex gap-2">
             <button className="btn btn-secondary" onClick={() => void closeDrawer()} type="button">
-              关闭
+              닫기.
             </button>
             <button
               className="btn btn-primary"
@@ -407,14 +407,14 @@ export function CharactersPage() {
               onClick={() => void saveCharacter({ silent: false, close: true })}
               type="button"
             >
-              保存
+              저장.
             </button>
           </div>
         </div>
 
         <div className="mt-5 grid gap-4">
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">姓名</span>
+            <span className="text-xs text-subtext">성함.</span>
             <input
               className="input"
               name="name"
@@ -422,10 +422,10 @@ export function CharactersPage() {
               onChange={(e) => setForm((v) => ({ ...v, name: e.target.value }))}
               placeholder="예를 들어, 린모(林默) 씨와 같은 경우를 들 수 있습니다."
             />
-            <div className="text-[11px] text-subtext">建议使用读者容易记住的短名；后续会用于检索与生成。</div>
+            <div className="text-[11px] text-subtext">독자가 기억하기 쉬운 짧은 이름을 사용하는 것이 좋습니다. 이후 검색 및 생성 과정에서 해당 이름이 활용될 예정입니다.。</div>
           </label>
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">角色定位</span>
+            <span className="text-xs text-subtext">캐릭터 설정 (또는 캐릭터 포지셔닝)</span>
             <input
               className="input"
               name="role"
@@ -433,10 +433,10 @@ export function CharactersPage() {
               onChange={(e) => setForm((v) => ({ ...v, role: e.target.value }))}
               placeholder="예를 들어: 주인공 / 악당 / 핵심 NPC."
             />
-            <div className="text-[11px] text-subtext">用于快速筛选；可以写“主角/反派/导师/同伴/路人”等。</div>
+            <div className="text-[11px] text-subtext">빠르게 검색할 때 사용하며, “주인공”이라고 적을 수 있습니다./악당./지도교수, 지도자, 스승. (문맥에 따라 적절한 단어 선택)/동료, 동반자, 함께하는 사람. (문맥에 따라 적절한 단어 선택)/“행인” 등.。</div>
           </label>
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">人物档案</span>
+            <span className="text-xs text-subtext">인물 정보.</span>
             <textarea
               className="textarea atelier-content"
               name="profile"
@@ -445,10 +445,10 @@ export function CharactersPage() {
               onChange={(e) => setForm((v) => ({ ...v, profile: e.target.value }))}
               placeholder="외모, 성격, 동기, 관계, 말투, 성장 과정 등…"
             />
-            <div className="text-[11px] text-subtext">用于生成时的角色一致性；可按条目写，更易复用。</div>
+            <div className="text-[11px] text-subtext">생성 시 일관된 캐릭터 설정을 유지하는 데 사용됩니다. 항목별로 작성하면 재사용이 용이합니다.。</div>
           </label>
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">备注</span>
+            <span className="text-xs text-subtext">참고.</span>
             <textarea
               className="textarea atelier-content"
               name="notes"
@@ -457,7 +457,7 @@ export function CharactersPage() {
               onChange={(e) => setForm((v) => ({ ...v, notes: e.target.value }))}
               placeholder="등장 챕터, 금지 사항, 시간 순서, 추가 정보 필요…"
             />
-            <div className="text-[11px] text-subtext">记录未定稿/待补充信息，避免混进人物档案造成误导。</div>
+            <div className="text-[11px] text-subtext">초안본./추가 정보가 필요하며, 다른 인물 정보와 혼동되어 오해를 불러일으키지 않도록 주의해야 합니다.。</div>
           </label>
         </div>
       </Drawer>

@@ -144,22 +144,22 @@ export function GenerationHistoryDrawer(props: Props) {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="font-content text-2xl text-ink" id={titleId}>
-            生成记录
+            생성 기록.
           </div>
-          <div className="mt-1 text-xs text-subtext">最近 5 条</div>
+          <div className="mt-1 text-xs text-subtext">최근에. 5 개</div>
         </div>
         <button className="btn btn-secondary" aria-label="닫기." onClick={onClose} type="button">
-          关闭
+          닫기.
         </button>
       </div>
 
       <div className="mt-5 grid gap-4">
-        {props.loading ? <div className="text-sm text-subtext">加载中...</div> : null}
+        {props.loading ? <div className="text-sm text-subtext">불러오는 중입니다....</div> : null}
 
         <div className="grid gap-3 md:grid-cols-2">
           <div className="rounded-atelier border border-border bg-surface p-2">
             {props.runs.length === 0 ? (
-              <div className="p-3 text-sm text-subtext">暂无生成记录。</div>
+              <div className="p-3 text-sm text-subtext">생성 기록이 없습니다.。</div>
             ) : (
               <div className="flex flex-col gap-1">
                 {props.runs.map((r) => {
@@ -192,7 +192,7 @@ export function GenerationHistoryDrawer(props: Props) {
 
           <div className="rounded-atelier border border-border bg-surface p-4">
             {!selectedRun ? (
-              <div className="text-sm text-subtext">选择一条记录查看详情。</div>
+              <div className="text-sm text-subtext">레코드를 하나 선택하여 상세 내용을 확인하세요.。</div>
             ) : (
               <div className="grid gap-3">
                 <div className="text-sm text-ink">{selectedRun.type}</div>
@@ -208,7 +208,7 @@ export function GenerationHistoryDrawer(props: Props) {
                     }}
                     type="button"
                   >
-                    复制
+                    복사하다.
                   </button>
                 </div>
                 {selectedRun.request_id ? (
@@ -221,7 +221,7 @@ export function GenerationHistoryDrawer(props: Props) {
                       }}
                       type="button"
                     >
-                      复制
+                      복사하다.
                     </button>
                   </div>
                 ) : null}
@@ -235,21 +235,21 @@ export function GenerationHistoryDrawer(props: Props) {
                     {downloading ? "다운로드 중..." : "문제 해결 패치 다운로드."}
                   </button>
                   <div className="mt-2 rounded-atelier border border-border bg-canvas p-3 text-[11px] text-subtext">
-                    <div className="text-xs text-ink">排障包说明</div>
+                    <div className="text-xs text-ink">장애물 제거 키트 사용 설명서.</div>
                     <ul className="mt-1 list-disc pl-5">
-                      <li>用途：定位生成失败、提示词渲染、记忆检索注入等问题</li>
-                      <li>提示：可能包含隐私/敏感内容，分享前请确认并避免公开传播</li>
-                      <li>安全：按设计不应包含 API Key；分享前仍建议自行快速检索</li>
+                      <li>사용 목적: 위치 생성 실패, 프롬프트 렌더링 오류, 메모리 검색 삽입 오류 등과 같은 문제 해결.</li>
+                      <li>개인 정보가 포함될 수 있습니다./민감한 내용이므로 공유하기 전에 내용을 확인하고 공개적으로 유포하지 않도록 주의하십시오.</li>
+                      <li>안전성: 설계상으로는 포함되지 않아야 합니다. API Key；공유하기 전에 먼저 직접 빠르게 검색해 보는 것이 좋습니다.</li>
                     </ul>
                   </div>
                 </div>
 
                 <details open>
                   <summary className="ui-transition-fast cursor-pointer text-xs text-subtext hover:text-ink">
-                    流水线视图（按 request_id 串联）
+                    파이프라인 뷰(단계별). request_id 연결하다.
                   </summary>
                   <div className="mt-2 grid gap-2">
-                    {pipelineLoading ? <div className="text-xs text-subtext">加载中...</div> : null}
+                    {pipelineLoading ? <div className="text-xs text-subtext">불러오는 중입니다....</div> : null}
                     {pipelineError ? (
                       <div className="text-xs text-danger">
                         {pipelineError.code}: {pipelineError.message}
@@ -260,7 +260,7 @@ export function GenerationHistoryDrawer(props: Props) {
                     ) : null}
                     {pipelineSteps.length === 0 && !pipelineLoading ? (
                       <div className="text-xs text-subtext">
-                        暂无可串联的流水线 runs（该 run 可能缺少 request_id）。
+                        연결할 파이프라인이 아직 없습니다. runs（해당. run 누락되었을 수 있습니다. request_id）。
                       </div>
                     ) : (
                       <div className="grid gap-2">

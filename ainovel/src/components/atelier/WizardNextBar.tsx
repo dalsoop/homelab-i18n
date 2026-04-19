@@ -88,7 +88,7 @@ export function WizardNextBar(props: {
           : currentStep === "writing" && next?.key === currentStep
             ? previewStep
             : null;
-      const label = target ? `保存并下一步：${target.title}` : "저장.";
+      const label = target ? `저장 후 다음 단계로 진행하세요.${target.title}` : "저장.";
       return {
         label,
         disabled: Boolean(saving),
@@ -111,19 +111,19 @@ export function WizardNextBar(props: {
     if (next.key === currentStep) {
       if (currentStep === "writing" && previewStep?.href) {
         return {
-          label: `下一步：${previewStep.title}`,
+          label: `다음 단계:${previewStep.title}`,
           onClick: () => goto(previewStep.href),
         };
       }
       return {
-        label: current ? `本页：${current.title}` : "이 페이지는 아직 완료되지 않았습니다.",
+        label: current ? `이 페이지:${current.title}` : "이 페이지는 아직 완료되지 않았습니다.",
         disabled: true,
         onClick: () => {},
       };
     }
 
     return {
-      label: `下一步：${next.title}`,
+      label: `다음 단계:${next.title}`,
       onClick: () => goto(next.href),
     };
   }, [current, currentStep, dirty, goto, next, onSave, previewStep, primaryAction, saving]);
@@ -156,7 +156,7 @@ export function WizardNextBar(props: {
               aria-label={collapsedLabel}
               title={collapsedLabel}
             >
-              <ListChecks size={14} /> 向导 {progress.percent}% <CollapsedIcon size={14} />
+              <ListChecks size={14} /> 가이드. 안내자. {progress.percent}% <CollapsedIcon size={14} />
             </button>
 
             {collapsed ? (
@@ -179,10 +179,10 @@ export function WizardNextBar(props: {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-subtext">
                     {dirty ? (
-                      <span className="rounded-atelier bg-accent/10 px-2 py-0.5 text-[11px] text-accent">未保存</span>
+                      <span className="rounded-atelier bg-accent/10 px-2 py-0.5 text-[11px] text-accent">저장되지 않았습니다.</span>
                     ) : null}
                     {done ? (
-                      <span className="rounded-atelier bg-success/15 px-2 py-0.5 text-[11px] text-success">已完成</span>
+                      <span className="rounded-atelier bg-success/15 px-2 py-0.5 text-[11px] text-success">완료되었습니다.</span>
                     ) : null}
                   </div>
 
@@ -234,7 +234,7 @@ export function WizardNextBar(props: {
                     onClick={() => goto(wizardHref)}
                     type="button"
                   >
-                    查看向导
+                    안내 보기.
                   </button>
 
                   {showBackToOverview ? (
@@ -244,7 +244,7 @@ export function WizardNextBar(props: {
                       onClick={() => goto("/")}
                       type="button"
                     >
-                      已完成：回到项目概览
+                      완료: 프로젝트 개요 페이지로 돌아가기.
                     </button>
                   ) : null}
 

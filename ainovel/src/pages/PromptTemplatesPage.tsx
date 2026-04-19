@@ -403,7 +403,7 @@ export function PromptTemplatesPage() {
         });
 
         toast.toastSuccess(
-          `已导入整套 created:${applyRes.data.created} updated:${applyRes.data.updated} skipped:${applyRes.data.skipped}`,
+          `전체 세트가 가져와졌습니다. created:${applyRes.data.created} updated:${applyRes.data.updated} skipped:${applyRes.data.skipped}`,
         );
         await loadResources();
       } catch (e) {
@@ -541,17 +541,17 @@ export function PromptTemplatesPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <div className="text-lg font-semibold">Prompt 模板（新手）</div>
+              <div className="text-lg font-semibold">Prompt 초안 (초보자용)</div>
               {pageDirty ? (
                 <span className="rounded-atelier border border-accent/30 bg-accent/10 px-2 py-0.5 text-xs text-accent">
-                  未保存
+                  저장되지 않았습니다.
                 </span>
               ) : null}
             </div>
             <div className="text-xs text-subtext">
-              按任务提供系统默认模板；编辑会直接影响真实渲染。{" "}
+              제공된 시스템 기본 템플릿을 기반으로 작업을 진행하며, 편집 내용이 최종 결과물에 직접 반영됩니다.。{" "}
               <Link className="underline" to={`/projects/${projectId}/prompt-studio`}>
-                高级：提示词工作室
+                고급: 프롬프트 엔지니어링 스튜디오.
               </Link>
             </div>
           </div>
@@ -560,10 +560,10 @@ export function PromptTemplatesPage() {
 
         <div className="mt-3 flex flex-wrap gap-2">
           <button className="btn btn-secondary" onClick={() => void exportAllPresets()} disabled={busy} type="button">
-            导出整套
+            전체 세트를 내보냅니다.
           </button>
           <label className={clsx("btn btn-secondary", busy ? "opacity-60" : "cursor-pointer")}>
-            导入整套
+            전체 세트를 가져오다.
             <input
               className="hidden"
               type="file"
@@ -582,8 +582,8 @@ export function PromptTemplatesPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px,1fr]">
         <div className="panel p-3">
-          <div className="text-sm font-semibold">系统默认模板</div>
-          <div className="mt-1 text-xs text-subtext">按分类分组；点击后在右侧编辑。</div>
+          <div className="text-sm font-semibold">기본 시스템 템플릿.</div>
+          <div className="mt-1 text-xs text-subtext">분류별로 그룹화하고, 클릭하면 오른쪽에서 편집할 수 있습니다.。</div>
           <div className="mt-3 grid gap-3">
             {resourceGroups.map(([category, items]) => (
               <div key={category}>
@@ -635,7 +635,7 @@ export function PromptTemplatesPage() {
                   disabled={busy || !preset}
                   type="button"
                 >
-                  导出当前
+                  현재 내보내기.
                 </button>
                 <button
                   className="btn btn-ghost text-accent hover:bg-accent/10"
@@ -643,39 +643,39 @@ export function PromptTemplatesPage() {
                   disabled={busy || !preset}
                   type="button"
                 >
-                  重置为系统默认
+                  시스템 기본값으로 되돌립니다.
                 </button>
               </div>
             </div>
 
-            {!selectedResource ? <div className="text-sm text-subtext">请选择左侧模板。</div> : null}
+            {!selectedResource ? <div className="text-sm text-subtext">왼쪽의 템플릿을 선택하세요.。</div> : null}
 
             {selectedResource && !selectedResource.preset_id ? (
-              <div className="text-sm text-subtext">该模板尚未在项目中初始化，请刷新或先打开提示词工作室。</div>
+              <div className="text-sm text-subtext">해당 템플릿이 프로젝트에서 아직 초기화되지 않았습니다. 페이지를 새로 고치거나 먼저 프롬프트 편집기를 열어 주세요.。</div>
             ) : null}
 
             {preset ? (
               <div className="grid gap-3">
                 <details className="rounded-atelier border border-border bg-surface/50 p-3">
                   <summary className="ui-transition-fast cursor-pointer text-sm hover:text-ink">
-                    模板语法与可用变量（点击复制）
+                    템플릿 구문과 사용 가능한 변수 (클릭하여 복사)
                   </summary>
                   <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-subtext">
                     <div className="grid gap-1">
                       <div>
-                        变量：<span className="atelier-mono text-ink">{"{{project_name}}"}</span>{" "}
+                        변수:<span className="atelier-mono text-ink">{"{{project_name}}"}</span>{" "}
                         <span className="atelier-mono text-ink">{"{{story.outline}}"}</span>
                       </div>
                       <div>
-                        条件：<span className="atelier-mono text-ink">{"{% if chapter_number == '1' %}"}</span>...{" "}
+                        조건:<span className="atelier-mono text-ink">{"{% if chapter_number == '1' %}"}</span>...{" "}
                         <span className="atelier-mono text-ink">{"{% endif %}"}</span>
                       </div>
                       <div>
-                        宏：<span className="atelier-mono text-ink">{"{{date}}"}</span>{" "}
+                        홍:<span className="atelier-mono text-ink">{"{{date}}"}</span>{" "}
                         <span className="atelier-mono text-ink">{"{{time}}"}</span>{" "}
                         <span className="atelier-mono text-ink">{"{{pick::A::B}}"}</span>
                       </div>
-                      <div>预览渲染使用“已保存模板”；未保存改动请先点“保存”。</div>
+                      <div>미리보기 렌더링은 “저장된 템플릿”을 사용합니다. 변경 사항을 저장하지 않은 경우 먼저 “저장”을 클릭하세요.”。</div>
                     </div>
                     <button
                       className="btn btn-secondary btn-sm"
@@ -684,7 +684,7 @@ export function PromptTemplatesPage() {
                       }}
                       type="button"
                     >
-                      复制变量清单
+                      변수 목록 복사.
                     </button>
                   </div>
                   <pre className="mt-2 max-h-[220px] overflow-auto whitespace-pre-wrap break-words rounded-atelier border border-border bg-surface p-3 text-xs">
@@ -707,14 +707,14 @@ export function PromptTemplatesPage() {
                           <div className="truncate text-xs text-subtext">{b.identifier}</div>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
-                          {dirty ? <div className="text-xs text-accent">未保存</div> : null}
+                          {dirty ? <div className="text-xs text-accent">저장되지 않았습니다.</div> : null}
                           <button
                             className="btn btn-primary"
                             onClick={() => void saveBlockTemplate(b)}
                             disabled={busy || !dirty}
                             type="button"
                           >
-                            保存
+                            저장.
                           </button>
                           <button
                             className="btn btn-ghost text-accent hover:bg-accent/10"
@@ -722,14 +722,14 @@ export function PromptTemplatesPage() {
                             disabled={busy}
                             type="button"
                           >
-                            重置
+                            초기화하다.
                           </button>
                         </div>
                       </div>
                       <div className="mt-2 grid gap-1">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="text-xs text-subtext">
-                            变量（本块）：{usedVars.length ? `${usedVars.length} 个（点击复制）` : "검출되지 않았습니다."}
+                            변수(현재 블록):{usedVars.length ? `${usedVars.length} (클릭하여 복사)` : "검출되지 않았습니다."}
                           </div>
                           {usedVars.length ? (
                             <button
@@ -742,7 +742,7 @@ export function PromptTemplatesPage() {
                               }}
                               type="button"
                             >
-                              复制本块变量
+                              이 변수를 복사합니다.
                             </button>
                           ) : null}
                         </div>

@@ -278,9 +278,9 @@ export function StructuredMemoryPage() {
       if (!text.trim()) return;
       try {
         await navigator.clipboard.writeText(text);
-        toast.toastSuccess(`已复制 ${label}`);
+        toast.toastSuccess(`복사되었습니다. ${label}`);
       } catch {
-        toast.toastWarning(`复制失败，请手动复制下方 JSON（${label}）`);
+        toast.toastWarning(`복사가 실패했습니다. 아래 내용을 직접 복사해 주세요. JSON（${label}）`);
       }
     },
     [toast],
@@ -313,7 +313,7 @@ export function StructuredMemoryPage() {
     setQueryText(searchText.trim());
   }, [searchText]);
 
-  if (!projectId) return <div className="text-subtext">缺少 projectId</div>;
+  if (!projectId) return <div className="text-subtext">부족하다. / 부족하다. projectId</div>;
 
   return (
     <DebugPageShell
@@ -322,11 +322,11 @@ export function StructuredMemoryPage() {
       actions={
         <>
           <button className="btn btn-secondary" onClick={() => void pageQuery.refresh()} type="button">
-            刷新
+            새로 고침.
           </button>
           {selectedIds.length > 0 ? (
             <button className="btn btn-secondary" onClick={() => setBulkOpsOpen(true)} type="button">
-              批量操作 ({selectedIds.length})
+              대량 작업. ({selectedIds.length})
             </button>
           ) : null}
           <button
@@ -343,7 +343,7 @@ export function StructuredMemoryPage() {
     >
       {projectId ? (
         <div className="callout-info text-sm">
-          提示：本页是图谱底座数据（实体/关系/事件/伏笔/证据）。金钱/时间/等级/资源等数值状态请到{" "}
+          참고: 이 페이지는 지식 그래프의 기본 데이터(엔터티)를 담고 있습니다./관계./사건./복선./증거). 돈./시간./등급./자원 등의 수치 정보는 다음에서 확인하세요.{" "}
           <Link className="underline" to={`/projects/${projectId}/numeric-tables`}>
             {UI_COPY.nav.numericTables}
           </Link>
@@ -363,7 +363,7 @@ export function StructuredMemoryPage() {
               aria-label="structured_view_table"
               type="button"
             >
-              数据表
+              데이터 테이블
             </button>
             <button
               className={`btn ${viewMode === "character_relations" ? "btn-primary" : "btn-secondary"}`}
@@ -375,7 +375,7 @@ export function StructuredMemoryPage() {
               aria-label="structured_view_character_relations"
               type="button"
             >
-              人物关系
+              인물 관계.
             </button>
 
             {viewMode === "table"
@@ -420,7 +420,7 @@ export function StructuredMemoryPage() {
           <>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <label className="grid gap-1 sm:col-span-2">
-                <span className="text-xs text-subtext">搜索（q）</span>
+                <span className="text-xs text-subtext">검색 (q）</span>
                 <div className="flex gap-2">
                   <input
                     className="input flex-1"
@@ -430,7 +430,7 @@ export function StructuredMemoryPage() {
                     placeholder="Alice"
                   />
                   <button className="btn btn-secondary" onClick={applySearch} type="button">
-                    搜索
+                    검색.
                   </button>
                 </div>
               </label>
@@ -438,21 +438,21 @@ export function StructuredMemoryPage() {
 
             {selectedIds.length > 0 ? (
               <div className="mt-4 text-xs text-subtext">
-                已选择 <span className="text-ink">{selectedIds.length}</span> 条（{tableLabel(activeTable)}
-                ）。可点击右上角“批量操作” 生成 JSON 并打开 Memory Update。
+                선택 완료. <span className="text-ink">{selectedIds.length}</span> (번역할 중국어 텍스트가 제공되지 않았습니다. 텍스트를 제공해 주시면 번역해 드리겠습니다.){tableLabel(activeTable)}
+                ）。오른쪽 상단의 “일괄 작업”을 클릭하여 생성할 수 있습니다. JSON 그리고 열어라. Memory Update。
               </div>
             ) : null}
           </>
         ) : (
-          <div className="mt-3 text-xs text-subtext">该视图仅用于编辑人物关系（entity_type=character）。</div>
+          <div className="mt-3 text-xs text-subtext">이 화면은 캐릭터 간의 관계를 편집하는 데만 사용됩니다.entity_type=character）。</div>
         )}
       </div>
 
       {viewMode === "table" ? (
         <>
           <div className="rounded-atelier border border-border bg-canvas p-3">
-            {pageQuery.loading ? <div className="text-sm text-subtext">加载中...</div> : null}
-            {!pageQuery.loading && items.length === 0 ? <div className="text-sm text-subtext">暂无数据</div> : null}
+            {pageQuery.loading ? <div className="text-sm text-subtext">불러오는 중입니다....</div> : null}
+            {!pageQuery.loading && items.length === 0 ? <div className="text-sm text-subtext">데이터가 없습니다.</div> : null}
 
             {items.length > 0 ? (
               <div className="mt-2 overflow-auto rounded-atelier border border-border">
@@ -469,9 +469,9 @@ export function StructuredMemoryPage() {
                           ✓
                         </button>
                       </th>
-                      <th className="p-2">主字段</th>
-                      <th className="p-2">摘要</th>
-                      <th className="p-2">状态</th>
+                      <th className="p-2">주 필드.</th>
+                      <th className="p-2">요약.</th>
+                      <th className="p-2">상태.</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -520,11 +520,11 @@ export function StructuredMemoryPage() {
                           <td className="p-2">
                             {deletedAt ? (
                               <span className="inline-flex rounded bg-danger/10 px-2 py-0.5 text-[11px] text-danger">
-                                已删除
+                                삭제됨.
                               </span>
                             ) : (
                               <span className="inline-flex rounded bg-success/10 px-2 py-0.5 text-[11px] text-success">
-                                正常
+                                정상.
                               </span>
                             )}
                           </td>
@@ -539,7 +539,7 @@ export function StructuredMemoryPage() {
             {cursor ? (
               <div className="mt-3 flex justify-center">
                 <button className="btn btn-secondary" onClick={() => void loadMore()} type="button">
-                  加载更多
+                  더 불러오기.
                 </button>
               </div>
             ) : null}
@@ -551,19 +551,19 @@ export function StructuredMemoryPage() {
               <div>{UI_COPY.structuredMemory.exampleHint}</div>
               {projectId ? (
                 <div>
-                  常用入口：从{" "}
+                  자주 사용하는 진입점: ~부터.{" "}
                   <Link className="underline" to={`/projects/${projectId}/writing`}>
-                    写作页
+                    작성 페이지.
                   </Link>{" "}
-                  或{" "}
+                  또는.{" "}
                   <Link className="underline" to={`/projects/${projectId}/chapter-analysis`}>
-                    章节分析
+                    장(章) 분석.
                   </Link>{" "}
-                  触发“Memory Update”，再在{" "}
+                  유발하다, 작동시키다, 촉발하다. (문맥에 따라 적절한 단어 선택)“Memory Update”，다시 한번.{" "}
                   <Link className="underline" to={`/projects/${projectId}/tasks`}>
-                    任务中心
+                    과제 센터.
                   </Link>{" "}
-                  追踪 ChangeSet/任务状态。
+                  추적하다. ChangeSet/작업 상태.。
                 </div>
               ) : null}
               <div>{UI_COPY.structuredMemory.bulkOpsHint}</div>
@@ -581,10 +581,10 @@ export function StructuredMemoryPage() {
               <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
                 <div className="min-w-0">
                   <div className="truncate text-sm text-ink" id="structured_bulk_ops_title">
-                    批量操作
+                    대량 작업.
                   </div>
                   <div className="mt-0.5 truncate text-xs text-subtext">
-                    已选择 {selectedIds.length} 条（{tableLabel(activeTable)}）
+                    선택 완료. {selectedIds.length} (번역할 중국어 텍스트가 제공되지 않았습니다. 텍스트를 제공해 주시면 번역해 드리겠습니다.){tableLabel(activeTable)}）
                   </div>
                 </div>
                 <button
@@ -593,40 +593,40 @@ export function StructuredMemoryPage() {
                   onClick={() => setBulkOpsOpen(false)}
                   type="button"
                 >
-                  关闭
+                  닫기.
                 </button>
               </div>
 
               <div className="flex-1 overflow-auto p-4">
                 {selectedIds.length === 0 ? (
-                  <div className="text-sm text-subtext">请先在表格中选择条目。</div>
+                  <div className="text-sm text-subtext">먼저 표에서 항목을 선택해 주세요.。</div>
                 ) : (
                   <div className="grid gap-3">
                     <div className="rounded-atelier border border-border bg-surface p-3">
-                      <div className="text-xs text-subtext">1）选择条目</div>
+                      <div className="text-xs text-subtext">1）항목을 선택하세요.</div>
                       <div className="mt-1 text-sm text-ink">
-                        已选择 {selectedIds.length} 条（{tableLabel(activeTable)}）
+                        선택 완료. {selectedIds.length} (번역할 중국어 텍스트가 제공되지 않았습니다. 텍스트를 제공해 주시면 번역해 드리겠습니다.){tableLabel(activeTable)}）
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
                         <button className="btn btn-secondary" onClick={selectAll} type="button">
-                          全选当前页
+                          현재 페이지 전체 선택.
                         </button>
                         <button className="btn btn-secondary" onClick={clearSelected} type="button">
-                          清空选择
+                          선택 항목 모두 지우기.
                         </button>
                       </div>
                     </div>
 
                     <div className="rounded-atelier border border-border bg-surface p-3">
-                      <div className="text-xs text-subtext">2）生成操作</div>
-                      <div className="mt-1 text-xs text-subtext">删除操作：{selectedIds.length} 条</div>
+                      <div className="text-xs text-subtext">2）생성 연산.</div>
+                      <div className="mt-1 text-xs text-subtext">삭제 작업:{selectedIds.length} 개</div>
                       {activeTable === "foreshadows" ? (
-                        <div className="mt-1 text-xs text-subtext">标记已解决：{selectedIds.length} 条（可选）</div>
+                        <div className="mt-1 text-xs text-subtext">해결 완료로 표시됨:{selectedIds.length} 항목 (선택 사항)</div>
                       ) : null}
                     </div>
 
                     <div className="rounded-atelier border border-border bg-surface p-3">
-                      <div className="text-xs text-subtext">3）复制并打开 Memory Update</div>
+                      <div className="text-xs text-subtext">3）복사하여 열기. Memory Update</div>
                       <div className="mt-2 flex flex-wrap gap-2">
                         <button
                           className="btn btn-secondary"
@@ -654,12 +654,12 @@ export function StructuredMemoryPage() {
                           }}
                           type="button"
                         >
-                          打开 Memory Update
+                          열다. Memory Update
                         </button>
                       </div>
 
                       <details className="mt-3 rounded-atelier border border-border bg-canvas p-3">
-                        <summary className="cursor-pointer select-none text-xs text-ink">查看 JSON（高级）</summary>
+                        <summary className="cursor-pointer select-none text-xs text-ink">확인하다. JSON（고급.</summary>
                         <div className="mt-3 grid gap-2">
                           <div className="text-xs text-subtext">{UI_COPY.structuredMemory.deleteOpsLabel}</div>
                           <textarea

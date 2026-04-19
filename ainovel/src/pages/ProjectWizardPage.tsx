@@ -122,7 +122,7 @@ export function ProjectWizardPage() {
   const autoOutlineAndChapters = useCallback(async () => {
     if (!projectId) return;
     if (!llmPreset) {
-      toast.toastError(`未加载到模型配置，请先在「${UI_COPY.nav.prompts}」页保存模型预设`);
+      toast.toastError(`모델 구성 정보가 로드되지 않았습니다. 먼저 다음에서 구성 정보를 로드해 주세요.「${UI_COPY.nav.prompts}」모델 설정을 페이지에 저장합니다.`);
       navigate(`/projects/${projectId}/prompts`);
       return;
     }
@@ -164,7 +164,7 @@ export function ProjectWizardPage() {
       await apiJson<{ outline: Outline }>(`/api/projects/${projectId}/outlines`, {
         method: "POST",
         body: JSON.stringify({
-          title: `AI 大纲 ${new Date().toISOString().slice(0, 16).replace("T", " ")}`,
+          title: `AI 개요. ${new Date().toISOString().slice(0, 16).replace("T", " ")}`,
           content_md: outlineMd,
           structure: { chapters: genChapters },
         }),
@@ -185,7 +185,7 @@ export function ProjectWizardPage() {
         if (err.code === "CONFLICT" && err.status === 409) {
           const replaceOk = await confirm.confirm({
             title: "이미 해당 장이 존재합니다. 덮어쓰기를 진행하시겠습니까?",
-            description: `覆盖创建将永久删除当前大纲下所有章节（含正文/摘要，约 ${chapters.length} 章），且无法撤销。`,
+            description: `현재 개요 아래의 모든 챕터(본문 포함)가 영구적으로 삭제됩니다. 덮어쓰기 기능을 사용하면 이 작업을 되돌릴 수 없습니다./요약, 약 ${chapters.length} 제(章)를 변경할 수 없을 뿐만 아니라, 변경하더라도 되돌릴 수도 없습니다.。`,
             confirmText: "계속해서 덮다.",
             danger: true,
           });
@@ -216,10 +216,10 @@ export function ProjectWizardPage() {
   if (!projectId) {
     return (
       <div className="panel p-6">
-        <div className="font-content text-xl text-ink">缺少项目 ID</div>
-        <div className="mt-2 text-sm text-subtext">请从首页选择一个项目后再进入开工向导。</div>
+        <div className="font-content text-xl text-ink">프로젝트가 누락되었습니다. ID</div>
+        <div className="mt-2 text-sm text-subtext">홈페이지에서 먼저 프로젝트를 선택한 후, 시작 가이드로 이동하세요.。</div>
         <button className="btn btn-secondary mt-4" onClick={() => navigate("/")} type="button">
-          返回首页
+          홈페이지로 돌아가기.
         </button>
       </div>
     );
@@ -227,7 +227,7 @@ export function ProjectWizardPage() {
   if (wizardQuery.loading) {
     return (
       <div className="panel p-6">
-        <div className="text-sm text-subtext">正在加载向导数据...</div>
+        <div className="text-sm text-subtext">가이드 데이터 로드 중입니다....</div>
       </div>
     );
   }
@@ -239,18 +239,18 @@ export function ProjectWizardPage() {
       <section className="panel p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="grid gap-2">
-            <div className="font-content text-xl">开工向导</div>
+            <div className="font-content text-xl">공사 시작 안내서.</div>
             <div className="text-xs text-subtext">
               {project ? (
                 <>
                   {UI_COPY.nav.currentProject}：<span className="text-ink">{project.name}</span>
                   <span className="mx-2 text-subtext/60">·</span>
-                  按步骤跑通闭环：{UI_COPY.nav.projectSettings} → {UI_COPY.nav.characters} → {UI_COPY.nav.prompts} →{" "}
+                  단계별로 전체 과정을 문제 없이 진행한다.{UI_COPY.nav.projectSettings} → {UI_COPY.nav.characters} → {UI_COPY.nav.prompts} →{" "}
                   {UI_COPY.nav.outline} → {UI_COPY.nav.writing} → {UI_COPY.nav.preview} → {UI_COPY.nav.export}
                 </>
               ) : (
                 <>
-                  按步骤跑通闭环：{UI_COPY.nav.projectSettings} → {UI_COPY.nav.characters} → {UI_COPY.nav.prompts} →{" "}
+                  단계별로 전체 과정을 문제 없이 진행한다.{UI_COPY.nav.projectSettings} → {UI_COPY.nav.characters} → {UI_COPY.nav.prompts} →{" "}
                   {UI_COPY.nav.outline} → {UI_COPY.nav.writing} → {UI_COPY.nav.preview} → {UI_COPY.nav.export}
                 </>
               )}
@@ -258,59 +258,59 @@ export function ProjectWizardPage() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button className="btn btn-secondary" onClick={() => void reload()} type="button">
-              刷新进度
+              진행 상황을 업데이트합니다. / 진행 상황을 최신으로 업데이트합니다. / 업데이트 중입니다.
             </button>
             <div className="rounded-atelier border border-border bg-canvas px-3 py-2 text-xs text-subtext">
-              {nextStep ? `下一步：${nextStep.title}` : "완료되었습니다."}
+              {nextStep ? `다음 단계:${nextStep.title}` : "완료되었습니다."}
             </div>
           </div>
         </div>
 
         <div className="mt-4">
           <ProgressBar ariaLabel="프로젝트 시작 가이드 완료율." value={progress.percent} />
-          <div className="mt-2 text-xs text-subtext">完成度：{progress.percent}%</div>
+          <div className="mt-2 text-xs text-subtext">완성도:{progress.percent}%</div>
         </div>
       </section>
 
       <section className="panel p-6">
         <div className="grid gap-1">
-          <div className="font-content text-xl">从这里开始</div>
-          <div className="text-xs text-subtext">请选择「按步骤（推荐）」或「快速开工（自动）」；两者都可随时切换。</div>
+          <div className="font-content text-xl">여기서부터 시작하세요.</div>
+          <div className="text-xs text-subtext">「단계별 설정(권장)」 또는 「자동 설정(빠른 시작)」을 선택하세요. 필요에 따라 언제든지 설정을 변경할 수 있습니다.。</div>
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="surface p-4">
             <div className="grid gap-2">
               <div className="flex items-center gap-2">
-                <div className="font-content text-base text-ink">按步骤（推荐）</div>
-                <div className="rounded-atelier bg-accent/15 px-2 py-0.5 text-[11px] text-accent">推荐</div>
+                <div className="font-content text-base text-ink">단계별로 진행하는 것을 권장합니다.</div>
+                <div className="rounded-atelier bg-accent/15 px-2 py-0.5 text-[11px] text-accent">추천합니다.</div>
               </div>
               <div className="text-xs text-subtext">
-                按顺序跑通闭环：{UI_COPY.nav.projectSettings} → {UI_COPY.nav.characters} → {UI_COPY.nav.prompts} →{" "}
+                순서대로 전체 과정을 거쳐 확인한다.{UI_COPY.nav.projectSettings} → {UI_COPY.nav.characters} → {UI_COPY.nav.prompts} →{" "}
                 {UI_COPY.nav.outline} → {UI_COPY.nav.writing} → {UI_COPY.nav.preview} → {UI_COPY.nav.export}
               </div>
-              <div className="text-xs text-subtext">{nextStep ? `下一步：${nextStep.title}` : "모든 절차가 완료되었습니다."}</div>
+              <div className="text-xs text-subtext">{nextStep ? `다음 단계:${nextStep.title}` : "모든 절차가 완료되었습니다."}</div>
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {nextStep ? (
                 <button className="btn btn-primary" onClick={() => goStep(nextStep)} type="button">
-                  开始下一步
+                  다음 단계로 진행합니다.
                 </button>
               ) : (
                 <button className="btn btn-primary" onClick={() => navigate("/")} type="button">
-                  回到项目概览
+                  프로젝트 개요로 돌아가기.
                 </button>
               )}
               <button className="btn btn-secondary" onClick={scrollToSteps} type="button">
-                查看步骤清单
+                단계별 지침을 확인하세요.
               </button>
             </div>
           </div>
           <div className="surface p-4">
             <div className="grid gap-2">
-              <div className="font-content text-base text-ink">快速开工（自动）</div>
-              <div className="text-xs text-subtext">一键：生成大纲 → 保存 → 创建章节骨架 → 跳转写作页。</div>
+              <div className="font-content text-base text-ink">빠른 시작 (자동)</div>
+              <div className="text-xs text-subtext">한 번의 클릭으로 개요 생성. → 저장. → 장(章)의 기본 구조 만들기. → 글쓰기 페이지로 이동합니다.。</div>
               <div className="text-xs text-subtext">
-                建议先完成「{UI_COPY.nav.projectSettings} / {UI_COPY.nav.prompts}」，以避免生成失败。
+                먼저 완료하는 것을 권장합니다.「{UI_COPY.nav.projectSettings} / {UI_COPY.nav.prompts}」，생성 실패를 방지하기 위해.。
               </div>
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
@@ -326,7 +326,7 @@ export function ProjectWizardPage() {
                 </span>
               </button>
               <button className="btn btn-secondary" onClick={scrollToSteps} type="button">
-                改用按步骤
+                단계별로 진행하도록 변경합니다.
               </button>
             </div>
           </div>
@@ -336,8 +336,8 @@ export function ProjectWizardPage() {
 
       <section className="panel p-6" id="wizard-steps">
         <div className="grid gap-1">
-          <div className="font-content text-xl">步骤清单</div>
-          <div className="text-xs text-subtext">从上到下完成；不适用的步骤可以先跳过，之后也可取消跳过。</div>
+          <div className="font-content text-xl">단계별 절차 목록.</div>
+          <div className="text-xs text-subtext">위에서부터 아래로 순서대로 진행합니다. 필요 없는 단계는 일단 건너뛰고, 나중에 다시 진행할 수도 있습니다.。</div>
         </div>
         <motion.div
           className="mt-4 grid gap-3"
@@ -399,7 +399,7 @@ export function ProjectWizardPage() {
                 </div>
                 <div className="flex shrink-0 flex-wrap gap-2">
                   <button className="btn btn-secondary" onClick={() => goStep(s)} type="button">
-                    前往
+                    향하다, 가다, 향하여 가다.
                   </button>
                   {s.state === "todo" ? (
                     <button
@@ -407,7 +407,7 @@ export function ProjectWizardPage() {
                       onClick={() => setSkipped(s.key, true)}
                       type="button"
                     >
-                      跳过
+                      건너뛰다.
                     </button>
                   ) : s.state === "skipped" ? (
                     <button
@@ -415,7 +415,7 @@ export function ProjectWizardPage() {
                       onClick={() => setSkipped(s.key, false)}
                       type="button"
                     >
-                      取消跳过
+                      건너뛰기 기능 해제.
                     </button>
                   ) : null}
                 </div>
@@ -432,7 +432,7 @@ export function ProjectWizardPage() {
         primaryAction={
           nextStep
             ? {
-                label: `下一步：${nextStep.title}`,
+                label: `다음 단계:${nextStep.title}`,
                 onClick: () => goStep(nextStep),
               }
             : {

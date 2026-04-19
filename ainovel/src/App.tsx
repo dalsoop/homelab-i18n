@@ -298,7 +298,7 @@ export default function App() {
     <ToastProvider>
       <ConfirmProvider>
         <AuthProvider>
-          <Suspense fallback={<div className="p-4 text-sm text-subtext">加载中…</div>}>
+          <Suspense fallback={<div className="p-4 text-sm text-subtext">불러오는 중입니다.…</div>}>
             <RouterProvider router={router} />
           </Suspense>
         </AuthProvider>

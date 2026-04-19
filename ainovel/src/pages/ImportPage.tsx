@@ -266,7 +266,7 @@ export function ImportPage() {
     const maxBytes = 5_000_000;
     if (file.size > maxBytes) {
       toast.toastError(
-        `文件过大：${Math.ceil(file.size / 1024)} KB（上限 ${Math.ceil(maxBytes / 1024)} KB）`,
+        `파일 크기가 너무 큽니다.${Math.ceil(file.size / 1024)} KB（최대치, 상한, 한계치. ${Math.ceil(maxBytes / 1024)} KB）`,
         "client",
       );
       return;
@@ -380,42 +380,42 @@ export function ImportPage() {
       title="소설/자료 가져오기."
       description={
         <div className="grid gap-2">
-          <div>流程：上传 txt/md → 后端切分 chunk →（可选）写入向量 KB → 生成提案（proposal）。</div>
+          <div>절차: 업로드. txt/md → 백엔드 분할. chunk →（선택 사항: 벡터를 기록합니다. KB → 제안서 작성.proposal）。</div>
           <ul className="grid list-disc gap-1 pl-5 text-xs text-subtext">
             <li>
-              世界书（worldbook）：会生成 WorldBookEntry
-              的候选条目；应用后可在「世界书」页查看，也可在写作时用于上下文注入。
+              세계 도서(세계 도서).worldbook）：생성됩니다. WorldBookEntry
+              제안된 항목을 추가하면 ‘세계 책’ 페이지에서 확인할 수 있으며, 글을 작성할 때도 문맥에 맞게 활용할 수 있습니다.。
             </li>
-            <li>故事记忆（story_memory）：会生成 StoryMemory 的候选条目；应用后可在记忆预览/检索中命中。</li>
-            <li>向量 KB（vector_kb / kb）：用于 RAG 语义检索（可在「RAG」页管理）。</li>
-            <li>Chunk（chunk）：系统切分后的文本片段（用于检索与溯源）。</li>
+            <li>이야기 속 기억 (story_memory）：생성됩니다. StoryMemory 선택된 항목이 후보 목록에 추가됩니다. 적용 후에는 미리보기에서 확인할 수 있습니다./검색 결과가 발견되었습니다.。</li>
+            <li>벡터. KB（vector_kb / kb）：사용 용도. RAG 의미 기반 검색(다양한 플랫폼에서 사용 가능)「RAG」페이지 관리.。</li>
+            <li>Chunk（chunk）：시스템 분할 후 생성된 텍스트 조각(검색 및 출처 추적에 사용)。</li>
           </ul>
-          <div className="callout-warning">提示：导入后请先预览，再选择性应用（默认不会自动写入长期记忆）。</div>
+          <div className="callout-warning">참고: 가져온 후에는 먼저 미리 보기를 하고, 필요에 따라 적용하세요. (기본적으로는 자동으로 장기 기억에 저장되지 않습니다.)。</div>
         </div>
       }
       actions={
         projectId ? (
           <Link className="btn btn-secondary" to={`/projects/${projectId}/rag`}>
-            返回 RAG
+            돌아가기. RAG
           </Link>
         ) : null
       }
     >
       <section className="grid gap-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="text-sm font-semibold text-ink">上传文件</div>
+          <div className="text-sm font-semibold text-ink">파일 업로드.</div>
           <button
             className="btn btn-secondary"
             aria-label="import_refresh"
             onClick={() => void loadList()}
             type="button"
           >
-            刷新列表
+            목록 새로 고침.
           </button>
         </div>
         <div className="grid gap-3 rounded-atelier border border-border bg-canvas p-4">
           <div className="grid gap-1">
-            <div className="text-xs text-subtext">选择文件（≤ 5MB）</div>
+            <div className="text-xs text-subtext">파일 선택.≤ 5MB）</div>
             <input
               aria-label="import_file"
               accept=".txt,.md,text/plain,text/markdown"
@@ -440,13 +440,13 @@ export function ImportPage() {
       </section>
 
       <section className="grid gap-3">
-        <div className="text-sm font-semibold text-ink">导入记录</div>
+        <div className="text-sm font-semibold text-ink">데이터 가져오기.</div>
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="grid gap-2">
-            {listLoading ? <div className="text-xs text-subtext">加载中…</div> : null}
+            {listLoading ? <div className="text-xs text-subtext">불러오는 중입니다.…</div> : null}
             {documents.length === 0 && !listLoading && !statusDoc ? (
               <div className="rounded-atelier border border-border bg-canvas p-4 text-sm text-subtext">
-                暂无导入记录。请先上传 txt/md 文件。
+                가져올 데이터가 없습니다. 먼저 파일을 업로드해주세요. txt/md 문서.。
               </div>
             ) : null}
             <div className="grid gap-2">
@@ -487,10 +487,10 @@ export function ImportPage() {
           <div className="grid gap-3">
             {!selectedId ? (
               <div className="rounded-atelier border border-border bg-canvas p-4 text-sm text-subtext">
-                请选择左侧导入记录以查看详情。
+                왼쪽에 있는 가져오기 기록을 선택하여 자세한 내용을 확인하세요.。
               </div>
             ) : detailLoading ? (
-              <div className="rounded-atelier border border-border bg-canvas p-4 text-sm text-subtext">加载详情中…</div>
+              <div className="rounded-atelier border border-border bg-canvas p-4 text-sm text-subtext">세부 정보 로딩 중.…</div>
             ) : detail?.document?.id === selectedId ? (
               <div className="grid gap-3 rounded-atelier border border-border bg-canvas p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -504,24 +504,24 @@ export function ImportPage() {
                     </div>
                     {isPollingStalled ? (
                       <div className="mt-2 rounded-atelier border border-warning/30 bg-warning/10 p-3 text-xs text-warning">
-                        该导入已超过 5
-                        分钟未更新进度，可能卡住。建议：先取消自动刷新，再尝试重试或稍后回到此页查看结果。
+                        해당 가져오기는 허용량을 초과했습니다. 5
+                        몇 분 동안 업데이트가 되지 않아 문제가 발생했을 수 있습니다. 다음을 시도해 보세요. 자동 새로고침을 중단한 후 다시 시도하거나 잠시 후 페이지를 다시 방문하여 결과를 확인해 보세요.。
                       </div>
                     ) : null}
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     {pollPaused && (pollStatus === "queued" || pollStatus === "running") ? (
                       <button className="btn btn-secondary" onClick={() => setPollPaused(false)} type="button">
-                        恢复自动刷新
+                        자동 새로고침 재개.
                       </button>
                     ) : shouldPoll ? (
                       <button className="btn btn-secondary" onClick={() => setPollPaused(true)} type="button">
-                        取消自动刷新
+                        자동 새로고침 기능 중지.
                       </button>
                     ) : null}
                     {pollStatus === "failed" || isPollingStalled ? (
                       <button className="btn btn-secondary" onClick={() => void retryImport(selectedId)} type="button">
-                        重试
+                        다시 시도하세요.
                       </button>
                     ) : null}
                     <button
@@ -529,13 +529,13 @@ export function ImportPage() {
                       onClick={() => void selectDocAndLoad(selectedId)}
                       type="button"
                     >
-                      刷新
+                      새로 고침.
                     </button>
                   </div>
                 </div>
 
                 <div className="grid gap-2">
-                  <div className="text-xs text-subtext">内容预览</div>
+                  <div className="text-xs text-subtext">내용 미리보기.</div>
                   <div className="whitespace-pre-wrap rounded-atelier border border-border bg-surface p-3 text-xs text-ink">
                     {detail.content_preview || "(공)"}
                   </div>
@@ -561,7 +561,7 @@ export function ImportPage() {
                           <div className="mt-1 whitespace-pre-wrap text-xs text-ink">{c.preview}</div>
                         </div>
                       ))}
-                      {chunks.length > 40 ? <div className="text-xs text-subtext">仅展示前 40 条。</div> : null}
+                      {chunks.length > 40 ? <div className="text-xs text-subtext">처음 부분만 표시합니다. 40 개。</div> : null}
                     </div>
                   ) : null}
                 </div>
@@ -592,22 +592,22 @@ export function ImportPage() {
                 </div>
 
                 <div className="grid gap-2">
-                  <div className="text-xs text-subtext">WorldBook 提案预览</div>
+                  <div className="text-xs text-subtext">WorldBook 제안서 개요 (또는 제안서 미리보기)</div>
                   <div className="rounded-atelier border border-border bg-surface p-3 text-xs text-ink">
                     <div>{proposalPreview.worldbook.summary}</div>
                     {proposalPreview.worldbook.sampleTitles.length ? (
-                      <div className="mt-1 text-subtext">示例：{proposalPreview.worldbook.sampleTitles.join("、")}</div>
+                      <div className="mt-1 text-subtext">예시:{proposalPreview.worldbook.sampleTitles.join("、")}</div>
                     ) : null}
                   </div>
                 </div>
 
                 <div className="grid gap-2">
-                  <div className="text-xs text-subtext">story_memory 提案预览</div>
+                  <div className="text-xs text-subtext">story_memory 제안서 개요 (또는 제안서 미리보기)</div>
                   <div className="rounded-atelier border border-border bg-surface p-3 text-xs text-ink">
                     <div>{proposalPreview.storyMemory.summary}</div>
                     {proposalPreview.storyMemory.sampleTitles.length ? (
                       <div className="mt-1 text-subtext">
-                        示例：{proposalPreview.storyMemory.sampleTitles.join("、")}
+                        예시:{proposalPreview.storyMemory.sampleTitles.join("、")}
                       </div>
                     ) : null}
                   </div>
@@ -631,7 +631,7 @@ export function ImportPage() {
               </div>
             ) : (
               <div className="rounded-atelier border border-border bg-canvas p-4 text-sm text-subtext">
-                未找到导入详情，请点击左侧重试加载。
+                가져오기 정보가 없습니다. 다시 시도하려면 왼쪽 버튼을 클릭하세요.。
               </div>
             )}
           </div>

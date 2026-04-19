@@ -225,7 +225,7 @@ export function MemorySidebar(props: {
       setEditorOpen(false);
     } catch (e) {
       const err = e as ApiError;
-      toast.toastError(`保存失败：${err.message} (${err.code})`, err.requestId);
+      toast.toastError(`저장 실패.${err.message} (${err.code})`, err.requestId);
     } finally {
       savingRef.current = false;
       setSaving(false);
@@ -252,7 +252,7 @@ export function MemorySidebar(props: {
     if (!active) return;
     const ok = await confirm.confirm({
       title: "해당 스토리 기억을 삭제하시겠습니까?",
-      description: `将删除「${normalizeTitle(active)}」。此操作不可撤销。`,
+      description: `삭제합니다.「${normalizeTitle(active)}」。이 작업은 되돌릴 수 없습니다.。`,
       confirmText: "삭제하다.",
       cancelText: "취소하다.",
       danger: true,
@@ -267,7 +267,7 @@ export function MemorySidebar(props: {
       await props.onRefresh?.();
     } catch (e) {
       const err = e as ApiError;
-      toast.toastError(`删除失败：${err.message} (${err.code})`, err.requestId);
+      toast.toastError(`삭제 실패:${err.message} (${err.code})`, err.requestId);
     } finally {
       setSaving(false);
     }
@@ -289,7 +289,7 @@ export function MemorySidebar(props: {
       await props.onRefresh?.();
     } catch (e) {
       const err = e as ApiError;
-      toast.toastError(`操作失败：${err.message} (${err.code})`, err.requestId);
+      toast.toastError(`작업 실패:${err.message} (${err.code})`, err.requestId);
     } finally {
       setSaving(false);
     }
@@ -329,7 +329,7 @@ export function MemorySidebar(props: {
     }
     const ok = await confirm.confirm({
       title: "합병을 확정하시겠습니까?",
-      description: `将把 ${sourceIds.length} 条剧情记忆合并到「${normalizeTitle(active)}」，并删除被合并条目。`,
+      description: `곧 ~할 것이다. / ~하려고 한다. / ~할 예정이다. ${sourceIds.length} 각 스토리라인의 기억을 하나로 통합합니다.「${normalizeTitle(active)}」，이미 병합된 항목은 삭제합니다.。`,
       confirmText: "합병하다.",
       cancelText: "취소하다.",
     });
@@ -347,7 +347,7 @@ export function MemorySidebar(props: {
       await props.onRefresh?.();
     } catch (e) {
       const err = e as ApiError;
-      toast.toastError(`合并失败：${err.message} (${err.code})`, err.requestId);
+      toast.toastError(`합치기 실패:${err.message} (${err.code})`, err.requestId);
     } finally {
       mergeSavingRef.current = false;
       setMergeSaving(false);
@@ -368,7 +368,7 @@ export function MemorySidebar(props: {
           <div>
             <div className="text-sm text-ink">{UI_COPY.chapterAnalysis.storyMemoryTitle}</div>
             <div className="mt-1 text-xs text-subtext">
-              共 {props.annotations.length} 条{invalidCount > 0 ? `（${invalidCount} 条未定位）` : ""}
+              함께. {props.annotations.length} 개{invalidCount > 0 ? `（${invalidCount} (위치 정보 없음)` : ""}
             </div>
             <div className="mt-2 callout-info">{UI_COPY.chapterAnalysis.storyMemorySubtitle}</div>
           </div>
@@ -379,7 +379,7 @@ export function MemorySidebar(props: {
             disabled={saving}
             aria-label="story_memory_create"
           >
-            新增剧情记忆
+            새로운 스토리 모드 추가.
           </button>
         </div>
 
@@ -413,7 +413,7 @@ export function MemorySidebar(props: {
 
       <div className="rounded-atelier border border-border bg-surface p-2">
         {groups.length === 0 ? (
-          <div className="p-3 text-sm text-subtext">暂无记忆。请先在写作页分析并“保存到记忆库”。</div>
+          <div className="p-3 text-sm text-subtext">현재 기억 내용이 없습니다. 먼저 작성 페이지에서 내용을 분석하고 “기억 저장소에 저장”해주세요.”。</div>
         ) : (
           <div className="grid gap-3">
             {groups.map(([type, list]) => (
@@ -444,7 +444,7 @@ export function MemorySidebar(props: {
                             <div className="flex items-center gap-2">
                               <div className="truncate text-sm text-ink">{normalizeTitle(a)}</div>
                               {done ? (
-                                <span className="rounded bg-success/20 px-1.5 py-0.5 text-[11px] text-ink">已完成</span>
+                                <span className="rounded bg-success/20 px-1.5 py-0.5 text-[11px] text-ink">완료되었습니다.</span>
                               ) : null}
                             </div>
                             <div className="mt-1 line-clamp-2 break-words text-xs text-subtext">
@@ -453,7 +453,7 @@ export function MemorySidebar(props: {
                           </div>
                           <div className="shrink-0 text-right">
                             <div className="text-xs text-subtext">{(a.importance * 10).toFixed(1)}</div>
-                            {!valid ? <div className="mt-1 text-xs text-accent">未定位</div> : null}
+                            {!valid ? <div className="mt-1 text-xs text-accent">위치 정보 없음.</div> : null}
                           </div>
                         </div>
                       </button>
@@ -475,13 +475,13 @@ export function MemorySidebar(props: {
             </div>
             {active ? (
               <div className="mt-1 text-[11px] text-subtext">
-                类型：{labelForAnnotationType(active.type)} · 重要度：{(active.importance * 10).toFixed(1)} ·{" "}
+                유형:{labelForAnnotationType(active.type)} · 중요도:{(active.importance * 10).toFixed(1)} ·{" "}
                 {selectedInfo?.valid ? "위치 추적 가능." : "위치 정보 없음."}
                 {selectedInfo?.done ? "· 완료되었습니다." : ""}
               </div>
             ) : (
               <div className="mt-1 text-[11px] text-subtext">
-                提示：点击上方条目可定位到正文，并在此处进行编辑/合并/完成标记/删除。
+                참고: 상단의 항목을 클릭하면 해당 내용이 본문에서 강조 표시되고, 이 부분에서 내용을 수정할 수 있습니다./합병하다./완료 표시./삭제하다.。
               </div>
             )}
           </div>
@@ -494,7 +494,7 @@ export function MemorySidebar(props: {
               disabled={!active || saving}
               aria-label="story_memory_edit"
             >
-              编辑
+              편집하다.
             </button>
             <button
               className="btn btn-secondary px-3 py-1 text-xs"
@@ -512,7 +512,7 @@ export function MemorySidebar(props: {
               disabled={!active || saving || props.annotations.length < 2}
               aria-label="story_memory_merge"
             >
-              合并
+              합병하다.
             </button>
             <button
               className="btn btn-danger px-3 py-1 text-xs"
@@ -521,7 +521,7 @@ export function MemorySidebar(props: {
               disabled={!active || saving}
               aria-label="story_memory_delete"
             >
-              删除
+              삭제하다.
             </button>
           </div>
         </div>
@@ -548,7 +548,7 @@ export function MemorySidebar(props: {
               disabled={saving}
               aria-label="story_memory_close"
             >
-              关闭
+              닫기.
             </button>
             <button
               className="btn btn-primary"
@@ -557,14 +557,14 @@ export function MemorySidebar(props: {
               disabled={saving || !form.content.trim()}
               aria-label="story_memory_save"
             >
-              保存
+              저장.
             </button>
           </div>
         </div>
 
         <div className="mt-5 grid gap-4">
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">类型</span>
+            <span className="text-xs text-subtext">유형.</span>
             <select
               className="select"
               value={form.memory_type}
@@ -581,7 +581,7 @@ export function MemorySidebar(props: {
           </label>
 
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">标题（可选）</span>
+            <span className="text-xs text-subtext">제목 (선택 사항)</span>
             <input
               className="input"
               value={form.title}
@@ -593,7 +593,7 @@ export function MemorySidebar(props: {
           </label>
 
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">内容</span>
+            <span className="text-xs text-subtext">내용.</span>
             <textarea
               className="textarea atelier-content"
               rows={10}
@@ -606,7 +606,7 @@ export function MemorySidebar(props: {
           </label>
 
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">标签（可选，每行一个）</span>
+            <span className="text-xs text-subtext">태그 (선택 사항, 각 줄에 하나씩 입력).</span>
             <textarea
               className="textarea"
               rows={4}
@@ -622,7 +622,7 @@ export function MemorySidebar(props: {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="grid gap-1">
-              <span className="text-xs text-subtext">重要度（0~1，侧栏显示为 *10）</span>
+              <span className="text-xs text-subtext">중요도(중요도)0~1，사이드바에 표시됨. *10）</span>
               <input
                 className="input"
                 type="number"
@@ -637,7 +637,7 @@ export function MemorySidebar(props: {
             </label>
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-xs text-subtext">定位 position</span>
+                <span className="text-xs text-subtext">위치 파악. position</span>
                 <input
                   className="input"
                   type="number"
@@ -648,7 +648,7 @@ export function MemorySidebar(props: {
                 />
               </label>
               <label className="grid gap-1">
-                <span className="text-xs text-subtext">定位 length</span>
+                <span className="text-xs text-subtext">위치 파악. length</span>
                 <input
                   className="input"
                   type="number"
@@ -663,7 +663,7 @@ export function MemorySidebar(props: {
           </div>
 
           <div className="text-[11px] text-subtext">
-            说明：position/length 用于“回溯定位”。若不确定可留空（-1/0），系统会尝试用内容片段做 fallback 定位。
+            참고:position/length “이전 위치 추적” 기능을 위해 사용합니다. 확실하지 않은 경우 비워 두어도 됩니다.-1/0），시스템은 콘텐츠 조각을 활용하여 시도합니다. fallback 위치 파악.。
           </div>
         </div>
       </Drawer>
@@ -676,14 +676,14 @@ export function MemorySidebar(props: {
       >
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="font-content text-2xl text-ink">合并剧情记忆</div>
+            <div className="font-content text-2xl text-ink">스토리 기억 통합.</div>
             <div className="mt-1 text-xs text-subtext">
-              目标：{active ? normalizeTitle(active) : "(선택되지 않음)"} · 已选 {mergeSources.size} 条
+              목표:{active ? normalizeTitle(active) : "(선택되지 않음)"} · 선택 완료. {mergeSources.size} 개
             </div>
           </div>
           <div className="flex gap-2">
             <button className="btn btn-secondary" type="button" onClick={closeMerge} disabled={mergeSaving}>
-              关闭
+              닫기.
             </button>
             <button
               className="btn btn-primary"
@@ -692,7 +692,7 @@ export function MemorySidebar(props: {
               disabled={mergeSaving || mergeSources.size === 0 || !active}
               aria-label="story_memory_merge_apply"
             >
-              合并
+              합병하다.
             </button>
           </div>
         </div>
@@ -700,7 +700,7 @@ export function MemorySidebar(props: {
         <div className="mt-5 grid gap-2">
           {mergeCandidates.length === 0 ? (
             <div className="rounded-atelier border border-border bg-surface p-3 text-sm text-subtext">
-              当前章节没有可合并的其他条目。
+              현재 장에는 병합할 다른 항목이 없습니다.。
             </div>
           ) : (
             mergeCandidates.map((a) => {

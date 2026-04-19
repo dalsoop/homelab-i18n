@@ -110,7 +110,7 @@ export function TaskCenterHelpSection(props: TaskCenterHelpSectionProps) {
             <Link className="underline" to={`/projects/${props.projectId}/structured-memory`}>
               {TASK_CENTER_COPY.helpStructuredMemory}
             </Link>{" "}
-            与{" "}
+            과, 함께, 그리고, ~와/과 함께.{" "}
             <Link className="underline" to={`/projects/${props.projectId}/writing`}>
               {TASK_CENTER_COPY.helpWriting}
             </Link>{" "}
@@ -201,7 +201,7 @@ export function TaskCenterChangeSetsSection(props: TaskCenterChangeSetsSectionPr
               <div className="min-w-0">
                 <div className="truncate text-sm text-ink">{item.title || item.summary_md || item.id}</div>
                 <div className="mt-1 truncate text-xs text-subtext">
-                  章节 ID：{item.chapter_id || "-"} | 更新时间：{item.updated_at || item.created_at || "-"}
+                  장(章) ID：{item.chapter_id || "-"} | 최신 업데이트 시간:{item.updated_at || item.created_at || "-"}
                 </div>
                 {item.request_id ? (
                   <RequestIdRow
@@ -313,7 +313,7 @@ export function TaskCenterTasksSection(props: TaskCenterTasksSectionProps) {
                 <div className="truncate text-sm text-ink">
                   {item.kind} <span className="text-subtext">({item.id})</span>
                 </div>
-                <div className="mt-1 truncate text-xs text-subtext">变更集 ID：{item.change_set_id}</div>
+                <div className="mt-1 truncate text-xs text-subtext">변경 세트. ID：{item.change_set_id}</div>
                 {item.request_id ? (
                   <RequestIdRow
                     requestId={item.request_id}
@@ -521,7 +521,7 @@ export function TaskCenterDetailDrawer(props: TaskCenterDetailDrawerProps) {
               {props.selected.kind === "task"
                 ? `| ${UI_COPY.common.requestIdLabel}: ${props.selected.item.request_id ?? "-"}`
                 : props.selected.kind === "project_task"
-                  ? `| 幂等键：${props.selected.item.idempotency_key ?? "-"}`
+                  ? `| 멱등 키:${props.selected.item.idempotency_key ?? "-"}`
                   : ""}
             </div>
           ) : null}
@@ -542,10 +542,10 @@ export function TaskCenterDetailDrawer(props: TaskCenterDetailDrawerProps) {
             <div className="text-sm text-ink">{TASK_CENTER_COPY.detailOverview}</div>
             <div className="mt-2 grid gap-1 text-xs text-subtext">
               <div>
-                章节 ID：<span className="font-mono text-ink">{props.selected.item.chapter_id || "-"}</span>
+                장(章) ID：<span className="font-mono text-ink">{props.selected.item.chapter_id || "-"}</span>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span>状态：</span>
+                <span>상태:</span>
                 <StatusBadge status={props.selected.item.status} kind="change_set" />
               </div>
               <div>
@@ -593,7 +593,7 @@ export function TaskCenterDetailDrawer(props: TaskCenterDetailDrawerProps) {
                 change_set_id：<span className="font-mono text-ink">{props.selected.item.change_set_id}</span>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span>状态：</span>
+                <span>상태:</span>
                 <StatusBadge status={props.selected.item.status} kind="task" />
               </div>
               <div>
@@ -638,7 +638,7 @@ export function TaskCenterDetailDrawer(props: TaskCenterDetailDrawerProps) {
                   </ul>
                 ) : null}
                 <details className="rounded-atelier border border-border bg-canvas p-2">
-                  <summary className="cursor-pointer select-none text-xs text-subtext">error（脱敏）</summary>
+                  <summary className="cursor-pointer select-none text-xs text-subtext">error（(개인 정보 보호를 위해 익명 처리됨)</summary>
                   <pre className="mt-2 whitespace-pre-wrap break-words text-xs text-ink">
                     {safeJsonStringify(props.selected.item.error ?? null)}
                   </pre>
@@ -660,11 +660,11 @@ export function TaskCenterDetailDrawer(props: TaskCenterDetailDrawerProps) {
                 Kind：<span className="font-mono text-ink">{props.selected.item.kind}</span>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span>状态：</span>
+                <span>상태:</span>
                 <StatusBadge status={props.selected.item.status} kind="task" />
               </div>
               <div>
-                幂等键：<span className="font-mono text-ink">{props.selected.item.idempotency_key || "-"}</span>
+                멱등 키:<span className="font-mono text-ink">{props.selected.item.idempotency_key || "-"}</span>
               </div>
               <div>
                 created_at：
@@ -802,7 +802,7 @@ export function TaskCenterDetailDrawer(props: TaskCenterDetailDrawerProps) {
                     change_set_id：<span className="font-mono text-ink">{props.selectedProjectTaskChangeSetId}</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <span>状态：</span>
+                    <span>상태:</span>
                     <StatusBadge status={String(props.liveChangeSetStatus || "unknown")} kind="change_set" />
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -841,7 +841,7 @@ export function TaskCenterDetailDrawer(props: TaskCenterDetailDrawerProps) {
             <div className="text-sm text-ink">{TASK_CENTER_COPY.detailResults}</div>
             <div className="mt-2 grid gap-2">
               <details className="rounded-atelier border border-border bg-canvas p-2">
-                <summary className="cursor-pointer select-none text-xs text-subtext">params（脱敏）</summary>
+                <summary className="cursor-pointer select-none text-xs text-subtext">params（(개인 정보 보호를 위해 익명 처리됨)</summary>
                 <pre className="mt-2 whitespace-pre-wrap break-words text-xs text-ink">
                   {safeJsonStringify(props.selected.item.params ?? null)}
                 </pre>
@@ -853,7 +853,7 @@ export function TaskCenterDetailDrawer(props: TaskCenterDetailDrawerProps) {
                 </pre>
               </details>
               <details className="rounded-atelier border border-border bg-canvas p-2">
-                <summary className="cursor-pointer select-none text-xs text-subtext">error（脱敏）</summary>
+                <summary className="cursor-pointer select-none text-xs text-subtext">error（(개인 정보 보호를 위해 익명 처리됨)</summary>
                 <pre className="mt-2 whitespace-pre-wrap break-words text-xs text-ink">
                   {safeJsonStringify(props.selected.item.error ?? null)}
                 </pre>

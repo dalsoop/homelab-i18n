@@ -65,29 +65,29 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
           ) : null}
 
           <div className="rounded-atelier border border-border bg-canvas p-4 text-xs text-subtext">
-            <div className="font-medium text-ink">配置说明（Embedding vs Rerank）</div>
+            <div className="font-medium text-ink">구성 사양 (Embedding vs Rerank）</div>
             <ul className="mt-2 list-disc space-y-1 pl-5">
               <li>
-                <span className="font-mono">Embedding</span> 用于向量化（索引/召回）；
+                <span className="font-mono">Embedding</span> 벡터화(색인)에 사용됩니다./리콜(회수)
                 <span className="font-mono">Rerank</span>
-                用于对候选片段做二次排序。两者可分别配置（provider/base_url/model/api_key 可不同）。
+                후보 세그먼트를 재정렬하는 데 사용됩니다. 두 가지 설정을 각각 구성할 수 있습니다.provider/base_url/model/api_key 다를 수 있음.。
               </li>
               <li>
-                保存后可用上方 “测试 embedding / 测试 rerank” 做 <span className="font-mono">dry-run</span>
-                自检（会返回 request_id，便于看后端日志排障）。
+                저장한 후 상단의 “테스트” 버튼을 사용할 수 있습니다. embedding / 테스트. rerank” 하다. <span className="font-mono">dry-run</span>
+                자체 점검(결과를 반환합니다). request_id，백엔드 로그를 쉽게 확인하여 문제 해결 및 디버깅에 용이하도록.。
               </li>
               <li>
-                验证是否生效：到项目内「RAG」页运行 Query；结果面板会显示 <span className="font-mono">rerank:</span>
-                概要，并可展开 <span className="font-mono">rerank_obs</span> 查看详情。
+                정상 작동 여부 확인: 프로젝트 내부로 이동.「RAG」페이지 실행 중. Query；결과 패널에 표시됩니다. <span className="font-mono">rerank:</span>
+                개요이며, 필요에 따라 자세한 내용을 추가할 수 있습니다. <span className="font-mono">rerank_obs</span> 자세히 보기.。
               </li>
             </ul>
           </div>
 
           <div className="rounded-atelier border border-border bg-canvas p-4 text-xs text-subtext">
             <div>
-              当前生效：Embedding 提供方（provider）=
+              현재 유효:Embedding 제공자(제공하는 주체).provider）=
               {props.baselineSettings.vector_embedding_effective_provider || "openai_compatible"}
-              （状态: {props.baselineSettings.vector_embedding_effective_disabled_reason ?? "enabled"}；来源：
+              （상태.: {props.baselineSettings.vector_embedding_effective_disabled_reason ?? "enabled"}；출처:
               {props.baselineSettings.vector_embedding_effective_source}）
             </div>
             <div className="mt-1">
@@ -96,8 +96,8 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
               {props.baselineSettings.vector_rerank_effective_provider || "(공)"}；model:
               {props.baselineSettings.vector_rerank_effective_model || "(공)"}；top_k:
               {props.baselineSettings.vector_rerank_effective_top_k}；alpha:
-              {props.baselineSettings.vector_rerank_effective_hybrid_alpha ?? 0}；来源:
-              {props.baselineSettings.vector_rerank_effective_source}；配置:
+              {props.baselineSettings.vector_rerank_effective_hybrid_alpha ?? 0}；출처.:
+              {props.baselineSettings.vector_rerank_effective_source}；구성, 설정, 장비 구성 (문맥에 따라 적절하게 선택):
               {props.baselineSettings.vector_rerank_effective_config_source}）
             </div>
           </div>
@@ -145,11 +145,11 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
             {props.embeddingDryRunError ? (
               <div className="mt-3 rounded-atelier border border-border bg-surface p-3">
                 <div className="text-xs text-danger">
-                  Embedding 测试失败：{props.embeddingDryRunError.message} ({props.embeddingDryRunError.code})
+                  Embedding 테스트 실패:{props.embeddingDryRunError.message} ({props.embeddingDryRunError.code})
                 </div>
                 <RequestIdBadge requestId={props.embeddingDryRunError.requestId} className="mt-2" />
                 <div className="mt-1 text-[11px] text-subtext">
-                  排障：检查 embedding base_url/model/api_key；打开后端日志并搜索 request_id。
+                  장애물 제거: 점검. embedding base_url/model/api_key；백엔드 로그를 열고 검색합니다. request_id。
                 </div>
               </div>
             ) : null}
@@ -158,7 +158,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
               <div className="mt-3 rounded-atelier border border-border bg-surface p-3">
                 <div className="text-xs text-subtext">
                   Embedding：{props.embeddingDryRun.result.enabled ? "enabled" : "disabled"}；dims:
-                  {props.embeddingDryRun.result.dims ?? "(알 수 없음)"}；耗时:
+                  {props.embeddingDryRun.result.dims ?? "(알 수 없음)"}；시간 소요.:
                   {props.embeddingDryRun.result.timings_ms?.total ?? "(알 수 없음)"}ms
                   {props.embeddingDryRun.result.error ? `；error: ${props.embeddingDryRun.result.error}` : ""}
                 </div>
@@ -169,11 +169,11 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
             {props.rerankDryRunError ? (
               <div className="mt-3 rounded-atelier border border-border bg-surface p-3">
                 <div className="text-xs text-danger">
-                  Rerank 测试失败：{props.rerankDryRunError.message} ({props.rerankDryRunError.code})
+                  Rerank 테스트 실패:{props.rerankDryRunError.message} ({props.rerankDryRunError.code})
                 </div>
                 <RequestIdBadge requestId={props.rerankDryRunError.requestId} className="mt-2" />
                 <div className="mt-1 text-[11px] text-subtext">
-                  排障：检查 rerank base_url/model/api_key；若使用 external_rerank_api，确认 /v1/rerank 可访问。
+                  장애물 제거: 점검. rerank base_url/model/api_key；사용하는 경우. external_rerank_api，확인했습니다. /v1/rerank 접근 가능.。
                 </div>
               </div>
             ) : null}
@@ -184,7 +184,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                   Rerank：{props.rerankDryRun.result.enabled ? "enabled" : "disabled"}；method:
                   {props.rerankDryRun.result.method ?? "(알 수 없음)"}；provider:
                   {(props.rerankDryRun.result.rerank as { provider?: string } | undefined)?.provider ?? "(알 수 없음)"}
-                  ；耗时:
+                  ；시간 소요.:
                   {props.rerankDryRun.result.timings_ms?.total ?? "(알 수 없음)"}ms；order:
                   {(props.rerankDryRun.result.order ?? []).join(" → ") || "(공)"}
                 </div>
@@ -205,10 +205,10 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                   }
                   type="checkbox"
                 />
-                启用 rerank（对候选片段做相关性重排）
+                활성화하다. rerank（후보 세그먼트의 관련성을 기준으로 재정렬합니다.
               </label>
               <label className="grid gap-1 sm:col-span-2">
-                <span className="text-xs text-subtext">重排算法（rerank method）</span>
+                <span className="text-xs text-subtext">재정렬 알고리즘(rerank method）</span>
                 <select
                   className="select"
                   id="settings_vector_rerank_method"
@@ -225,7 +225,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                 </select>
               </label>
               <label className="grid gap-1">
-                <span className="text-xs text-subtext">候选数量（top_k）</span>
+                <span className="text-xs text-subtext">후보자 수 (후보자 명수)top_k）</span>
                 <input
                   className="input"
                   id="settings_vector_rerank_top_k"
@@ -255,7 +255,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
               </label>
             </div>
             <div className="text-[11px] text-subtext">
-              提示：启用后会对候选结果做二次排序，通常命中更好，但可能增加耗时/成本。
+              참고: 활성화하면 검색 결과에 대해 추가적인 순위 재정렬을 수행하여 일반적으로 더 정확한 결과를 얻을 수 있지만, 처리 시간이 다소 늘어날 수 있습니다./비용.。
             </div>
 
             <details className="rounded-atelier border border-border bg-canvas p-4" aria-label="재정렬 결과 제공업체 구성.">
@@ -277,11 +277,11 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                       props.setSettingsForm((value) => ({ ...value, vector_rerank_provider: e.target.value }))
                     }
                   >
-                    <option value="">（使用后端环境变量）</option>
+                    <option value="">（백엔드 환경 변수 사용.</option>
                     <option value="external_rerank_api">external_rerank_api</option>
                   </select>
                   <div className="text-[11px] text-subtext">
-                    当前有效：{props.baselineSettings.vector_rerank_effective_provider || "(공)"}
+                    현재 유효합니다.{props.baselineSettings.vector_rerank_effective_provider || "(공)"}
                   </div>
                 </label>
 
@@ -306,7 +306,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                     }}
                   />
                   <div className="text-[11px] text-subtext">
-                    当前有效：{props.baselineSettings.vector_rerank_effective_base_url || "(공)"}
+                    현재 유효합니다.{props.baselineSettings.vector_rerank_effective_base_url || "(공)"}
                   </div>
                 </label>
 
@@ -323,7 +323,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                     }
                   />
                   <div className="text-[11px] text-subtext">
-                    当前有效：{props.baselineSettings.vector_rerank_effective_model || "(공)"}
+                    현재 유효합니다.{props.baselineSettings.vector_rerank_effective_model || "(공)"}
                   </div>
                 </label>
 
@@ -362,7 +362,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                       onChange={(e) => props.setVectorRerankTimeoutDraft(e.target.value)}
                     />
                     <div className="text-[11px] text-subtext">
-                      当前有效：{props.baselineSettings.vector_rerank_effective_timeout_seconds ?? 15}
+                      현재 유효합니다.{props.baselineSettings.vector_rerank_effective_timeout_seconds ?? 15}
                     </div>
                   </label>
 
@@ -401,7 +401,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                       onChange={(e) => props.setVectorRerankHybridAlphaDraft(e.target.value)}
                     />
                     <div className="text-[11px] text-subtext">
-                      当前有效：{props.baselineSettings.vector_rerank_effective_hybrid_alpha ?? 0}
+                      현재 유효합니다.{props.baselineSettings.vector_rerank_effective_hybrid_alpha ?? 0}
                     </div>
                   </label>
                 </div>
@@ -422,12 +422,12 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                     }}
                   />
                   <div className="text-[11px] text-subtext">
-                    已保存（项目覆盖）：
+                    저장됨 (덮어쓰기):
                     {props.baselineSettings.vector_rerank_has_api_key
                       ? props.baselineSettings.vector_rerank_masked_api_key
                       : "(해당 사항 없음)"}
                     {props.baselineSettings.vector_rerank_effective_has_api_key
-                      ? ` | 当前有效：${props.baselineSettings.vector_rerank_effective_masked_api_key}`
+                      ? ` | 현재 유효합니다.${props.baselineSettings.vector_rerank_effective_masked_api_key}`
                       : "현재 유효한 항목은 없습니다. (현재 유효한 것은 없습니다.)"}
                     {props.rerankApiKeyClearRequested ? UI_COPY.vectorRag.pendingClearSuffix : ""}
                   </div>
@@ -482,7 +482,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
 
               <label className="grid gap-1">
                 <span className="text-xs text-subtext">
-                  Embedding 提供方（provider；项目覆盖；留空=使用后端环境变量）
+                  Embedding 제공자(제공하는 주체).provider；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.
                 </span>
                 <select
                   className="select"
@@ -491,7 +491,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                     props.setSettingsForm((value) => ({ ...value, vector_embedding_provider: e.target.value }))
                   }
                 >
-                  <option value="">（使用后端环境变量）</option>
+                  <option value="">（백엔드 환경 변수 사용.</option>
                   <option value="openai_compatible">openai_compatible</option>
                   <option value="azure_openai">azure_openai</option>
                   <option value="google">google</option>
@@ -500,7 +500,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                   <option value="sentence_transformers">sentence_transformers</option>
                 </select>
                 <div className="text-[11px] text-subtext">
-                  当前有效：{props.baselineSettings.vector_embedding_effective_provider || "openai_compatible"}
+                  현재 유효합니다.{props.baselineSettings.vector_embedding_effective_provider || "openai_compatible"}
                 </div>
               </label>
 
@@ -508,7 +508,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="grid gap-1">
                     <span className="text-xs text-subtext">
-                      Azure 部署名（deployment；项目覆盖；留空=使用后端环境变量）
+                      Azure 부서명 (deployment；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.
                     </span>
                     <input
                       className="input"
@@ -521,12 +521,12 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                       }
                     />
                     <div className="text-[11px] text-subtext">
-                      当前有效：{props.baselineSettings.vector_embedding_effective_azure_deployment || "(공)"}
+                      현재 유효합니다.{props.baselineSettings.vector_embedding_effective_azure_deployment || "(공)"}
                     </div>
                   </label>
                   <label className="grid gap-1">
                     <span className="text-xs text-subtext">
-                      Azure API 版本（api_version；项目覆盖；留空=使用后端环境变量）
+                      Azure API 버전.api_version；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.
                     </span>
                     <input
                       className="input"
@@ -539,7 +539,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                       }
                     />
                     <div className="text-[11px] text-subtext">
-                      当前有效：{props.baselineSettings.vector_embedding_effective_azure_api_version || "(공)"}
+                      현재 유효합니다.{props.baselineSettings.vector_embedding_effective_azure_api_version || "(공)"}
                     </div>
                   </label>
                 </div>
@@ -548,7 +548,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
               {props.embeddingProviderPreview === "sentence_transformers" ? (
                 <label className="grid gap-1">
                   <span className="text-xs text-subtext">
-                    SentenceTransformers 模型（项目覆盖；留空=使用后端环境变量）
+                    SentenceTransformers 모델(프로젝트 범위; 비워두기)=백엔드 환경 변수 사용.
                   </span>
                   <input
                     className="input"
@@ -561,7 +561,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                     }
                   />
                   <div className="text-[11px] text-subtext">
-                    当前有效：
+                    현재 유효합니다.
                     {props.baselineSettings.vector_embedding_effective_sentence_transformers_model || "(공)"}
                   </div>
                 </label>
@@ -569,7 +569,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
 
               <label className="grid gap-1">
                 <span className="text-xs text-subtext">
-                  Embedding 基础地址（base_url；项目覆盖；留空=使用后端环境变量）
+                  Embedding 기본 주소(base_url；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.
                 </span>
                 <input
                   className="input"
@@ -581,12 +581,12 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                   }
                 />
                 <div className="text-[11px] text-subtext">
-                  当前有效：{props.baselineSettings.vector_embedding_effective_base_url || "(공)"}
+                  현재 유효합니다.{props.baselineSettings.vector_embedding_effective_base_url || "(공)"}
                 </div>
               </label>
 
               <label className="grid gap-1">
-                <span className="text-xs text-subtext">Embedding 模型（model；项目覆盖；留空=使用后端环境变量）</span>
+                <span className="text-xs text-subtext">Embedding 모델(model；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.</span>
                 <input
                   className="input"
                   id="vector_embedding_model"
@@ -597,12 +597,12 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                   }
                 />
                 <div className="text-[11px] text-subtext">
-                  当前有效：{props.baselineSettings.vector_embedding_effective_model || "(공)"}
+                  현재 유효합니다.{props.baselineSettings.vector_embedding_effective_model || "(공)"}
                 </div>
               </label>
 
               <label className="grid gap-1">
-                <span className="text-xs text-subtext">API Key（api_key；项目覆盖；留空不修改）</span>
+                <span className="text-xs text-subtext">API Key（api_key；해당 항목은 변경하지 않고 그대로 둡니다. (해당 항목에 내용이 없을 경우, 빈칸으로 둡니다.)</span>
                 <input
                   className="input"
                   id="vector_embedding_api_key"
@@ -616,12 +616,12 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                   }}
                 />
                 <div className="text-[11px] text-subtext">
-                  已保存（项目覆盖）：
+                  저장됨 (덮어쓰기):
                   {props.baselineSettings.vector_embedding_has_api_key
                     ? props.baselineSettings.vector_embedding_masked_api_key
                     : "(해당 사항 없음)"}
                   {props.baselineSettings.vector_embedding_effective_has_api_key
-                    ? ` | 当前有效：${props.baselineSettings.vector_embedding_effective_masked_api_key}`
+                    ? ` | 현재 유효합니다.${props.baselineSettings.vector_embedding_effective_masked_api_key}`
                     : "현재 유효한 항목은 없습니다. (현재 유효한 것은 없습니다.)"}
                   {props.vectorApiKeyClearRequested ? UI_COPY.vectorRag.pendingClearSuffix : ""}
                 </div>
@@ -657,7 +657,7 @@ export function SettingsVectorRagSection(props: SettingsVectorRagSectionProps) {
                   }}
                   type="button"
                 >
-                  恢复使用后端环境变量（清除项目覆盖）
+                  백엔드 환경 변수 사용 재개 (프로젝트 설정을 덮어쓰지 않도록 설정)
                 </button>
               </div>
             </div>

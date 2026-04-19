@@ -86,23 +86,23 @@ export function RagHeaderPanel(props: {
       <div className="mt-3 rounded-atelier border border-border bg-canvas p-3 text-xs">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="text-subtext">
-            索引过期（dirty）: {vectorIndexDirty === null ? "loading…" : String(vectorIndexDirty)} |
-            上次构建（last_build_at）: {lastVectorBuildAt ?? "-"}
+            인덱스가 만료되었습니다.dirty）: {vectorIndexDirty === null ? "loading…" : String(vectorIndexDirty)} |
+            이전 빌드.last_build_at）: {lastVectorBuildAt ?? "-"}
             {lastVectorBuildAt ? `（${formatIsoToLocal(lastVectorBuildAt)}）` : ""}
           </div>
           {vectorIndexDirty === null ? (
-            <div className="text-subtext">索引状态加载中…</div>
+            <div className="text-subtext">인덱스 상태 로딩 중.…</div>
           ) : vectorIndexDirty ? (
             vectorEnabled === false ? (
               <div className="text-ink">
-                索引已过期，但向量服务未启用（disabled_reason: {vectorDisabledReason ?? "-"}）。请先在{" "}
-                {UI_COPY.rag.settings} 配置 向量化（Embedding），再 {UI_COPY.rag.rebuild}。
+                인덱스는 오래되었지만 벡터 서비스는 활성화되지 않았습니다.disabled_reason: {vectorDisabledReason ?? "-"}）。먼저 다음 위치에 접속하세요.{" "}
+                {UI_COPY.rag.settings} 벡터화 구성.Embedding），다시. {UI_COPY.rag.rebuild}。
               </div>
             ) : (
-              <div className="text-ink">索引已过期：建议点击右上角 “{UI_COPY.rag.rebuildRecommended}” 重新构建。</div>
+              <div className="text-ink">인덱스가 오래되었습니다. 오른쪽 상단 모서리를 클릭하여 업데이트하세요. “{UI_COPY.rag.rebuildRecommended}” 재구축하다.。</div>
             )
           ) : (
-            <div className="text-subtext">索引为 clean，无需重建。</div>
+            <div className="text-subtext">색인: clean，재건할 필요가 없습니다.。</div>
           )}
         </div>
       </div>

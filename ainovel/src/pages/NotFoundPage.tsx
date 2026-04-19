@@ -28,7 +28,7 @@ export function NotFoundPage() {
           type="button"
           aria-label="이전 페이지로 돌아가기 (페이지를 찾을 수 없음)"
         >
-          返回上一页
+          이전 페이지로 돌아가기.
         </button>
         {projectId ? (
           <Link
@@ -36,7 +36,7 @@ export function NotFoundPage() {
             to={`/projects/${projectId}`}
             aria-label="현재 프로젝트로 돌아가기 (해당 프로젝트를 찾을 수 없음)"
           >
-            返回项目
+            프로젝트로 돌아가기.
           </Link>
         ) : null}
         <Link className="btn btn-secondary" to="/" aria-label="홈페이지로 돌아가기 (페이지를 찾을 수 없음)">
@@ -45,7 +45,7 @@ export function NotFoundPage() {
       </div>
 
       <div className="mt-4 text-xs text-subtext">
-        当前路径：<span className="atelier-mono text-ink">{location.pathname}</span>
+        현재 경로:<span className="atelier-mono text-ink">{location.pathname}</span>
       </div>
     </div>
   );

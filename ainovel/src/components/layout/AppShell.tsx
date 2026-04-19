@@ -377,7 +377,7 @@ export function AppShell() {
                         ))}
 
                         <label className="mt-2 flex items-center justify-between gap-2 rounded-atelier border border-border bg-canvas px-3 py-2 text-xs text-subtext">
-                          <span>显示高级调试</span>
+                          <span>고급 디버깅 표시.</span>
                           <input
                             className="checkbox"
                             checked={advancedDebugVisible}
@@ -497,7 +497,7 @@ export function AppShell() {
 
                   {collapsed ? null : (
                     <label className="mt-2 flex items-center justify-between gap-2 rounded-atelier border border-border bg-canvas px-3 py-2 text-xs text-subtext">
-                      <span>显示高级调试</span>
+                      <span>고급 디버깅 표시.</span>
                       <input
                         className="checkbox"
                         checked={advancedDebugVisible}
@@ -639,7 +639,7 @@ export function AppShell() {
             <div className="mt-1 text-xs text-subtext">{UI_COPY.help.subtitle}</div>
           </div>
           <button className="btn btn-secondary" aria-label="닫기." onClick={closeHelp} type="button">
-            关闭
+            닫기.
           </button>
         </div>
 

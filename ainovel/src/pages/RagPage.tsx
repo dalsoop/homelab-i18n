@@ -405,7 +405,7 @@ export function RagPage() {
         const disabledReason = typeof out.disabled_reason === "string" ? out.disabled_reason : null;
         const error = typeof out.error === "string" ? out.error : null;
         if (!enabled || skipped) {
-          toast.toastError(`rebuild 未执行：${disabledReason ?? error ?? "unknown"}`, res.request_id);
+          toast.toastError(`rebuild 미실행.${disabledReason ?? error ?? "unknown"}`, res.request_id);
         } else {
           toast.toastSuccess("재구성이 시작되었습니다.", res.request_id);
         }
@@ -549,29 +549,29 @@ export function RagPage() {
           <div>{UI_COPY.rag.usageHint}</div>
           <div>{UI_COPY.rag.exampleHint}</div>
           <div>
-            快速开始：创建/启用 KB → 点击“{UI_COPY.rag.ingest}”导入 → “{UI_COPY.rag.rebuild}”构建索引 → 在下方 Query
-            预览命中。
+            빠르게 시작하기: 만들기./활성화하다. KB → 클릭하세요.“{UI_COPY.rag.ingest}”가져오기. → “{UI_COPY.rag.rebuild}”인덱스 구축. → 아래에. Query
+            정확도 확인.。
           </div>
           <div>
-            验证 rerank 是否生效：启用后在下方 Query 执行查询，结果面板会显示 <span className="font-mono">rerank:</span>{" "}
-            概要，并可展开 <span className="font-mono">rerank_obs</span> 查看观测信息（用于排障）。
+            확인. rerank 적용 여부: 활성화하면 아래에 표시됩니다. Query 검색을 실행하면 결과 창에 표시됩니다. <span className="font-mono">rerank:</span>{" "}
+            개요이며, 필요에 따라 자세한 내용을 추가할 수 있습니다. <span className="font-mono">rerank_obs</span> 관측 정보 확인 (문제 해결용).。
           </div>
           {projectId ? (
             <div>
-              配置入口：到{" "}
+              구성 설정: ~로 이동.{" "}
               <Link className="underline" to={`/projects/${projectId}/prompts#rag-config`}>
                 {UI_COPY.rag.settings}
               </Link>{" "}
-              完成 Embedding/Rerank 配置后再重建索引。
+              완료되었습니다. Embedding/Rerank 구성 변경 후 인덱스를 다시 구축합니다.。
             </div>
           ) : null}
           {projectId ? (
             <div>
-              导入小说/资料：到{" "}
+              소설 가져오기./자료: ~까지.{" "}
               <Link className="underline" to={`/projects/${projectId}/import`}>
-                导入页
+                시작 페이지.
               </Link>{" "}
-              上传 txt/md 并应用提案（WorldBook / story_memory）。
+              업로드하다. txt/md 제안 내용을 적용합니다.WorldBook / story_memory）。
             </div>
           ) : null}
           <div className="text-warning">{UI_COPY.rag.riskHint}</div>
@@ -581,10 +581,10 @@ export function RagPage() {
       {projectId ? (
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-atelier border border-border bg-canvas p-3">
           <div className="text-xs text-subtext">
-            小说/资料导入：上传 txt/md 并应用提案（WorldBook / story_memory）。
+            소설./자료 가져오기: 업로드. txt/md 제안 내용을 적용합니다.WorldBook / story_memory）。
           </div>
           <Link className="btn btn-secondary" to={`/projects/${projectId}/import`}>
-            打开导入页
+            가져오기 페이지를 엽니다.
           </Link>
         </div>
       ) : null}
@@ -592,16 +592,16 @@ export function RagPage() {
       <div className="rounded-atelier border border-border bg-canvas p-3 text-xs">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="text-subtext">
-            索引过期（dirty）: {vectorIndexDirty === null ? "loading…" : String(vectorIndexDirty)} |
-            上次构建（last_build_at）: {lastVectorBuildAt ?? "-"}
+            인덱스가 만료되었습니다.dirty）: {vectorIndexDirty === null ? "loading…" : String(vectorIndexDirty)} |
+            이전 빌드.last_build_at）: {lastVectorBuildAt ?? "-"}
             {lastVectorBuildAt ? `（${formatIsoToLocal(lastVectorBuildAt)}）` : ""}
           </div>
           {vectorIndexDirty === null ? (
-            <div className="text-subtext">索引状态加载中…</div>
+            <div className="text-subtext">인덱스 상태 로딩 중.…</div>
           ) : vectorIndexDirty ? (
             vectorEnabled === false ? (
               <div className="text-ink">
-                索引已过期，但向量服务未启用（disabled_reason: {vectorDisabledReason ?? "-"}）。请先在{" "}
+                인덱스는 오래되었지만 벡터 서비스는 활성화되지 않았습니다.disabled_reason: {vectorDisabledReason ?? "-"}）。먼저 다음 위치에 접속하세요.{" "}
                 {projectId ? (
                   <Link className="underline" to={`/projects/${projectId}/prompts#rag-config`}>
                     {UI_COPY.rag.settings}
@@ -609,13 +609,13 @@ export function RagPage() {
                 ) : (
                   UI_COPY.rag.settings
                 )}{" "}
-                配置向量化（Embedding），再 {UI_COPY.rag.rebuild}。
+                벡터화 구성.Embedding），다시. {UI_COPY.rag.rebuild}。
               </div>
             ) : (
-              <div className="text-ink">索引已过期：建议点击右上角 “{UI_COPY.rag.rebuildRecommended}” 重新构建。</div>
+              <div className="text-ink">인덱스가 오래되었습니다. 오른쪽 상단 모서리를 클릭하여 업데이트하세요. “{UI_COPY.rag.rebuildRecommended}” 재구축하다.。</div>
             )
           ) : (
-            <div className="text-subtext">索引为 clean，无需重建。</div>
+            <div className="text-subtext">색인: clean，재건할 필요가 없습니다.。</div>
           )}
         </div>
         {lastOpRequestId ? (

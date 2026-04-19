@@ -20,7 +20,7 @@ export const PROMPTS_COPY = {
 export function buildDeleteTaskModuleConfirm(taskLabel: string) {
   return {
     title: "작업 모듈 삭제.",
-    description: `确认删除任务模块「${taskLabel}」？删除后将回退到主模块。`,
+    description: `작업 모듈 삭제를 확인합니다.「${taskLabel}」？삭제 후에는 기본 모듈로 돌아갑니다.。`,
     confirmText: "삭제하다.",
     cancelText: "취소하다.",
   } as const;
@@ -29,7 +29,7 @@ export function buildDeleteTaskModuleConfirm(taskLabel: string) {
 export function buildClearTaskApiKeyConfirm(profileName: string) {
   return {
     title: "작업 모듈과 연결된 API 키 설정을 삭제하는 방법은 무엇인가요?",
-    description: `将清除配置库「${profileName}」的 Key。该配置库被其他模块复用时也会立即失效。`,
+    description: `구성 파일이 삭제됩니다.「${profileName}」의. Key。해당 구성 파일이 다른 모듈에서 재사용될 경우 즉시 유효하지 않게 됩니다.。`,
     confirmText: "제거하다.",
     cancelText: "취소하다.",
   } as const;

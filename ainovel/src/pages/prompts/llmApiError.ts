@@ -43,11 +43,11 @@ export function formatLlmTestApiError(err: ApiError): string {
       : err.code === "LLM_TIMEOUT"
         ? "연결 시간이 초과되었습니다. 네트워크 연결 상태 또는 기본 URL 주소가 올바른지 확인해 주세요."
         : err.code === "LLM_BAD_REQUEST"
-          ? `请求参数有误，可能是模型名称或参数不支持${upstreamError ? `（上游：${upstreamError}）` : ""}${
-              compatAdjustments ? `（兼容：${compatAdjustments}）` : ""
+          ? `요청 매개변수가 잘못되었습니다. 모델 이름이나 매개변수가 지원되지 않는 것일 수 있습니다.${upstreamError ? `（상류(상류).${upstreamError}）` : ""}${
+              compatAdjustments ? `（호환성.${compatAdjustments}）` : ""
             }`
           : err.code === "LLM_UPSTREAM_ERROR"
-            ? `服务暂时不可用，请稍后重试（${
+            ? `현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주시기 바랍니다.${
                 typeof upstreamStatusCode === "number" ? upstreamStatusCode : err.status
               }）`
             : err.message;

@@ -29,7 +29,7 @@ export function CopyFallbackModal(props: { text: string; title: string; descript
 
         <div className="mt-3 grid gap-2">
           <label className="text-[11px] text-subtext" htmlFor={textareaId}>
-            可手动复制的文本
+            복사하여 사용할 수 있는 텍스트.
           </label>
           <textarea
             id={textareaId}
@@ -41,7 +41,7 @@ export function CopyFallbackModal(props: { text: string; title: string; descript
             spellCheck={false}
           />
           <div className="text-[11px] text-subtext">
-            提示：若无法自动复制，请在文本框中按 Ctrl/Cmd+A → Ctrl/Cmd+C 手动复制。
+            팁: 자동 복사가 되지 않을 경우, 텍스트 상자 안에서 직접 복사하세요. Ctrl/Cmd+A → Ctrl/Cmd+C 수동으로 복사하기.。
           </div>
         </div>
 
@@ -56,10 +56,10 @@ export function CopyFallbackModal(props: { text: string; title: string; descript
             }}
             type="button"
           >
-            全选
+            전체 선택.
           </button>
           <button className="btn btn-primary" onClick={props.onClose} type="button">
-            关闭
+            닫기.
           </button>
         </div>
       </div>

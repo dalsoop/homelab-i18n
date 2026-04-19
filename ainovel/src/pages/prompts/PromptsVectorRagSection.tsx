@@ -109,9 +109,9 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
         <div className="mt-4 grid gap-4">
           <div className="rounded-atelier border border-border bg-canvas p-4 text-xs text-subtext">
             <div>
-              当前生效：Embedding 提供方（provider）=
+              현재 유효:Embedding 제공자(제공하는 주체).provider）=
               {baselineSettings.vector_embedding_effective_provider || "openai_compatible"}
-              （状态: {baselineSettings.vector_embedding_effective_disabled_reason ?? "enabled"}；来源:{" "}
+              （상태.: {baselineSettings.vector_embedding_effective_disabled_reason ?? "enabled"}；출처.:{" "}
               {baselineSettings.vector_embedding_effective_source}）
             </div>
             <div className="mt-1">
@@ -120,8 +120,8 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
               {baselineSettings.vector_rerank_effective_provider || "(공)"}；model:{" "}
               {baselineSettings.vector_rerank_effective_model || "(공)"}；top_k:{" "}
               {baselineSettings.vector_rerank_effective_top_k}；alpha:{" "}
-              {baselineSettings.vector_rerank_effective_hybrid_alpha ?? 0}；来源:{" "}
-              {baselineSettings.vector_rerank_effective_source}；配置:{" "}
+              {baselineSettings.vector_rerank_effective_hybrid_alpha ?? 0}；출처.:{" "}
+              {baselineSettings.vector_rerank_effective_source}；구성, 설정, 장비 구성 (문맥에 따라 적절하게 선택):{" "}
               {baselineSettings.vector_rerank_effective_config_source}）
             </div>
           </div>
@@ -169,11 +169,11 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
             {embeddingDryRunError ? (
               <div className="mt-3 rounded-atelier border border-border bg-surface p-3">
                 <div className="text-xs text-danger">
-                  Embedding 测试失败：{embeddingDryRunError.message} ({embeddingDryRunError.code})
+                  Embedding 테스트 실패:{embeddingDryRunError.message} ({embeddingDryRunError.code})
                 </div>
                 <RequestIdBadge requestId={embeddingDryRunError.requestId} className="mt-2" />
                 <div className="mt-1 text-[11px] text-subtext">
-                  排障：检查 embedding base_url/model/api_key；打开后端日志并搜索 request_id。
+                  장애물 제거: 점검. embedding base_url/model/api_key；백엔드 로그를 열고 검색합니다. request_id。
                 </div>
               </div>
             ) : null}
@@ -182,7 +182,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
               <div className="mt-3 rounded-atelier border border-border bg-surface p-3">
                 <div className="text-xs text-subtext">
                   Embedding：{embeddingDryRun.result.enabled ? "enabled" : "disabled"}；dims:
-                  {embeddingDryRun.result.dims ?? "(알 수 없음)"}；耗时:
+                  {embeddingDryRun.result.dims ?? "(알 수 없음)"}；시간 소요.:
                   {embeddingDryRun.result.timings_ms?.total ?? "(알 수 없음)"}ms
                   {embeddingDryRun.result.error ? `；error: ${embeddingDryRun.result.error}` : ""}
                 </div>
@@ -193,11 +193,11 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
             {rerankDryRunError ? (
               <div className="mt-3 rounded-atelier border border-border bg-surface p-3">
                 <div className="text-xs text-danger">
-                  Rerank 测试失败：{rerankDryRunError.message} ({rerankDryRunError.code})
+                  Rerank 테스트 실패:{rerankDryRunError.message} ({rerankDryRunError.code})
                 </div>
                 <RequestIdBadge requestId={rerankDryRunError.requestId} className="mt-2" />
                 <div className="mt-1 text-[11px] text-subtext">
-                  排障：检查 rerank base_url/model/api_key；若使用 external_rerank_api，确认 /v1/rerank 可访问。
+                  장애물 제거: 점검. rerank base_url/model/api_key；사용하는 경우. external_rerank_api，확인했습니다. /v1/rerank 접근 가능.。
                 </div>
               </div>
             ) : null}
@@ -207,7 +207,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                 <div className="text-xs text-subtext">
                   Rerank：{rerankDryRun.result.enabled ? "enabled" : "disabled"}；method:
                   {rerankDryRun.result.method ?? "(알 수 없음)"}；provider:
-                  {(rerankDryRun.result.rerank as { provider?: string } | undefined)?.provider ?? "(알 수 없음)"}；耗时:
+                  {(rerankDryRun.result.rerank as { provider?: string } | undefined)?.provider ?? "(알 수 없음)"}；시간 소요.:
                   {rerankDryRun.result.timings_ms?.total ?? "(알 수 없음)"}ms；order:
                   {(rerankDryRun.result.order ?? []).join(" → ") || "(공)"}
                 </div>
@@ -227,10 +227,10 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   type="checkbox"
                   name="vector_rerank_enabled"
                 />
-                启用 rerank（对候选片段做相关性重排）
+                활성화하다. rerank（후보 세그먼트의 관련성을 기준으로 재정렬합니다.
               </label>
               <label className="grid gap-1 sm:col-span-2">
-                <span className="text-xs text-subtext">重排算法（rerank method）</span>
+                <span className="text-xs text-subtext">재정렬 알고리즘(rerank method）</span>
                 <select
                   className="select"
                   value={vectorForm.vector_rerank_method}
@@ -243,7 +243,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                 </select>
               </label>
               <label className="grid gap-1">
-                <span className="text-xs text-subtext">候选数量（top_k）</span>
+                <span className="text-xs text-subtext">후보자 수 (후보자 명수)top_k）</span>
                 <input
                   className="input"
                   type="number"
@@ -271,7 +271,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
               </label>
             </div>
             <div className="text-[11px] text-subtext">
-              提示：启用后会对候选结果做二次排序，通常命中更好，但可能增加耗时/成本。
+              참고: 활성화하면 검색 결과에 대해 추가적인 순위 재정렬을 수행하여 일반적으로 더 정확한 결과를 얻을 수 있지만, 처리 시간이 다소 늘어날 수 있습니다./비용.。
             </div>
           </div>
 
@@ -282,8 +282,8 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
             <div className="mt-4 grid gap-4">
               <div className="text-xs text-subtext">{UI_COPY.vectorRag.backendEnvFallbackHint}</div>
               <div className="text-xs text-subtext">
-                启用 external_rerank_api：method 建议保持 auto；provider 选 external_rerank_api，并填写
-                base_url/model（可选 api_key）。
+                활성화하다. external_rerank_api：method 유지하는 것이 좋겠습니다. auto；provider 선택하다. external_rerank_api，그리고 작성하십시오.
+                base_url/model（선택 가능. api_key）。
               </div>
 
               <label className="grid gap-1">
@@ -294,11 +294,11 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   onChange={(e) => setVectorForm((v) => ({ ...v, vector_rerank_provider: e.target.value }))}
                   name="vector_rerank_provider"
                 >
-                  <option value="">（使用后端环境变量）</option>
+                  <option value="">（백엔드 환경 변수 사용.</option>
                   <option value="external_rerank_api">external_rerank_api</option>
                 </select>
                 <div className="text-[11px] text-subtext">
-                  当前有效：{baselineSettings.vector_rerank_effective_provider || "(공)"}
+                  현재 유효합니다.{baselineSettings.vector_rerank_effective_provider || "(공)"}
                 </div>
               </label>
 
@@ -321,7 +321,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   name="vector_rerank_base_url"
                 />
                 <div className="text-[11px] text-subtext">
-                  当前有效：{baselineSettings.vector_rerank_effective_base_url || "(공)"}
+                  현재 유효합니다.{baselineSettings.vector_rerank_effective_base_url || "(공)"}
                 </div>
               </label>
 
@@ -334,7 +334,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   name="vector_rerank_model"
                 />
                 <div className="text-[11px] text-subtext">
-                  当前有效：{baselineSettings.vector_rerank_effective_model || "(공)"}
+                  현재 유효합니다.{baselineSettings.vector_rerank_effective_model || "(공)"}
                 </div>
               </label>
 
@@ -371,7 +371,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                     name="vector_rerank_timeout_seconds"
                   />
                   <div className="text-[11px] text-subtext">
-                    当前有效：{baselineSettings.vector_rerank_effective_timeout_seconds ?? 15}
+                    현재 유효합니다.{baselineSettings.vector_rerank_effective_timeout_seconds ?? 15}
                   </div>
                 </label>
 
@@ -408,7 +408,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                     name="vector_rerank_hybrid_alpha"
                   />
                   <div className="text-[11px] text-subtext">
-                    当前有效：{baselineSettings.vector_rerank_effective_hybrid_alpha ?? 0}
+                    현재 유효합니다.{baselineSettings.vector_rerank_effective_hybrid_alpha ?? 0}
                   </div>
                 </label>
               </div>
@@ -427,12 +427,12 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   name="vector_rerank_api_key"
                 />
                 <div className="text-[11px] text-subtext">
-                  已保存（项目覆盖）：
+                  저장됨 (덮어쓰기):
                   {baselineSettings.vector_rerank_has_api_key
                     ? baselineSettings.vector_rerank_masked_api_key
                     : "(해당 사항 없음)"}
                   {baselineSettings.vector_rerank_effective_has_api_key
-                    ? ` | 当前有效：${baselineSettings.vector_rerank_effective_masked_api_key}`
+                    ? ` | 현재 유효합니다.${baselineSettings.vector_rerank_effective_masked_api_key}`
                     : "현재 유효한 항목은 없습니다. (현재 유효한 것은 없습니다.)"}
                   {rerankApiKeyClearRequested ? UI_COPY.vectorRag.pendingClearSuffix : ""}
                 </div>
@@ -484,7 +484,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
 
               <label className="grid gap-1">
                 <span className="text-xs text-subtext">
-                  Embedding 提供方（provider；项目覆盖；留空=使用后端环境变量）
+                  Embedding 제공자(제공하는 주체).provider；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.
                 </span>
                 <select
                   className="select"
@@ -492,7 +492,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   onChange={(e) => setVectorForm((v) => ({ ...v, vector_embedding_provider: e.target.value }))}
                   name="vector_embedding_provider"
                 >
-                  <option value="">（使用后端环境变量）</option>
+                  <option value="">（백엔드 환경 변수 사용.</option>
                   <option value="openai_compatible">openai_compatible</option>
                   <option value="azure_openai">azure_openai</option>
                   <option value="google">google</option>
@@ -501,7 +501,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   <option value="sentence_transformers">sentence_transformers</option>
                 </select>
                 <div className="text-[11px] text-subtext">
-                  当前有效：{baselineSettings.vector_embedding_effective_provider || "openai_compatible"}
+                  현재 유효합니다.{baselineSettings.vector_embedding_effective_provider || "openai_compatible"}
                 </div>
               </label>
 
@@ -509,7 +509,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="grid gap-1">
                     <span className="text-xs text-subtext">
-                      Azure 部署名（deployment；项目覆盖；留空=使用后端环境变量）
+                      Azure 부서명 (deployment；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.
                     </span>
                     <input
                       className="input"
@@ -520,12 +520,12 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                       name="vector_embedding_azure_deployment"
                     />
                     <div className="text-[11px] text-subtext">
-                      当前有效：{baselineSettings.vector_embedding_effective_azure_deployment || "(공)"}
+                      현재 유효합니다.{baselineSettings.vector_embedding_effective_azure_deployment || "(공)"}
                     </div>
                   </label>
                   <label className="grid gap-1">
                     <span className="text-xs text-subtext">
-                      Azure API 版本（api_version；项目覆盖；留空=使用后端环境变量）
+                      Azure API 버전.api_version；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.
                     </span>
                     <input
                       className="input"
@@ -536,7 +536,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                       name="vector_embedding_azure_api_version"
                     />
                     <div className="text-[11px] text-subtext">
-                      当前有效：{baselineSettings.vector_embedding_effective_azure_api_version || "(공)"}
+                      현재 유효합니다.{baselineSettings.vector_embedding_effective_azure_api_version || "(공)"}
                     </div>
                   </label>
                 </div>
@@ -545,7 +545,7 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
               {embeddingProviderPreview === "sentence_transformers" ? (
                 <label className="grid gap-1">
                   <span className="text-xs text-subtext">
-                    SentenceTransformers 模型（项目覆盖；留空=使用后端环境变量）
+                    SentenceTransformers 모델(프로젝트 범위; 비워두기)=백엔드 환경 변수 사용.
                   </span>
                   <input
                     className="input"
@@ -559,14 +559,14 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                     name="vector_embedding_sentence_transformers_model"
                   />
                   <div className="text-[11px] text-subtext">
-                    当前有效：{baselineSettings.vector_embedding_effective_sentence_transformers_model || "(공)"}
+                    현재 유효합니다.{baselineSettings.vector_embedding_effective_sentence_transformers_model || "(공)"}
                   </div>
                 </label>
               ) : null}
 
               <label className="grid gap-1">
                 <span className="text-xs text-subtext">
-                  Embedding 基础地址（base_url；项目覆盖；留空=使用后端环境变量）
+                  Embedding 기본 주소(base_url；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.
                 </span>
                 <input
                   className="input"
@@ -576,12 +576,12 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   onChange={(e) => setVectorForm((v) => ({ ...v, vector_embedding_base_url: e.target.value }))}
                 />
                 <div className="text-[11px] text-subtext">
-                  当前有效：{baselineSettings.vector_embedding_effective_base_url || "(공)"}
+                  현재 유효합니다.{baselineSettings.vector_embedding_effective_base_url || "(공)"}
                 </div>
               </label>
 
               <label className="grid gap-1">
-                <span className="text-xs text-subtext">Embedding 模型（model；项目覆盖；留空=使用后端环境变量）</span>
+                <span className="text-xs text-subtext">Embedding 모델(model；프로젝트 범위; 비워두기.=백엔드 환경 변수 사용.</span>
                 <input
                   className="input"
                   id="vector_embedding_model"
@@ -590,12 +590,12 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   onChange={(e) => setVectorForm((v) => ({ ...v, vector_embedding_model: e.target.value }))}
                 />
                 <div className="text-[11px] text-subtext">
-                  当前有效：{baselineSettings.vector_embedding_effective_model || "(공)"}
+                  현재 유효합니다.{baselineSettings.vector_embedding_effective_model || "(공)"}
                 </div>
               </label>
 
               <label className="grid gap-1">
-                <span className="text-xs text-subtext">API Key（api_key；项目覆盖；留空不修改）</span>
+                <span className="text-xs text-subtext">API Key（api_key；해당 항목은 변경하지 않고 그대로 둡니다. (해당 항목에 내용이 없을 경우, 빈칸으로 둡니다.)</span>
                 <input
                   className="input"
                   id="vector_embedding_api_key"
@@ -609,12 +609,12 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   }}
                 />
                 <div className="text-[11px] text-subtext">
-                  已保存（项目覆盖）：
+                  저장됨 (덮어쓰기):
                   {baselineSettings.vector_embedding_has_api_key
                     ? baselineSettings.vector_embedding_masked_api_key
                     : "(해당 사항 없음)"}
                   {baselineSettings.vector_embedding_effective_has_api_key
-                    ? ` | 当前有效：${baselineSettings.vector_embedding_effective_masked_api_key}`
+                    ? ` | 현재 유효합니다.${baselineSettings.vector_embedding_effective_masked_api_key}`
                     : "현재 유효한 항목은 없습니다. (현재 유효한 것은 없습니다.)"}
                   {vectorApiKeyClearRequested ? UI_COPY.vectorRag.pendingClearSuffix : ""}
                 </div>
@@ -650,14 +650,14 @@ export function PromptsVectorRagSection(props: PromptsVectorRagSectionProps) {
                   }}
                   type="button"
                 >
-                  恢复使用后端环境变量（清除项目覆盖）
+                  백엔드 환경 변수 사용 재개 (프로젝트 설정을 덮어쓰지 않도록 설정)
                 </button>
               </div>
             </div>
           </details>
         </div>
       ) : (
-        <div className="mt-4 text-xs text-subtext">正在加载向量检索配置…</div>
+        <div className="mt-4 text-xs text-subtext">벡터 검색 구성 정보를 불러오는 중입니다.…</div>
       )}
     </section>
   );

@@ -33,7 +33,7 @@ export function VectorRagDebugPanel(props: {
     <div className="panel p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-sm text-ink">Vector RAG 调试</div>
+          <div className="text-sm text-ink">Vector RAG 디버깅.</div>
           <div className="mt-1 text-[11px] text-subtext">
             {vectorResult ? (
               vectorResult.enabled ? (
@@ -76,7 +76,7 @@ export function VectorRagDebugPanel(props: {
             }}
             type="button"
           >
-            复制结果 JSON
+            복사 결과. JSON
           </button>
           <button
             className="btn btn-secondary"
@@ -87,7 +87,7 @@ export function VectorRagDebugPanel(props: {
             }}
             type="button"
           >
-            导出 JSON
+            내보내기. JSON
           </button>
         </div>
       </div>
@@ -120,7 +120,7 @@ export function VectorRagDebugPanel(props: {
 
         {vectorError ? (
           <div className="rounded-atelier border border-border bg-surface p-3 text-sm text-subtext">
-            <div className="text-ink">查询失败</div>
+            <div className="text-ink">조회에 실패했습니다.</div>
             <div className="mt-1 text-xs text-subtext">
               {vectorError.message} ({vectorError.code})
               {vectorError.requestId ? <span className="ml-2">request_id: {vectorError.requestId}</span> : null}
@@ -175,7 +175,7 @@ export function VectorRagDebugPanel(props: {
 
             <details className="mt-1">
               <summary className="ui-transition-fast cursor-pointer text-xs text-subtext hover:text-ink">
-                注入预览（prompt_block.text_md）
+                주입 미리보기(prompt_block.text_md）
               </summary>
               <pre className="mt-2 max-h-64 overflow-auto rounded-atelier border border-border bg-surface p-3 text-xs text-ink">
                 {vectorResult.prompt_block.text_md || "(공)"}
@@ -210,11 +210,11 @@ export function VectorRagDebugPanel(props: {
 
             <details className="mt-1">
               <summary className="ui-transition-fast cursor-pointer text-xs text-subtext hover:text-ink">
-                final.chunks（按 source/chapter 分组，{vectorResult.final.chunks.length}）
+                final.chunks（누르세요. / 누르십시오. / 누릅니다. (문맥에 따라 적절하게 선택) source/chapter 분류, 그룹 나누기.{vectorResult.final.chunks.length}）
               </summary>
               <div className="mt-2 grid gap-2">
                 {vectorResult.final.chunks.length === 0 ? (
-                  <div className="text-[11px] text-subtext">（空）</div>
+                  <div className="text-[11px] text-subtext">（(공)</div>
                 ) : (
                   groupedVectorFinalChunks.map((src) => (
                     <details key={src.source} className="rounded-atelier border border-border bg-surface p-2" open>
@@ -262,7 +262,7 @@ export function VectorRagDebugPanel(props: {
 
             <details className="mt-1">
               <summary className="ui-transition-fast cursor-pointer text-xs text-subtext hover:text-ink">
-                candidates（前 {Math.min(10, vectorResult.candidates.length)}）
+                candidates（앞 {Math.min(10, vectorResult.candidates.length)}）
               </summary>
               <div className="mt-2 grid gap-2">
                 {vectorResult.candidates.slice(0, 10).map((c) => {
@@ -303,7 +303,7 @@ export function VectorRagDebugPanel(props: {
           </>
         ) : (
           <div className="text-sm text-subtext">
-            提示：当前环境缺 embedding/chroma 时会返回 disabled_reason，但结构仍可用于排查。
+            현재 환경에 필요한 요소가 부족합니다. embedding/chroma 곧 돌아오겠습니다. disabled_reason，하지만, 이 구조를 활용하여 문제점을 파악하는 데 도움을 받을 수 있다.。
           </div>
         )}
       </div>

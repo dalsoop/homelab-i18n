@@ -399,10 +399,10 @@ export function MemoryUpdateDrawer(props: Props) {
           </div>
           <div className="flex items-center gap-2">
             <button className="btn btn-secondary" disabled={!projectId} onClick={openTaskCenter} type="button">
-              任务中心
+              과제 센터.
             </button>
             <button className="btn btn-secondary" aria-label="닫기." onClick={onClose} type="button">
-              关闭
+              닫기.
             </button>
           </div>
         </div>
@@ -470,7 +470,7 @@ export function MemoryUpdateDrawer(props: Props) {
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="text-sm text-ink">{copy.step2}</div>
                   <div className="text-xs text-subtext">
-                    {copy.reviewTitle} | 状态：{humanStatus(proposeResult.change_set.status)} | 条目：
+                    {copy.reviewTitle} | 상태:{humanStatus(proposeResult.change_set.status)} | 항목:
                     {proposeResult.items.length}
                   </div>
                 </div>
@@ -542,7 +542,7 @@ export function MemoryUpdateDrawer(props: Props) {
                 <div className="text-sm text-ink">{copy.step3}</div>
                 {applyResult ? (
                   <div className="text-xs text-subtext">
-                    状态：{humanStatus(applyResult.change_set.status)} {applyResult.idempotent ? "멱등성 (miyeokdeungseong)" : ""}
+                    상태:{humanStatus(applyResult.change_set.status)} {applyResult.idempotent ? "멱등성 (miyeokdeungseong)" : ""}
                   </div>
                 ) : null}
               </div>
@@ -603,7 +603,7 @@ export function MemoryUpdateDrawer(props: Props) {
 
             <div className="rounded-atelier border border-border bg-surface p-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="text-sm text-ink">结构化记忆（调试）</div>
+                <div className="text-sm text-ink">구조화된 기억 (디버깅)</div>
                 <button
                   className="btn btn-secondary"
                   onClick={() => void refreshStructured()}
@@ -647,7 +647,7 @@ export function MemoryUpdateDrawer(props: Props) {
                   </div>
                 </div>
               ) : (
-                <div className="mt-2 text-xs text-subtext">提示：应用后点“刷新”确认结构化事实已落库。</div>
+                <div className="mt-2 text-xs text-subtext">참고: 적용 후 ‘새로 고침’을 클릭하여 구조화된 데이터가 데이터베이스에 저장되었는지 확인하십시오.。</div>
               )}
             </div>
           </div>

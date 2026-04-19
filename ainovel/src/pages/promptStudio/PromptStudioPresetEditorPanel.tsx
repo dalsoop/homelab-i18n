@@ -118,7 +118,7 @@ export function PromptStudioPresetEditorPanel(props: {
     <>
       <div className="panel p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="text-sm font-semibold">预设设置</div>
+          <div className="text-sm font-semibold">사전 설정.</div>
           <div className="flex gap-2">
             <button
               className="btn btn-primary"
@@ -126,7 +126,7 @@ export function PromptStudioPresetEditorPanel(props: {
               disabled={busy || !selectedPresetId}
               type="button"
             >
-              保存预设
+              설정 저장.
             </button>
             <button
               className="btn btn-ghost text-accent hover:bg-accent/10"
@@ -134,14 +134,14 @@ export function PromptStudioPresetEditorPanel(props: {
               disabled={busy || !selectedPresetId}
               type="button"
             >
-              删除预设
+              설정된 기본값 삭제.
             </button>
           </div>
         </div>
 
         <div className="grid gap-4">
           <div className="grid gap-2">
-            <div className="text-xs text-subtext">名称</div>
+            <div className="text-xs text-subtext">이름.</div>
             <input
               className="input"
               value={presetDraftName}
@@ -151,7 +151,7 @@ export function PromptStudioPresetEditorPanel(props: {
           </div>
 
           <div className="grid gap-2">
-            <div className="text-xs text-subtext">active_for（哪些任务使用该预设）</div>
+            <div className="text-xs text-subtext">active_for（어떤 작업에 이 프리셋을 사용했습니까?</div>
             <div className="flex flex-wrap gap-2">
               {tasks.map((t) => {
                 const checked = presetDraftActiveFor.includes(t.key);
@@ -189,19 +189,19 @@ export function PromptStudioPresetEditorPanel(props: {
 
       <div className="panel p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="text-sm font-semibold">提示块</div>
+          <div className="text-sm font-semibold">힌트 블록.</div>
           <button
             className="btn btn-secondary"
             onClick={() => void addBlock()}
             disabled={busy || !selectedPresetId}
             type="button"
           >
-            添加块
+            블록 추가.
           </button>
         </div>
 
         <div className="grid gap-3">
-          {blocks.length === 0 ? <div className="text-sm text-subtext">暂无块</div> : null}
+          {blocks.length === 0 ? <div className="text-sm text-subtext">현재 블록이 없습니다.</div> : null}
           {blocks.map((b, idx) => {
             const d = drafts[b.id];
             const enabled = d?.enabled ?? b.enabled;
@@ -277,7 +277,7 @@ export function PromptStudioPresetEditorPanel(props: {
                       disabled={busy || invalidTriggers.length > 0}
                       type="button"
                     >
-                      保存
+                      저장.
                     </button>
                     <button
                       className="btn btn-ghost px-3 py-1 text-sm text-accent hover:bg-accent/10"
@@ -285,7 +285,7 @@ export function PromptStudioPresetEditorPanel(props: {
                       disabled={busy}
                       type="button"
                     >
-                      删除
+                      삭제하다.
                     </button>
                   </div>
                 </div>
@@ -368,7 +368,7 @@ export function PromptStudioPresetEditorPanel(props: {
 
                   <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
                     <div className="grid gap-2">
-                      <div className="text-xs text-subtext">triggers（按任务触发；不勾选=所有任务）</div>
+                      <div className="text-xs text-subtext">triggers（작업을 통해 실행되지만, 해당 옵션은 선택하지 않음.=모든 과제.</div>
                       <div className="flex flex-wrap gap-2">
                         {tasks.map((t) => {
                           const checked = triggerTokens.includes(t.key);
@@ -416,7 +416,7 @@ export function PromptStudioPresetEditorPanel(props: {
                         })}
                       </div>
                       <div className="grid gap-1">
-                        <div className="text-xs text-subtext">triggers（高级：逗号分隔；可自定义）</div>
+                        <div className="text-xs text-subtext">triggers（고급: 쉼표로 구분하며, 사용자가 직접 설정 가능합니다.</div>
                         <input
                           className="input"
                           value={triggers}
@@ -438,15 +438,15 @@ export function PromptStudioPresetEditorPanel(props: {
                           placeholder="chapter_generate, outline_generate"
                         />
                         {customTriggers.length ? (
-                          <div className="text-xs text-subtext">自定义：{customTriggers.join(", ")}</div>
+                          <div className="text-xs text-subtext">사용자 정의:{customTriggers.join(", ")}</div>
                         ) : null}
                         {invalidTriggers.length ? (
-                          <div className="text-xs text-accent">无效 triggers：{invalidTriggers.join(", ")}</div>
+                          <div className="text-xs text-accent">유효하지 않음. triggers：{invalidTriggers.join(", ")}</div>
                         ) : null}
                       </div>
                     </div>
                     <div className="grid gap-1">
-                      <div className="text-xs text-subtext">marker_key（可空）</div>
+                      <div className="text-xs text-subtext">marker_key（(비워둘 수 있음)</div>
                       <input
                         className="input"
                         value={markerKey}

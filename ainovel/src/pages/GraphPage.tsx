@@ -182,7 +182,7 @@ export function GraphPage() {
   const statusText = result
     ? result.enabled
       ? "활성화되었습니다."
-      : `未启用（${result.disabled_reason ?? "원인 불명."}）`
+      : `사용 중지됨.${result.disabled_reason ?? "원인 불명."}）`
     : "조회되지 않음.";
 
   return (
@@ -206,7 +206,7 @@ export function GraphPage() {
           </button>
           {projectId ? (
             <Link className="btn btn-secondary" to={characterRelationsHref} aria-label="graph_open_character_relations">
-              人物关系编辑
+              인물 관계 설정.
             </Link>
           ) : null}
         </>
@@ -231,7 +231,7 @@ export function GraphPage() {
         />
       </label>
       <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-subtext">
-        <span>示例：</span>
+        <span>예시:</span>
         <button className="btn btn-ghost px-2 py-1 text-xs" onClick={() => setQueryText("Alice")} type="button">
           Alice
         </button>
@@ -312,7 +312,7 @@ export function GraphPage() {
           <RequestIdBadge requestId={requestId} />
         </div>
         <div className="mt-1 text-xs text-subtext">
-          状态：{statusText} | 节点：{result?.nodes?.length ?? 0} | 关系：{result?.edges?.length ?? 0} | 证据：
+          상태:{statusText} | 노드.{result?.nodes?.length ?? 0} | 관계:{result?.edges?.length ?? 0} | 증거:
           {result?.evidence?.length ?? 0}
         </div>
       </div>
@@ -365,7 +365,7 @@ export function GraphPage() {
             ))}
             {(result?.nodes ?? []).length === 0 ? (
               <div className="grid gap-2 text-xs text-subtext">
-                <div>暂无节点</div>
+                <div>현재 연결할 노드가 없습니다.</div>
                 <button
                   className="btn btn-secondary btn-sm w-fit"
                   aria-label="graph_empty_state_run"
@@ -393,7 +393,7 @@ export function GraphPage() {
                 </div>
                 {e.description_md ? <div className="mt-1 text-subtext">{e.description_md}</div> : null}
                 {typeof e.attributes?.context_md === "string" && e.attributes.context_md.trim() ? (
-                  <div className="mt-1 whitespace-pre-wrap text-subtext">语境：{e.attributes.context_md}</div>
+                  <div className="mt-1 whitespace-pre-wrap text-subtext">맥락:{e.attributes.context_md}</div>
                 ) : null}
                 <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
                   <div className="text-[11px] text-subtext">id: {e.id}</div>
@@ -409,13 +409,13 @@ export function GraphPage() {
                       })()}`}
                       aria-label={`graph_open_relation_editor_${e.id}`}
                     >
-                      打开编辑/证据
+                      편집 열기./증거.
                     </Link>
                   ) : null}
                 </div>
               </div>
             ))}
-            {(result?.edges ?? []).length === 0 ? <div className="text-xs text-subtext">暂无关系</div> : null}
+            {(result?.edges ?? []).length === 0 ? <div className="text-xs text-subtext">관계가 없습니다.</div> : null}
           </div>
         </div>
       </div>
@@ -426,12 +426,12 @@ export function GraphPage() {
           {(result?.evidence ?? []).slice(0, 12).map((ev) => (
             <div key={ev.id} className="rounded-atelier border border-border bg-surface p-2 text-xs">
               <div className="text-ink">
-                来源：{ev.source_type}:{ev.source_id ?? "-"}
+                출처:{ev.source_type}:{ev.source_id ?? "-"}
               </div>
               <div className="mt-1 text-subtext">{ev.quote_md || "(공)"}</div>
             </div>
           ))}
-          {(result?.evidence ?? []).length === 0 ? <div className="text-xs text-subtext">暂无证据</div> : null}
+          {(result?.evidence ?? []).length === 0 ? <div className="text-xs text-subtext">현재까지는 증거가 없습니다.</div> : null}
         </div>
       </div>
 

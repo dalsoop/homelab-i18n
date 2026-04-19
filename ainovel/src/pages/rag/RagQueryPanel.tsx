@@ -18,7 +18,7 @@ import {
 const SOURCE_LABEL: Record<VectorSource, string> = {
   worldbook: "세계 백과사전 (segye baekgwasajeon)",
   outline: "개요.",
-  chapter: "장(章).",
+  chapter: "장(章)",
   story_memory: "이야기 기억 (iyagi gieok)",
 };
 
@@ -200,7 +200,7 @@ export function RagQueryPanel(props: {
         <div className="text-sm font-medium text-ink">{UI_COPY.rag.queryTitle}</div>
         <div className="mt-3">
           <label className="text-xs text-subtext" htmlFor="rag-query-text">
-            查询文本（query_text）
+            검색 텍스트 (검색할 텍스트)query_text）
           </label>
           <textarea
             id="rag-query-text"
@@ -227,7 +227,7 @@ export function RagQueryPanel(props: {
               onClick={() => void copyInjectionText()}
               type="button"
             >
-              复制注入文本
+              텍스트 복사 및 삽입.
             </button>
             <button
               className="btn btn-secondary"
@@ -235,7 +235,7 @@ export function RagQueryPanel(props: {
               onClick={() => void copyQueryDebug()}
               type="button"
             >
-              复制排障信息
+              문제 해결 관련 정보 복사.
             </button>
             {queryResult?.counts ? (
               <div className="text-xs text-subtext">
@@ -290,13 +290,13 @@ export function RagQueryPanel(props: {
 
             <div className="mt-2 grid gap-3 sm:grid-cols-2">
               <div>
-                <div className="text-[11px] text-subtext">原始查询（raw_query_text）</div>
+                <div className="text-[11px] text-subtext">원래 검색어 (raw_query_text）</div>
                 <pre className="mt-1 max-h-24 overflow-auto rounded-atelier border border-border bg-canvas p-2 text-[11px] leading-4 text-subtext">
                   {(rawQueryText ?? "").trim() || "(공)"}
                 </pre>
               </div>
               <div>
-                <div className="text-[11px] text-subtext">规范化查询（normalized_query_text）</div>
+                <div className="text-[11px] text-subtext">표준화된 검색(표준화된 쿼리)normalized_query_text）</div>
                 <pre className="mt-1 max-h-24 overflow-auto rounded-atelier border border-border bg-canvas p-2 text-[11px] leading-4 text-subtext">
                   {(normalizedQueryText ?? "").trim() || "(공)"}
                 </pre>
@@ -305,7 +305,7 @@ export function RagQueryPanel(props: {
 
             {queryPreprocessObs ? (
               <details className="mt-2 rounded-atelier border border-border bg-canvas p-3">
-                <summary className="cursor-pointer select-none text-xs">预处理信息（preprocess_obs）</summary>
+                <summary className="cursor-pointer select-none text-xs">사전 처리 정보(preprocess_obs）</summary>
                 <pre className="mt-2 max-h-64 overflow-auto text-[11px] leading-4 text-subtext">
                   {safeJson(queryPreprocessObs)}
                 </pre>
@@ -331,7 +331,7 @@ export function RagQueryPanel(props: {
             ) : null}
 
             <div className="mt-2">
-              混合检索（hybrid）:{" "}
+              혼합 검색(hybrid）:{" "}
               {queryResult.hybrid
                 ? `enabled:${String(queryResult.hybrid.enabled)} | counts:${formatHybridCounts(queryResult.hybrid.counts)} | overfilter:${formatOverfilter(
                     queryResult.hybrid.overfilter,
@@ -340,7 +340,7 @@ export function RagQueryPanel(props: {
             </div>
 
             <div className="mt-1">
-              丢弃原因（drop_by_reason）:{" "}
+              버려진 이유 (또는 폐기 이유)drop_by_reason）:{" "}
               {queryResult.counts
                 ? Object.keys(queryResult.counts.dropped_by_reason ?? {}).length
                   ? Object.entries(queryResult.counts.dropped_by_reason)
@@ -351,17 +351,17 @@ export function RagQueryPanel(props: {
             </div>
 
             <details className="mt-3 rounded-atelier border border-border bg-canvas p-3">
-              <summary className="cursor-pointer select-none text-xs">注入预览（prompt_block.text_md）</summary>
+              <summary className="cursor-pointer select-none text-xs">주입 미리보기(prompt_block.text_md）</summary>
               <pre className="mt-2 max-h-80 overflow-auto whitespace-pre-wrap text-[11px] leading-4 text-subtext">
                 {injectionText || "(empty)"}
               </pre>
             </details>
 
             <details className="mt-3 rounded-atelier border border-border bg-canvas p-3">
-              <summary className="cursor-pointer select-none text-xs">final.chunks（按 source/chapter 分组）</summary>
+              <summary className="cursor-pointer select-none text-xs">final.chunks（누르세요. / 누르십시오. / 누릅니다. (문맥에 따라 적절하게 선택) source/chapter 그룹으로 나누다.</summary>
               <div className="mt-2 grid max-h-96 gap-2 overflow-auto overscroll-contain pr-1">
                 {finalChunks.length === 0 ? (
-                  <div className="text-[11px] text-subtext">（空）</div>
+                  <div className="text-[11px] text-subtext">（(공)</div>
                 ) : (
                   groupedFinalChunks.map((src) => (
                     <details key={src.source} className="rounded-atelier border border-border bg-surface p-2">
@@ -415,7 +415,7 @@ export function RagQueryPanel(props: {
             </details>
           </div>
         ) : (
-          <div className="mt-3 text-xs text-subtext">输入 query_text 并点击“查询”获取注入预览。</div>
+          <div className="mt-3 text-xs text-subtext">입력. query_text “검색” 버튼을 클릭하여 인젝션 미리보기를 확인하세요.。</div>
         )}
       </section>
     </>

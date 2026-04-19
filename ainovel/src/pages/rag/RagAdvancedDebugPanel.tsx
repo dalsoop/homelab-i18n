@@ -65,7 +65,7 @@ export function RagAdvancedDebugPanel(props: {
 
       <div className="mt-3 grid gap-4">
         <div className="rounded-atelier border border-border bg-canvas p-3 text-xs text-subtext">
-          默认仅展示基础信息；{UI_COPY.rag.rerankTitle} 配置与入库/重建（ingest/rebuild）原始结果放在此处统一折叠。
+          기본 정보만 기본적으로 표시합니다.{UI_COPY.rag.rerankTitle} 구성 및 입고./재건(再建).ingest/rebuild）원래 결과는 모두 여기에 모아서 표시합니다.。
         </div>
 
         <div className="rounded-atelier border border-border bg-surface p-4">
@@ -101,10 +101,10 @@ export function RagAdvancedDebugPanel(props: {
                 onChange={(e) => setRerankEnabled(e.target.checked)}
                 disabled={rerankSaving || settingsQuery.loading}
               />
-              启用重排（rerank）
+              재배열 활성화.rerank）
             </label>
             <label className="grid gap-1 sm:col-span-2">
-              <span className="text-xs text-subtext">方法（rerank method）</span>
+              <span className="text-xs text-subtext">방법 (방법).rerank method）</span>
               <select
                 className="select"
                 value={rerankMethod}
@@ -134,7 +134,7 @@ export function RagAdvancedDebugPanel(props: {
             </label>
             <label className="grid gap-1 sm:col-span-3">
               <span className="text-xs text-subtext">
-                hybrid_alpha（0=完全使用 rerank；1=完全保持原始顺序；仅影响 Query 调试请求）
+                hybrid_alpha（0=완전히 사용하다. rerank；1=원래 순서를 완전히 유지하고, 영향을 받는 부분만 변경합니다. Query 디버깅 요청.
               </span>
               <input
                 className="input"
@@ -165,10 +165,10 @@ export function RagAdvancedDebugPanel(props: {
         </div>
 
         <div className="rounded-atelier border border-border bg-surface p-4">
-          <div className="text-sm font-medium text-ink">Super sort（仅影响 Query 调试请求）</div>
+          <div className="text-sm font-medium text-ink">Super sort（영향을 미치다. Query 디버깅 요청.</div>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <label className="grid gap-1 sm:col-span-3">
-              <span className="text-xs text-subtext">模式</span>
+              <span className="text-xs text-subtext">패턴, 양식, 모형. (문맥에 따라 적절한 단어를 선택해야 합니다.)</span>
               <select
                 className="select"
                 value={superSortMode}
@@ -183,7 +183,7 @@ export function RagAdvancedDebugPanel(props: {
 
             {superSortMode === "order" ? (
               <label className="grid gap-1 sm:col-span-3">
-                <span className="text-xs text-subtext">source_order（逗号分隔）</span>
+                <span className="text-xs text-subtext">source_order（쉼표로 구분합니다.</span>
                 <input
                   className="input"
                   value={superSortOrderText}
@@ -257,7 +257,7 @@ export function RagAdvancedDebugPanel(props: {
                 {safeJson(ingestResult)}
               </pre>
             ) : (
-              <div className="mt-2 text-xs text-subtext">点击“{UI_COPY.rag.ingest}”后展示结果。</div>
+              <div className="mt-2 text-xs text-subtext">클릭하세요.“{UI_COPY.rag.ingest}”결과를 곧 보여드리겠습니다.。</div>
             )}
           </section>
           <section className="rounded-atelier border border-border bg-surface p-4">
@@ -267,7 +267,7 @@ export function RagAdvancedDebugPanel(props: {
                 {safeJson(rebuildResult)}
               </pre>
             ) : (
-              <div className="mt-2 text-xs text-subtext">点击“{UI_COPY.rag.rebuild}”后展示结果。</div>
+              <div className="mt-2 text-xs text-subtext">클릭하세요.“{UI_COPY.rag.rebuild}”결과를 곧 보여드리겠습니다.。</div>
             )}
           </section>
         </div>

@@ -133,7 +133,7 @@ export function PreviewPage() {
       <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
         <div className="inline-flex items-center gap-2 text-sm text-ink">
           <BookOpen size={16} />
-          {"장(章)."}
+          {"장(章)"}
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -170,7 +170,7 @@ export function PreviewPage() {
     </div>
   );
 
-  if (!chapterListQuery.hasLoaded && chapterListQuery.loading) return <div className="text-subtext">加载中...</div>;
+  if (!chapterListQuery.hasLoaded && chapterListQuery.loading) return <div className="text-subtext">불러오는 중입니다....</div>;
 
   return (
     <PaperContent className="grid gap-4 pb-24">
@@ -178,7 +178,7 @@ export function PreviewPage() {
         <div className="flex flex-wrap items-center gap-2">
           <button className="btn btn-ghost px-2 py-1 text-xs" onClick={() => navigate("/")} type="button">
             <ChevronLeft size={16} />
-            返回首页
+            홈페이지로 돌아가기.
           </button>
           <button
             className="btn btn-secondary"
@@ -187,11 +187,11 @@ export function PreviewPage() {
             type="button"
           >
             <ChevronLeft size={16} />
-            返回写作
+            글쓰기로 돌아가기.
           </button>
           <button className="btn btn-secondary lg:hidden" onClick={() => setMobileListOpen(true)} type="button">
             <List size={16} />
-            章节列表
+            목차.
           </button>
           <button
             className="btn btn-secondary hidden lg:inline-flex"
@@ -208,7 +208,7 @@ export function PreviewPage() {
             onClick={() => (prevChapter ? openChapter(prevChapter.id) : undefined)}
             type="button"
           >
-            上一章
+            이전 장.
           </button>
           <button
             className="btn btn-secondary"
@@ -216,24 +216,24 @@ export function PreviewPage() {
             onClick={() => (nextChapter ? openChapter(nextChapter.id) : undefined)}
             type="button"
           >
-            下一章
+            다음 장.
           </button>
-          <span className="text-[11px] text-subtext">快捷键：← / →</span>
+          <span className="text-[11px] text-subtext">단축키:← / →</span>
         </div>
 
         <div className="min-w-0 truncate text-xs text-subtext">
-          {activeChapterSummary ? `正在预览：第 ${activeChapterSummary.number} 章` : "장을 선택하세요."}
+          {activeChapterSummary ? `현재 미리보기: 제[숫자]장. ${activeChapterSummary.number} 장(章)` : "장을 선택하세요."}
         </div>
 
         {activeChapterSummary ? (
           <div className="flex flex-wrap items-center gap-2">
             <button className="btn btn-secondary" onClick={() => openReader(activeChapterSummary.id)} type="button">
               <StickyNote size={16} />
-              阅读标注
+              주석을 읽어 보세요.
             </button>
             <button className="btn btn-secondary" onClick={() => openEditor(activeChapterSummary.id)} type="button">
               <Edit3 size={16} />
-              编辑
+              편집하다.
             </button>
           </div>
         ) : null}
@@ -252,13 +252,13 @@ export function PreviewPage() {
               <>
                 <div className="mb-4">
                   <div className="font-content text-2xl text-ink">
-                    第 {activeChapterSummary.number} 章
+                    제. {activeChapterSummary.number} 장(章)
                     {activeChapterSummary.title?.trim() ? ` · ${activeChapterSummary.title}` : ""}
                   </div>
                   {activeChapterSummary.status !== "done" ? (
                     <div className="mt-1 text-xs text-subtext">
-                      提示：本章状态为 {humanizeChapterStatusZh(activeChapterSummary.status)}，向导会以{" "}
-                      {humanizeChapterStatusZh("done")} 作为“写完”判定。
+                      참고: 이 장의 상태는 다음과 같습니다. {humanizeChapterStatusZh(activeChapterSummary.status)}，가이드가 안내해 드릴 것입니다.{" "}
+                      {humanizeChapterStatusZh("done")} “작성 완료” 여부 판단 기준.。
                     </div>
                   ) : null}
                 </div>
@@ -269,7 +269,7 @@ export function PreviewPage() {
                 </div>
               </>
             ) : (
-              <div className="text-subtext">暂无可预览内容</div>
+              <div className="text-subtext">아직 미리보기 내용이 없습니다.</div>
             )}
           </div>
         </section>
@@ -284,10 +284,10 @@ export function PreviewPage() {
         panelClassName="flex h-[85vh] w-full flex-col overflow-hidden rounded-atelier border border-border bg-surface shadow-sm"
       >
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
-          <div className="text-sm text-ink">章节列表</div>
+          <div className="text-sm text-ink">목차.</div>
           <button className="btn btn-secondary" onClick={() => setMobileListOpen(false)} type="button">
             <ChevronLeft size={16} />
-            关闭
+            닫기.
           </button>
         </div>
         <div className="min-h-0 flex-1">{list}</div>

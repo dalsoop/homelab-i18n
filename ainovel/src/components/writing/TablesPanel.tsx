@@ -79,8 +79,8 @@ function toInputString(value: unknown): string {
 
 function requiredFieldError(col: TableColumn, value: unknown): string | null {
   if (!col.required) return null;
-  if (value === null || value === undefined) return `${col.key} 为必填字段`;
-  if (typeof value === "string" && !value.trim()) return `${col.key} 为必填字段`;
+  if (value === null || value === undefined) return `${col.key} 필수 입력 항목입니다.`;
+  if (typeof value === "string" && !value.trim()) return `${col.key} 필수 입력 항목입니다.`;
   return null;
 }
 
@@ -316,7 +316,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
     if (!selectedTable) return;
     const ok = await confirm.confirm({
       title: "표를 삭제하시겠습니까?",
-      description: `将删除「${selectedTable.name}」及其所有行，且不可恢复。`,
+      description: `삭제합니다.「${selectedTable.name}」해당 내용과 모든 관련 항목을 삭제하며, 복구는 불가능합니다.。`,
       confirmText: "삭제하다.",
       cancelText: "취소하다.",
       danger: true,
@@ -365,7 +365,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
           else {
             const n = Number(rawValue);
             if (!Number.isFinite(n)) {
-              toast.toastError(`${c.key}: number 非法`);
+              toast.toastError(`${c.key}: number 불법.`);
               return;
             }
             nextData[c.key] = n;
@@ -463,9 +463,9 @@ function TablesPanelContent(props: TablesPanelContentProps) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="font-content text-2xl text-ink" id={props.titleId}>
-            表格面板（Tables）
+            표시 패널(Tables）
           </div>
-          <div className="mt-1 text-xs text-subtext">用于维护写作过程中的结构化状态（project_tables）。</div>
+          <div className="mt-1 text-xs text-subtext">글쓰기 과정에서 일관성을 유지하는 데 사용되는 구조화된 상태.project_tables）。</div>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -474,31 +474,31 @@ function TablesPanelContent(props: TablesPanelContentProps) {
             onClick={loadTables}
             type="button"
           >
-            刷新
+            새로 고침.
           </button>
           {props.showClose ? (
             <button className="btn btn-secondary" aria-label="닫기." onClick={props.onClose} type="button">
-              关闭
+              닫기.
             </button>
           ) : null}
         </div>
       </div>
 
       {!props.projectId ? (
-        <div className="mt-4 text-sm text-subtext">缺少 projectId，无法加载。</div>
+        <div className="mt-4 text-sm text-subtext">부족하다. / 부족하다. projectId，로드할 수 없습니다.。</div>
       ) : (
         <div className="mt-5 grid gap-4">
           <div className="panel p-4">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div className="grid gap-2">
-                <div className="text-sm text-ink">选择表格</div>
+                <div className="text-sm text-ink">표 선택.</div>
                 <select
                   className="select"
                   aria-label="tables_select"
                   value={selectedTableId}
                   onChange={(e) => setSelectedTableId(e.target.value)}
                 >
-                  <option value="">（未选择）</option>
+                  <option value="">（선택되지 않음.</option>
                   {tables.map((t) => (
                     <option key={t.id} value={t.id}>
                       {t.name} ({t.table_key}){typeof t.row_count === "number" ? ` · rows:${t.row_count}` : ""}
@@ -514,14 +514,14 @@ function TablesPanelContent(props: TablesPanelContentProps) {
             </div>
 
             {tablesError ? <div className="mt-3 text-sm text-danger">{tablesError}</div> : null}
-            {tablesLoading ? <div className="mt-3 text-sm text-subtext">加载中...</div> : null}
+            {tablesLoading ? <div className="mt-3 text-sm text-subtext">불러오는 중입니다....</div> : null}
           </div>
 
           <div className="panel p-4">
-            <div className="text-sm text-ink">新建表格（默认 Key/Value）</div>
+            <div className="text-sm text-ink">새 표 만들기 (기본 설정) Key/Value）</div>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <label className="grid gap-1 text-xs text-subtext">
-                <span>表名</span>
+                <span>테이블 이름.</span>
                 <input
                   className="input"
                   aria-label="create_table_name"
@@ -530,7 +530,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                 />
               </label>
               <label className="grid gap-1 text-xs text-subtext">
-                <span>table_key（可选）</span>
+                <span>table_key（선택 사항입니다.</span>
                 <input
                   className="input"
                   aria-label="create_table_key"
@@ -550,7 +550,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
             <div className="panel p-4">
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div className="grid gap-1">
-                  <div className="text-sm text-ink">表信息</div>
+                  <div className="text-sm text-ink">표 정보.</div>
                   <div className="text-xs text-subtext">
                     id: <span className="font-mono">{selectedTable.id}</span>
                   </div>
@@ -566,15 +566,15 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                     onClick={() => void renameTable()}
                     type="button"
                   >
-                    保存表名
+                    테이블 이름 저장.
                   </button>
                   <button className="btn btn-secondary" onClick={() => void deleteTable()} type="button">
-                    删除表格
+                    표 삭제.
                   </button>
                 </div>
               </div>
               <label className="mt-3 grid gap-1 text-xs text-subtext">
-                <span>表名</span>
+                <span>테이블 이름.</span>
                 <input
                   className="input"
                   aria-label="rename_table_name"
@@ -583,7 +583,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                 />
               </label>
               <label className="mt-3 flex items-center justify-between gap-3 text-sm text-ink">
-                <span>章节定稿自动更新（table_ai_update）</span>
+                <span>장 내용이 최종 확정되면 자동으로 업데이트됩니다.table_ai_update）</span>
                 <input
                   className="checkbox"
                   type="checkbox"
@@ -593,7 +593,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                 />
               </label>
               <div className="mt-1 text-[11px] text-subtext">
-                启用后：章节定稿（done）会按项目设置自动排队更新该表；关闭可减少任务数量。
+                활성화 후: 챕터 최종 확정.done）해당 표는 프로젝트별로 자동 순서대로 업데이트되며, 이 기능을 끄면 작업 수가 줄어듭니다.。
               </div>
             </div>
           ) : null}
@@ -601,7 +601,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
           {selectedTable ? (
             <div className="panel p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="text-sm text-ink">表内容</div>
+                <div className="text-sm text-ink">표 내용.</div>
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     className="btn btn-secondary"
@@ -609,7 +609,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                     onClick={() => void loadRows()}
                     type="button"
                   >
-                    刷新行
+                    새로운 시도.
                   </button>
                   <button
                     className="btn btn-primary"
@@ -617,13 +617,13 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                     onClick={() => void addRow()}
                     type="button"
                   >
-                    新增行
+                    새 행 추가.
                   </button>
                 </div>
               </div>
 
               {rowsError ? <div className="mt-3 text-sm text-danger">{rowsError}</div> : null}
-              {rowsLoading ? <div className="mt-3 text-sm text-subtext">加载中...</div> : null}
+              {rowsLoading ? <div className="mt-3 text-sm text-subtext">불러오는 중입니다....</div> : null}
 
               {selectedColumns.length ? (
                 <div className="mt-4 overflow-auto">
@@ -641,7 +641,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                           </th>
                         ))}
                         <th className="sticky top-0 border-b border-border bg-canvas px-2 py-1 text-left text-xs font-medium text-subtext">
-                          操作
+                          작동하다, 조작하다, 실행하다. (문맥에 따라 적절한 단어 선택)
                         </th>
                       </tr>
                     </thead>
@@ -649,7 +649,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                       {rows.length === 0 ? (
                         <tr>
                           <td className="px-2 py-2 text-sm text-subtext" colSpan={selectedColumns.length + 1}>
-                            暂无数据。可点击「新增行」快速添加。
+                            데이터가 없습니다. “행 추가”를 클릭하여 데이터를 빠르게 입력할 수 있습니다.。
                           </td>
                         </tr>
                       ) : null}
@@ -723,14 +723,14 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                                   onClick={() => void saveRow(r.id)}
                                   type="button"
                                 >
-                                  保存
+                                  저장.
                                 </button>
                                 <button
                                   className="btn btn-secondary px-3 py-1 text-sm"
                                   onClick={() => void deleteRow(r.id)}
                                   type="button"
                                 >
-                                  删除
+                                  삭제하다.
                                 </button>
                               </div>
                               <div className="mt-1 text-[10px] text-subtext">
@@ -745,7 +745,7 @@ function TablesPanelContent(props: TablesPanelContentProps) {
                 </div>
               ) : (
                 <div className="mt-3 text-sm text-subtext">
-                  未找到 schema.columns。可通过 API 更新 schema 后再编辑行数据。
+                  찾을 수 없습니다. schema.columns。이용 가능합니다. / 가능하다. / 이용할 수 있습니다. API 업데이트. schema 데이터 행을 편집한 후 다시 수정합니다.。
                 </div>
               )}
             </div>

@@ -25,7 +25,7 @@ export function WritingToolbar(props: {
     <div className="panel p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-subtext">当前大纲</span>
+          <span className="text-xs text-subtext">현재 개요.</span>
           <select
             className="select w-auto"
             name="active_outline_id"
@@ -39,29 +39,29 @@ export function WritingToolbar(props: {
               </option>
             ))}
           </select>
-          <span className="text-xs text-subtext">共 {props.chaptersCount} 章</span>
+          <span className="text-xs text-subtext">함께. {props.chaptersCount} 장(章)</span>
         </div>
 
         <div className="flex items-center gap-2">
           <button className="btn btn-secondary lg:hidden" onClick={props.onOpenChapterList} type="button">
             <List size={16} />
-            章节列表
+            목차.
           </button>
           <button className="btn btn-primary" onClick={props.onCreateChapter} type="button">
-            新增章节
+            새로운 장 추가.
           </button>
         </div>
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <span className="text-[11px] text-subtext">生成</span>
+        <span className="text-[11px] text-subtext">생성.</span>
         <button
           className="btn btn-secondary"
           disabled={props.aiGenerateDisabled}
           onClick={props.onOpenAiGenerate}
           type="button"
         >
-          AI 生成
+          AI 생성.
         </button>
         <button
           className="btn btn-secondary"
@@ -69,7 +69,7 @@ export function WritingToolbar(props: {
           onClick={props.onOpenBatch}
           type="button"
         >
-          批量生成{props.batchProgressText}
+          대량 생성.{props.batchProgressText}
         </button>
         <button
           className="btn btn-secondary"
@@ -77,16 +77,16 @@ export function WritingToolbar(props: {
           onClick={props.onOpenHistory}
           type="button"
         >
-          生成记录
+          생성 기록.
         </button>
 
         <span className="mx-1 hidden h-4 w-px bg-border sm:block" aria-hidden />
-        <span className="text-[11px] text-subtext">工具</span>
+        <span className="text-[11px] text-subtext">도구.</span>
         <button className="btn btn-secondary" onClick={props.onOpenForeshadow} type="button">
-          伏笔面板
+          복선 암시 패널.
         </button>
         <button className="btn btn-secondary" onClick={props.onOpenTables} type="button">
-          表格面板
+          표 형식 패널.
         </button>
         <button className="btn btn-secondary" onClick={props.onOpenContextPreview} type="button">
           {UI_COPY.writing.contextPreview}
@@ -97,15 +97,15 @@ export function WritingToolbar(props: {
           onClick={props.onOpenMemoryUpdate}
           type="button"
         >
-          记忆更新（Memory Update）
+          기억 업데이트.Memory Update）
         </button>
         <button className="btn btn-secondary" onClick={props.onOpenTaskCenter} type="button">
-          任务中心
+          과제 센터.
         </button>
       </div>
 
       <div className="mt-3 text-xs text-subtext">
-        提示：生成默认不会自动保存；若章节有未保存修改，会在生成前提示“保存并生成 / 直接生成”。
+        참고: 기본적으로 생성 시 자동으로 저장되지 않습니다. 변경한 내용이 저장되지 않은 챕터가 있을 경우, 생성하기 전에 “저장 후 생성”하라는 메시지가 표시됩니다. / 바로 생성합니다.”。
       </div>
     </div>
   );

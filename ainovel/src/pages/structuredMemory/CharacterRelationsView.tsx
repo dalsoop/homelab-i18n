@@ -202,7 +202,7 @@ export function CharacterRelationsView(props: {
         onRequestId(applyRes.request_id ?? null);
 
         const warnings = applyRes.data?.warnings ?? [];
-        if (warnings.length) toast.toastWarning(`已应用，但有 ${warnings.length} 条 warning`, applyRes.request_id);
+        if (warnings.length) toast.toastWarning(`이미 적용되었지만, 몇 가지 문제가 있습니다. ${warnings.length} 개 warning`, applyRes.request_id);
         else toast.toastSuccess("변경 사항이 적용되었습니다.", applyRes.request_id);
 
         setLastChangeSetId(String(changeSetId));
@@ -379,7 +379,7 @@ export function CharacterRelationsView(props: {
     <div className="grid gap-3">
       <div className="rounded-atelier border border-border bg-canvas p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="text-sm text-ink">人物关系（entity_type=character）</div>
+          <div className="text-sm text-ink">인물 관계.entity_type=character）</div>
           <div className="flex flex-wrap items-center gap-2">
             <button
               className="btn btn-secondary btn-sm"
@@ -394,22 +394,22 @@ export function CharacterRelationsView(props: {
               to={`/projects/${projectId}/graph`}
               aria-label="structured_character_relations_open_graph"
             >
-              去图谱 Query
+              도해(圖解) 자료. Query
             </Link>
           </div>
         </div>
         <div className="mt-1 text-xs text-subtext">
-          提示：该视图会过滤出人物实体，并提供关系 CRUD；写入将走 Memory Update 变更集（需要 ?chapterId）。
+          알림: 이 화면에서는 인물 관련 정보를 필터링하여 표시하고, 관련 정보 간의 관계를 함께 보여줍니다. CRUD；기록합니다. 떠나는 길을. Memory Update 변경 사항 집합(필요). ?chapterId）。
         </div>
         {lastChangeSetId ? (
           <div className="mt-2 rounded-atelier border border-border bg-surface p-2 text-xs">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="text-subtext">
-                最近变更集：<span className="font-mono text-ink">{lastChangeSetId}</span>
+                최근 변경 사항:<span className="font-mono text-ink">{lastChangeSetId}</span>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Link className="btn btn-secondary btn-sm" to={`/projects/${projectId}/tasks`}>
-                  打开 Task Center
+                  열다. Task Center
                 </Link>
                 <button
                   className="btn btn-secondary btn-sm"
@@ -426,7 +426,7 @@ export function CharacterRelationsView(props: {
         ) : null}
         {!chapterId ? (
           <div className="mt-2 rounded-atelier border border-border bg-surface p-2 text-xs text-amber-700 dark:text-amber-300">
-            缺少 chapterId：创建/编辑/删除会被禁用。建议从写作页进入，或手动在 URL 加上 ?chapterId=...。
+            부족하다. / 부족하다. chapterId：생성하다./편집하다./삭제하면 해당 기능이 작동하지 않습니다. 글쓰기 페이지에서 시도하거나, 직접 해당 설정을 변경해 보세요. URL 더하여, 게다가, 또한. ?chapterId=...。
           </div>
         ) : null}
         {error ? (
@@ -437,7 +437,7 @@ export function CharacterRelationsView(props: {
       </div>
 
       <div className="rounded-atelier border border-border bg-canvas p-3">
-        <div className="text-sm text-ink">新增关系</div>
+        <div className="text-sm text-ink">새로운 관계 추가.</div>
         <div className="mt-2 grid gap-3 lg:grid-cols-4">
           <label className="grid gap-1">
             <span className="text-xs text-subtext">From</span>
@@ -450,7 +450,7 @@ export function CharacterRelationsView(props: {
               aria-label="structured_character_relations_create_from"
               disabled={!chapterId || saving}
             >
-              <option value="">（请选择）</option>
+              <option value="">（선택해 주세요.</option>
               {characters.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -460,7 +460,7 @@ export function CharacterRelationsView(props: {
           </label>
 
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">关系类型（relation_type）</span>
+            <span className="text-xs text-subtext">관계 유형(relation_type）</span>
             <input
               className="input"
               value={createType}
@@ -482,7 +482,7 @@ export function CharacterRelationsView(props: {
               aria-label="structured_character_relations_create_to"
               disabled={!chapterId || saving}
             >
-              <option value="">（请选择）</option>
+              <option value="">（선택해 주세요.</option>
               {characters.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -509,7 +509,7 @@ export function CharacterRelationsView(props: {
           ))}
         </datalist>
         <label className="mt-3 grid gap-1">
-          <span className="text-xs text-subtext">描述（description_md，可选）</span>
+          <span className="text-xs text-subtext">설명 (seolmyeong)description_md，선택 사항입니다.</span>
           <textarea
             className="textarea"
             rows={2}
@@ -524,13 +524,13 @@ export function CharacterRelationsView(props: {
       <div className="rounded-atelier border border-border bg-canvas p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="text-sm text-ink">
-            关系列表 <span className="text-xs text-subtext">({relations.length})</span>
+            관계 목록. <span className="text-xs text-subtext">({relations.length})</span>
           </div>
           <div className="text-xs text-subtext">
-            人物：{characters.length} | include_deleted: {includeDeleted ? "true" : "false"}
+            등장인물:{characters.length} | include_deleted: {includeDeleted ? "true" : "false"}
           </div>
         </div>
-        {!relations.length && !loading ? <div className="mt-2 text-sm text-subtext">暂无人物关系</div> : null}
+        {!relations.length && !loading ? <div className="mt-2 text-sm text-subtext">인물 간의 관계가 아직 설정되지 않았습니다.</div> : null}
         <div className="mt-2 grid gap-2">
           {relations.map((r) => {
             const relId = String(r.id);
@@ -575,7 +575,7 @@ export function CharacterRelationsView(props: {
                       disabled={!chapterId || saving}
                       type="button"
                     >
-                      删除
+                      삭제하다.
                     </button>
                     <button
                       className="btn btn-secondary btn-sm"
@@ -594,7 +594,7 @@ export function CharacterRelationsView(props: {
 
                 {isEditing ? (
                   <div className="mt-3 grid gap-3 rounded-atelier border border-border bg-canvas p-3">
-                    <div className="text-xs text-subtext">编辑关系（upsert）</div>
+                    <div className="text-xs text-subtext">편집 관계(편집 관계)upsert）</div>
                     <div className="grid gap-3 lg:grid-cols-4">
                       <label className="grid gap-1">
                         <span className="text-xs text-subtext">From</span>
@@ -607,7 +607,7 @@ export function CharacterRelationsView(props: {
                           aria-label="structured_character_relations_edit_from"
                           disabled={!chapterId || saving}
                         >
-                          <option value="">（请选择）</option>
+                          <option value="">（선택해 주세요.</option>
                           {characters.map((c) => (
                             <option key={c.id} value={c.id}>
                               {c.name}
@@ -616,7 +616,7 @@ export function CharacterRelationsView(props: {
                         </select>
                       </label>
                       <label className="grid gap-1">
-                        <span className="text-xs text-subtext">关系类型</span>
+                        <span className="text-xs text-subtext">관계 유형.</span>
                         <input
                           className="input"
                           value={editType}
@@ -637,7 +637,7 @@ export function CharacterRelationsView(props: {
                           aria-label="structured_character_relations_edit_to"
                           disabled={!chapterId || saving}
                         >
-                          <option value="">（请选择）</option>
+                          <option value="">（선택해 주세요.</option>
                           {characters.map((c) => (
                             <option key={c.id} value={c.id}>
                               {c.name}
@@ -658,7 +658,7 @@ export function CharacterRelationsView(props: {
                       </div>
                     </div>
                     <label className="grid gap-1">
-                      <span className="text-xs text-subtext">描述（可选）</span>
+                      <span className="text-xs text-subtext">설명 (선택 사항)</span>
                       <textarea
                         className="textarea"
                         rows={2}
@@ -674,14 +674,14 @@ export function CharacterRelationsView(props: {
                 {open ? (
                   <div className="mt-3 rounded-atelier border border-border bg-canvas p-3">
                     <div className="flex items-center justify-between gap-2">
-                      <div className="text-xs text-subtext">证据（source_id = relation_id）</div>
+                      <div className="text-xs text-subtext">증거.source_id = relation_id）</div>
                       <div className="text-[11px] text-subtext">
-                        {evLoading ? "불러오는 중..." : ev ? `共 ${ev.length} 条` : "로드 중입니다."}
+                        {evLoading ? "불러오는 중..." : ev ? `함께. ${ev.length} 개` : "로드 중입니다."}
                       </div>
                     </div>
-                    {evLoading ? <div className="mt-2 text-xs text-subtext">加载中...</div> : null}
+                    {evLoading ? <div className="mt-2 text-xs text-subtext">불러오는 중입니다....</div> : null}
                     {!evLoading && ev && ev.length === 0 ? (
-                      <div className="mt-2 text-xs text-subtext">暂无证据</div>
+                      <div className="mt-2 text-xs text-subtext">현재까지는 증거가 없습니다.</div>
                     ) : null}
                     {!evLoading && ev && ev.length > 0 ? (
                       <div className="mt-2 grid gap-2">

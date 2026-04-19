@@ -152,22 +152,22 @@ export function RagKnowledgeBasePanel(props: {
             onClick={() => void saveKbOrder()}
             type="button"
           >
-            保存排序
+            저장 및 정렬.
           </button>
         </div>
       </div>
 
       <div className="mt-2 text-xs text-subtext">
-        当前选择（selected_kb_ids）:{" "}
+        현재 선택 항목(현재 선택)selected_kb_ids）:{" "}
         {selectedKbIds.length ? selectedKbIds.join(", ") : "(참고: 기본적으로 활성화된 KB를 검색합니다.)"}
         {queryResult?.kbs?.selected?.length ? (
-          <span className="ml-2">| 查询使用（query_selected）: {queryResult.kbs.selected.join(", ")}</span>
+          <span className="ml-2">| 조회 사용 (query_selected）: {queryResult.kbs.selected.join(", ")}</span>
         ) : null}
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
         <label className="grid gap-1">
-          <span className="text-xs text-subtext">搜索 KB（支持拼音/首字母）</span>
+          <span className="text-xs text-subtext">검색. KB（병음 지원./(알파벳 첫 글자)</span>
           <input
             className="input"
             value={kbSearchText}
@@ -175,10 +175,10 @@ export function RagKnowledgeBasePanel(props: {
             aria-label="rag_kb_search"
             placeholder="예시: 베이징 / BJ / 세계서점."
           />
-          <div className="text-[11px] text-subtext">匹配：kb_id / 名称；拼音匹配失败时自动降级为普通包含匹配。</div>
+          <div className="text-[11px] text-subtext">일치.kb_id / 이름과 발음이 일치하지 않을 경우, 자동으로 일반적인 부분 일치 검색으로 전환합니다.。</div>
         </label>
         <div className="flex items-end justify-end text-xs text-subtext">
-          显示 {filteredKbs.length}/{kbs.length} 条
+          표시하다. {filteredKbs.length}/{kbs.length} 개
         </div>
       </div>
 
@@ -222,12 +222,12 @@ export function RagKnowledgeBasePanel(props: {
                           type="checkbox"
                           checked={selectedKbIds.includes(kb.kb_id)}
                           onChange={() => toggleKbSelected(kb.kb_id)}
-                          aria-label={`选择 KB ${kb.kb_id}`}
+                          aria-label={`선택. KB ${kb.kb_id}`}
                         />
                         <span className="font-medium">{highlightText(kb.kb_id, kbSearchMeta.tokens)}</span>
                         {meta.pinyinHit ? (
                           <span className="rounded border border-border bg-surface px-1 py-0.5 text-[10px] text-subtext">
-                            拼音
+                            병음.
                           </span>
                         ) : null}
                       </label>
@@ -237,12 +237,12 @@ export function RagKnowledgeBasePanel(props: {
                           type="checkbox"
                           checked={Boolean(draft.enabled)}
                           onChange={(e) => updateKbDraft(kb.kb_id, { enabled: e.target.checked })}
-                          aria-label={`启用 KB ${kb.kb_id}`}
+                          aria-label={`활성화하다. KB ${kb.kb_id}`}
                         />
-                        启用
+                        활성화하다.
                       </label>
                       <label className="flex items-center gap-2 text-sm text-ink">
-                        <span className="text-xs text-subtext">权重（weight）</span>
+                        <span className="text-xs text-subtext">가중치(가중치)weight）</span>
                         <input
                           className="input w-24"
                           type="number"
@@ -253,7 +253,7 @@ export function RagKnowledgeBasePanel(props: {
                             if (!Number.isFinite(next)) return;
                             updateKbDraft(kb.kb_id, { weight: next });
                           }}
-                          aria-label={`KB 权重 ${kb.kb_id}`}
+                          aria-label={`KB 중요도, 가중치, 비중. (문맥에 따라 적절한 단어 선택) ${kb.kb_id}`}
                         />
                       </label>
                       <label className="flex items-center gap-2 text-sm text-ink">
@@ -262,7 +262,7 @@ export function RagKnowledgeBasePanel(props: {
                           className="input w-56"
                           value={draft.name}
                           onChange={(e) => updateKbDraft(kb.kb_id, { name: e.target.value })}
-                          aria-label={`KB 名称 ${kb.kb_id}`}
+                          aria-label={`KB 이름. ${kb.kb_id}`}
                         />
                       </label>
                     </div>
@@ -272,7 +272,7 @@ export function RagKnowledgeBasePanel(props: {
                         className="btn btn-primary"
                         disabled={!projectId || kbSaveLoadingId === kb.kb_id || !dirty}
                         onClick={() => void saveKb(kb.kb_id)}
-                        aria-label={`保存 KB ${kb.kb_id}`}
+                        aria-label={`저장. KB ${kb.kb_id}`}
                         type="button"
                       >
                         {kbSaveLoadingId === kb.kb_id ? "저장 중…" : dirty ? "저장." : "저장됨."}
@@ -286,7 +286,7 @@ export function RagKnowledgeBasePanel(props: {
                           kb.kb_id === "default"
                         }
                         onClick={() => void deleteKb(kb.kb_id)}
-                        aria-label={`删除 KB ${kb.kb_id}`}
+                        aria-label={`삭제하다. KB ${kb.kb_id}`}
                         type="button"
                       >
                         {kbDeleteLoadingId === kb.kb_id ? "삭제 중…" : "삭제하다."}
@@ -317,10 +317,10 @@ export function RagKnowledgeBasePanel(props: {
               );
             })
           ) : (
-            <div className="text-xs text-subtext">无匹配 KB。</div>
+            <div className="text-xs text-subtext">일치하는 항목이 없습니다. KB。</div>
           )
         ) : (
-          <div className="text-xs text-subtext">暂无 KB（将自动创建 default）。</div>
+          <div className="text-xs text-subtext">아직 정보가 없습니다. KB（자동으로 생성됩니다. default）。</div>
         )}
       </div>
 

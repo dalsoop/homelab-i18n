@@ -73,7 +73,7 @@ export function RegisterPage() {
               <div className="text-xs">{UI_COPY.auth.passwordHint}</div>
               {nextPath !== "/" ? (
                 <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span>注册后将进入：</span>
+                  <span>등록 후에는 다음 페이지로 이동합니다.</span>
                   <span className="max-w-full truncate rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-ink">
                     {nextPath}
                   </span>
@@ -124,7 +124,7 @@ export function RegisterPage() {
                     required
                   />
                 </label>
-                {passwordMismatch ? <div className="text-xs text-danger">两次输入的密码不一致</div> : null}
+                {passwordMismatch ? <div className="text-xs text-danger">입력하신 비밀번호가 서로 일치하지 않습니다.</div> : null}
               </div>
 
               <div className="flex items-center justify-end gap-2">
@@ -145,7 +145,7 @@ export function RegisterPage() {
               <div>
                 <div className="my-3 flex items-center gap-3 text-xs text-subtext">
                   <div className="h-px flex-1 bg-border" />
-                  <div>或</div>
+                  <div>또는.</div>
                   <div className="h-px flex-1 bg-border" />
                 </div>
                 <button

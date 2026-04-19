@@ -166,7 +166,7 @@ export function PromptStudioPage() {
     if (!selectedPresetId || !selectedPreset) return;
     const ok = await confirm.confirm({
       title: UI_COPY.promptStudio.confirmDeletePresetTitle,
-      description: `将删除预设“${selectedPreset.name}”及其所有块。该操作不可撤销。`,
+      description: `설정된 기본값을 삭제합니다.“${selectedPreset.name}”해당 작업은 해당 블록을 모두 포함하며, 실행 후에는 되돌릴 수 없습니다.。`,
       confirmText: UI_COPY.promptStudio.confirmDeletePresetConfirm,
       danger: true,
     });
@@ -301,7 +301,7 @@ export function PromptStudioPage() {
 
       const triggerValidation = parseTriggersWithValidation(draft.triggers);
       if (triggerValidation.invalid.length) {
-        toast.toastError(`triggers 无效：${triggerValidation.invalid.join(", ")}`);
+        toast.toastError(`triggers 유효하지 않음.${triggerValidation.invalid.join(", ")}`);
         return;
       }
 
@@ -349,7 +349,7 @@ export function PromptStudioPage() {
       const ok = await confirm.confirm({
         title: UI_COPY.promptStudio.confirmDeleteBlockTitle,
         description: b
-          ? `将删除提示块“${b.name}”。该操作不可撤销。`
+          ? `알림 상자를 삭제합니다.“${b.name}”。이 작업은 되돌릴 수 없습니다.。`
           : UI_COPY.promptStudio.confirmDeleteBlockDescFallback,
         confirmText: UI_COPY.promptStudio.confirmDeleteBlockConfirm,
         danger: true,
@@ -531,7 +531,7 @@ export function PromptStudioPage() {
         });
 
         toast.toastSuccess(
-          `已导入整套 created:${applyRes.data.created} updated:${applyRes.data.updated} skipped:${applyRes.data.skipped}`,
+          `전체 세트가 가져와졌습니다. created:${applyRes.data.created} updated:${applyRes.data.updated} skipped:${applyRes.data.skipped}`,
         );
         await reloadAll();
       } catch (e) {
@@ -627,7 +627,7 @@ export function PromptStudioPage() {
     return (
       <div className="grid gap-6">
         <div className="error-card">
-          <div className="state-title">加载失败</div>
+          <div className="state-title">불러오기 실패.</div>
           <div className="state-desc">{`${loadError.message} (${loadError.code})`}</div>
           {loadError.requestId ? (
             <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-subtext">
@@ -637,13 +637,13 @@ export function PromptStudioPage() {
                 onClick={() => void copyText(loadError.requestId!, { title: "요청 ID를 복사합니다." })}
                 type="button"
               >
-                复制 request_id
+                복사하다. request_id
               </button>
             </div>
           ) : null}
           <div className="mt-4 flex flex-wrap gap-2">
             <button className="btn btn-primary" onClick={() => void reloadAll()} type="button">
-              重试
+              다시 시도하세요.
             </button>
           </div>
         </div>
@@ -689,14 +689,14 @@ export function PromptStudioPage() {
           <DebugDetails title={UI_COPY.promptStudio.conceptTitle}>
             <div className="grid gap-1 text-sm text-subtext">
               <div>
-                <span className="font-medium text-ink">预设（Preset）</span>：一套“提示蓝图”，通过{" "}
-                <span className="font-medium text-ink">active_for</span> 决定哪些任务使用它（大纲/章节/规划/润色）。
+                <span className="font-medium text-ink">사전 설정(사전 설정).Preset）</span>：“힌트 청사진” 세트를 통해.{" "}
+                <span className="font-medium text-ink">active_for</span> 어떤 작업에 이 도구를 사용할지 결정합니다(개요)./장(章)/계획./다듬어서.。
               </div>
               <div>
-                <span className="font-medium text-ink">提示块（Block）</span>：可排序/启停，支持
-                role、triggers（按任务触发） 、token 预算与后端统一渲染。
+                <span className="font-medium text-ink">힌트 블록.Block）</span>：정렬 가능./시작 및 종료, 지원합니다.
+                role、triggers（임무를 수행하면 활성화됩니다. 、token 예산 및 백엔드 통합 렌더링.。
               </div>
-              <div>若同一任务被多个预设勾选，系统会优先使用“最近更新”的预设（历史导入的预设通常作为兜底）。</div>
+              <div>동일한 작업에 대해 여러 개의 기본 설정이 선택된 경우, 시스템은 가장 최근에 업데이트된 설정을 우선적으로 사용합니다. (이전에 가져온 설정은 기본 설정으로 사용됩니다.)。</div>
             </div>
           </DebugDetails>
         </div>

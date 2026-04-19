@@ -116,9 +116,9 @@ export function ExportPage() {
       <section className="panel p-8">
         <div className="flex items-start justify-between gap-4">
           <div className="grid gap-2">
-            <div className="font-content text-xl">导出 Markdown</div>
+            <div className="font-content text-xl">내보내기. Markdown</div>
             <div className="text-xs text-subtext">
-              按选项生成并下载 `.md` 文件（如浏览器拦截下载，请允许该站点下载）。
+              선택 항목에 따라 생성하고 다운로드합니다. `.md` (예: 브라우저 설정으로 인해 다운로드가 차단된 경우, 해당 웹사이트의 다운로드를 허용해 주세요.)。
             </div>
           </div>
           <button
@@ -135,7 +135,7 @@ export function ExportPage() {
 
         <div className="mt-5 grid gap-4">
           <div className="grid gap-2">
-            <div className="text-xs text-subtext">包含内容</div>
+            <div className="text-xs text-subtext">포함 내용.</div>
             <AtelierOptionControl
               checked={form.include_settings}
               disabled={exporting}
@@ -143,7 +143,7 @@ export function ExportPage() {
               onCheckedChange={(next) => setForm((v) => ({ ...v, include_settings: next }))}
               type="checkbox"
             >
-              设定
+              설정.
             </AtelierOptionControl>
             <AtelierOptionControl
               checked={form.include_characters}
@@ -152,7 +152,7 @@ export function ExportPage() {
               onCheckedChange={(next) => setForm((v) => ({ ...v, include_characters: next }))}
               type="checkbox"
             >
-              角色卡
+              캐릭터 카드.
             </AtelierOptionControl>
             <AtelierOptionControl
               checked={form.include_outline}
@@ -161,12 +161,12 @@ export function ExportPage() {
               onCheckedChange={(next) => setForm((v) => ({ ...v, include_outline: next }))}
               type="checkbox"
             >
-              大纲
+              개요.
             </AtelierOptionControl>
           </div>
 
           <div className="grid gap-2">
-            <div className="text-xs text-subtext">章节范围</div>
+            <div className="text-xs text-subtext">장(章)의 범위.</div>
             <AtelierOptionControl
               checked={form.chapters === "all"}
               disabled={exporting}
@@ -177,7 +177,7 @@ export function ExportPage() {
               }}
               type="radio"
             >
-              全部章节
+              전체 챕터.
             </AtelierOptionControl>
             <AtelierOptionControl
               checked={form.chapters === "done"}
@@ -189,13 +189,13 @@ export function ExportPage() {
               }}
               type="radio"
             >
-              仅定稿章节
+              최종 확정된 장만.
             </AtelierOptionControl>
-            <div className="text-[11px] text-subtext">定稿章节：章节状态为“定稿（done）”。</div>
+            <div className="text-[11px] text-subtext">최종 확정된 장: 해당 장의 상태는 “최종 확정”으로 표시됩니다.done）”。</div>
           </div>
 
           <details className="surface p-3 text-xs text-subtext">
-            <summary className="ui-transition-fast cursor-pointer hover:text-ink">排障信息（请求 URL）</summary>
+            <summary className="ui-transition-fast cursor-pointer hover:text-ink">장애 정보(요청). URL）</summary>
             <div className="mt-2 break-all">{url || "(항목을 선택해 주세요.)"}</div>
           </details>
         </div>

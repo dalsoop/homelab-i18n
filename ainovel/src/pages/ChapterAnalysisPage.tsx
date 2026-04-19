@@ -110,11 +110,11 @@ export function ChapterAnalysisPage() {
     <div className="grid min-w-0 gap-4 overflow-x-hidden">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="font-content text-2xl text-ink">章节标注回溯</div>
+          <div className="font-content text-2xl text-ink">장(章) 표시를 통해 이전 내용 추적.</div>
           <div className="mt-1 text-xs text-subtext">
             {chapter ? (
               <>
-                第 {chapter.number} 章 · {(chapter.title ?? "").trim() || "제목 없음."}
+                제. {chapter.number} 장(章) · {(chapter.title ?? "").trim() || "제목 없음."}
               </>
             ) : chapterId ? (
               <span className="font-mono break-all">{chapterId}</span>
@@ -137,7 +137,7 @@ export function ChapterAnalysisPage() {
               navigate(qs ? `/projects/${projectId}/writing?${qs}` : `/projects/${projectId}/writing`);
             }}
           >
-            返回写作页
+            작성 페이지로 돌아가기.
           </button>
           <button
             className="btn btn-secondary"
@@ -158,7 +158,7 @@ export function ChapterAnalysisPage() {
                 setSearchParams(next, { replace: true });
               }}
             >
-              清除选择
+              선택 항목 삭제.
             </button>
           ) : null}
         </div>
@@ -173,7 +173,7 @@ export function ChapterAnalysisPage() {
 
       {invalidCount > 0 ? (
         <div className="rounded-atelier border border-accent/60 bg-surface p-3 text-sm text-ink">
-          有 {invalidCount} 条记忆未定位到正文，已从高亮中过滤（侧栏仍可查看）。
+          있다. {invalidCount} 해당 메모는 본문에서 찾을 수 없어 강조 표시된 부분에서 제외되었습니다. (단, 사이드바에서는 여전히 확인할 수 있습니다.)。
         </div>
       ) : null}
 
@@ -193,11 +193,11 @@ export function ChapterAnalysisPage() {
               </div>
             </div>
           ) : !chapterId ? (
-            <div className="p-3 text-sm text-subtext">请从写作页进入：需要在 URL 上带 `?chapterId=...`。</div>
+            <div className="p-3 text-sm text-subtext">작성 페이지로 이동하여 다음 내용을 입력하세요. URL 상단에 위치하다. `?chapterId=...`。</div>
           ) : !chapter ? (
-            <div className="p-3 text-sm text-subtext">未加载到章节。</div>
+            <div className="p-3 text-sm text-subtext">해당 장이 아직 로드되지 않았습니다.。</div>
           ) : !(chapter.content_md ?? "").trim() ? (
-            <div className="p-3 text-sm text-subtext">章节正文为空。</div>
+            <div className="p-3 text-sm text-subtext">해당 장(章)의 내용은 없습니다.。</div>
           ) : (
             <div className="rounded-atelier border border-border bg-canvas p-4">
               <AnnotatedText

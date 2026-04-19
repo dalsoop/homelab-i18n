@@ -195,7 +195,7 @@ export function SearchPage() {
         navigate(`/projects/${projectId}/structured-memory`);
         return;
       }
-      toast.toastWarning(`该来源暂不支持跳转：${it.source_type}`);
+      toast.toastWarning(`해당 출처에서는 링크 연결을 지원하지 않습니다.${it.source_type}`);
     },
     [navigate, projectId, query, toast],
   );

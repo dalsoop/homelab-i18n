@@ -93,7 +93,7 @@ export function MarkdownEditor({
                   transition={tabIndicatorTransition}
                 />
               ) : null}
-              <span className="relative z-10">编辑</span>
+              <span className="relative z-10">편집하다.</span>
             </button>
             <button
               className={clsx(
@@ -110,11 +110,11 @@ export function MarkdownEditor({
                   transition={tabIndicatorTransition}
                 />
               ) : null}
-              <span className="relative z-10">预览</span>
+              <span className="relative z-10">미리 보기.</span>
             </button>
           </div>
         </LayoutGroup>
-        <div className="text-xs text-subtext">字数：{value.length}</div>
+        <div className="text-xs text-subtext">단어 수:{value.length}</div>
       </div>
       {tab === "edit" ? (
         <textarea

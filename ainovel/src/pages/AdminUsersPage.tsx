@@ -368,8 +368,8 @@ export function AdminUsersPage() {
     return (
       <div className="mx-auto max-w-screen-md px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-atelier border border-border bg-surface p-6">
-          <div className="font-content text-xl text-ink">管理员用户管理</div>
-          <div className="mt-2 text-sm text-subtext">当前账号无管理员权限。请使用管理员账号登录。</div>
+          <div className="font-content text-xl text-ink">관리자 사용자 관리.</div>
+          <div className="mt-2 text-sm text-subtext">현재 계정으로는 관리자 권한이 없습니다. 관리자 계정으로 로그인해 주세요.。</div>
         </div>
       </div>
     );
@@ -379,8 +379,8 @@ export function AdminUsersPage() {
     <div className="mx-auto max-w-screen-xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="font-content text-2xl text-ink">管理员用户管理</div>
-          <div className="mt-1 text-xs text-subtext">创建用户 / 重置密码 / 启用禁用 / 在线与统计概览</div>
+          <div className="font-content text-2xl text-ink">관리자 사용자 관리.</div>
+          <div className="mt-1 text-xs text-subtext">사용자 생성. / 비밀번호 재설정. / 사용/사용 중지. / 온라인 통계 요약 및 개요.</div>
         </div>
         <div className="flex gap-2">
           <button className="btn btn-secondary" disabled={loading} onClick={() => void load()} type="button">
@@ -391,30 +391,30 @@ export function AdminUsersPage() {
 
       <section className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-atelier border border-border bg-surface p-4">
-          <div className="text-xs text-subtext">在线用户</div>
+          <div className="text-xs text-subtext">온라인 사용자.</div>
           <div className="mt-1 text-2xl font-semibold text-ink">{fmtCount(summary.total_online_users)}</div>
           <div className="mt-1 text-xs text-subtext">
-            窗口 {Math.max(1, Math.floor(summary.online_window_seconds / 60))} 分钟
+            창문. {Math.max(1, Math.floor(summary.online_window_seconds / 60))} 분.
           </div>
         </div>
         <div className="rounded-atelier border border-border bg-surface p-4">
-          <div className="text-xs text-subtext">总用户 / 筛选后</div>
+          <div className="text-xs text-subtext">전체 사용자 수. / 선별 후.</div>
           <div className="mt-1 text-2xl font-semibold text-ink">
             {fmtCount(summary.total_users)} / {fmtCount(summary.filtered_total_users)}
           </div>
           <div className="mt-1 text-xs text-subtext">
-            管理员 {fmtCount(summary.total_admin_users)}，禁用 {fmtCount(summary.total_disabled_users)}
+            관리자 {fmtCount(summary.total_admin_users)}，사용 금지. {fmtCount(summary.total_disabled_users)}
           </div>
         </div>
         <div className="rounded-atelier border border-border bg-surface p-4">
-          <div className="text-xs text-subtext">累计调用次数（LLM API）</div>
+          <div className="text-xs text-subtext">총 호출 횟수(LLM API）</div>
           <div className="mt-1 text-2xl font-semibold text-ink">{fmtCount(summary.total_generation_calls)}</div>
-          <div className="mt-1 text-xs text-subtext">失败 {fmtCount(summary.total_generation_error_calls)}</div>
+          <div className="mt-1 text-xs text-subtext">실패. {fmtCount(summary.total_generation_error_calls)}</div>
         </div>
         <div className="rounded-atelier border border-border bg-surface p-4">
-          <div className="text-xs text-subtext">累计生成字数</div>
+          <div className="text-xs text-subtext">지금까지 생성된 글자 수.</div>
           <div className="mt-1 text-2xl font-semibold text-ink">{fmtCount(summary.total_generated_chars)}</div>
-          <div className="mt-1 text-xs text-subtext">统计更新时间：{fmtDateTime(summary.generated_at)}</div>
+          <div className="mt-1 text-xs text-subtext">통계 업데이트 시간:{fmtDateTime(summary.generated_at)}</div>
         </div>
       </section>
 
@@ -425,10 +425,10 @@ export function AdminUsersPage() {
           onApplySearch();
         }}
       >
-        <div className="text-sm font-medium text-ink">筛选与分页</div>
+        <div className="text-sm font-medium text-ink">필터링 및 페이지 나누기.</div>
         <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto]">
           <label className="text-sm text-ink">
-            <div className="text-xs text-subtext">按用户 ID / 显示名 / 邮箱筛选</div>
+            <div className="text-xs text-subtext">사용자 요청에 따라. ID / 표시 이름. / 이메일 주소 필터링.</div>
             <input
               id="admin_users_search"
               className="input mt-1"
@@ -445,19 +445,19 @@ export function AdminUsersPage() {
               checked={onlineOnly}
               onChange={(e) => onToggleOnlineOnly(e.target.checked)}
             />
-            <span>仅看在线用户</span>
+            <span>온라인 사용자만 보기.</span>
           </label>
           <button className="btn btn-secondary self-end" type="submit">
-            应用筛选
+            응용 프로그램 필터링.
           </button>
           <button className="btn btn-secondary self-end" onClick={onResetSearch} type="button">
-            重置
+            초기화하다.
           </button>
         </div>
 
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-subtext">
           <div>
-            当前每页 {fmtCount(pagination.limit)} 条，已加载 {fmtCount(visibleUsers.length)} 条
+            현재 페이지. {fmtCount(pagination.limit)} 완료되었습니다. {fmtCount(visibleUsers.length)} 개
           </div>
           <div className="flex gap-2">
             <button
@@ -466,7 +466,7 @@ export function AdminUsersPage() {
               onClick={onPrevPage}
               type="button"
             >
-              上一页
+              이전 페이지.
             </button>
             <button
               className="btn btn-secondary btn-sm"
@@ -474,7 +474,7 @@ export function AdminUsersPage() {
               onClick={onNextPage}
               type="button"
             >
-              下一页
+              다음 페이지.
             </button>
           </div>
         </div>
@@ -488,13 +488,13 @@ export function AdminUsersPage() {
           void createUser();
         }}
       >
-        <div className="text-sm font-medium text-ink">创建用户</div>
+        <div className="text-sm font-medium text-ink">사용자 생성.</div>
         <div className="mt-1 text-xs text-subtext">
-          提示：留空“初始密码”会由系统生成一次性密码。一次性密码不会持久化保存，刷新页面后无法找回；建议创建/重置后立即复制并通过安全渠道发送给用户。
+          알림: “초기 비밀번호”를 입력하지 않으면 시스템에서 일회용 비밀번호를 자동으로 생성합니다. 이 일회용 비밀번호는 저장되지 않으며, 페이지를 새로 고치면 다시 사용할 수 없습니다. 따라서 비밀번호를 설정하는 것이 좋습니다./초기화 후 즉시 복사하여 안전한 경로를 통해 사용자에게 전달합니다.。
         </div>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
           <label className="text-sm text-ink">
-            <div className="text-xs text-subtext">用户 ID（user_id）</div>
+            <div className="text-xs text-subtext">사용자. ID（user_id）</div>
             <input
               id="admin_users_user_id"
               className="input mt-1"
@@ -504,7 +504,7 @@ export function AdminUsersPage() {
             />
           </label>
           <label className="text-sm text-ink">
-            <div className="text-xs text-subtext">显示名（display_name）</div>
+            <div className="text-xs text-subtext">표시 이름 (display_name）</div>
             <input
               id="admin_users_display_name"
               className="input mt-1"
@@ -514,7 +514,7 @@ export function AdminUsersPage() {
             />
           </label>
           <label className="text-sm text-ink">
-            <div className="text-xs text-subtext">邮箱（email，可选）</div>
+            <div className="text-xs text-subtext">이메일 주소email，선택 사항입니다.</div>
             <input
               id="admin_users_email"
               className="input mt-1"
@@ -524,7 +524,7 @@ export function AdminUsersPage() {
             />
           </label>
           <label className="text-sm text-ink">
-            <div className="text-xs text-subtext">初始密码（password，可选）</div>
+            <div className="text-xs text-subtext">초기 비밀번호:password，선택 사항입니다.</div>
             <input
               id="admin_users_password"
               className="input mt-1"
@@ -546,7 +546,7 @@ export function AdminUsersPage() {
               checked={form.is_admin}
               onChange={(e) => setForm((v) => ({ ...v, is_admin: e.target.checked }))}
             />
-            <span>管理员（is_admin）</span>
+            <span>관리자(is_admin）</span>
           </label>
           <button className="btn btn-primary" disabled={creatingUser} type="submit">
             {creatingUser ? "전송 중…" : "생성하다."}
@@ -555,9 +555,9 @@ export function AdminUsersPage() {
       </form>
 
       <section className="mt-6 rounded-atelier border border-border bg-surface p-4">
-        <div className="text-sm font-medium text-ink">用户列表</div>
+        <div className="text-sm font-medium text-ink">사용자 목록.</div>
         <div className="mt-1 text-xs text-subtext">
-          安全提示：一次性密码仅用于首次登录/找回；建议用户首次登录后尽快修改。为降低泄露风险，本页默认不显示明文，一键复制后会自动隐藏。
+          보안 안내: 일회용 비밀번호는 최초 로그인 시에만 사용하십시오./찾아올 수 있습니다. 사용자는 처음 로그인한 후 가능한 한 빨리 비밀번호를 변경하는 것이 좋습니다. 보안 위험을 줄이기 위해 이 페이지에서는 기본적으로 비밀번호를 텍스트 형태로 표시하지 않으며, 복사 버튼을 클릭하면 자동으로 숨겨집니다.。
         </div>
 
         <div className="mt-3 grid gap-3 md:hidden" aria-label="admin_users_cards">
@@ -578,11 +578,11 @@ export function AdminUsersPage() {
                 </div>
                 <div className="mt-1 break-all font-mono text-xs text-subtext">{u.id}</div>
                 <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-subtext">
-                  <span>管理员：{humanizeYesNo(u.is_admin)}</span>
-                  <span>已禁用：{humanizeYesNo(u.disabled)}</span>
-                  <span>调用：{fmtCount(u.usage?.total_generation_calls ?? 0)}</span>
-                  <span>字数：{fmtCount(u.usage?.total_generated_chars ?? 0)}</span>
-                  <span className="col-span-2">最后活跃：{fmtDateTime(u.activity?.last_seen_at)}</span>
+                  <span>관리자:{humanizeYesNo(u.is_admin)}</span>
+                  <span>사용 중지됨:{humanizeYesNo(u.disabled)}</span>
+                  <span>호출:{fmtCount(u.usage?.total_generation_calls ?? 0)}</span>
+                  <span>단어 수:{fmtCount(u.usage?.total_generated_chars ?? 0)}</span>
+                  <span className="col-span-2">최근 활동:{fmtDateTime(u.activity?.last_seen_at)}</span>
                 </div>
               </div>
 
@@ -594,7 +594,7 @@ export function AdminUsersPage() {
                     onClick={() => void copyTempPassword(u.id)}
                     type="button"
                   >
-                    复制并隐藏
+                    복사하여 숨기기.
                   </button>
                 ) : null}
                 <button
@@ -604,7 +604,7 @@ export function AdminUsersPage() {
                   type="button"
                   title="일회용 비밀번호가 생성되었습니다. (현재 페이지에서만 표시되며, 즉시 복사하여 사용하시기 바랍니다.)"
                 >
-                  重置密码
+                  비밀번호 재설정.
                 </button>
                 <button
                   className="btn btn-secondary btn-sm"
@@ -617,7 +617,7 @@ export function AdminUsersPage() {
               </div>
             </div>
           ))}
-          {visibleUsers.length === 0 ? <div className="p-2 text-xs text-subtext">暂无数据</div> : null}
+          {visibleUsers.length === 0 ? <div className="p-2 text-xs text-subtext">데이터가 없습니다.</div> : null}
         </div>
 
         <div className="mt-3 hidden overflow-auto md:block">
@@ -625,34 +625,34 @@ export function AdminUsersPage() {
             <thead className="text-xs text-subtext">
               <tr>
                 <th className="py-2 pr-3" scope="col">
-                  用户 ID
+                  사용자. ID
                 </th>
                 <th className="py-2 pr-3" scope="col">
-                  显示名
+                  표시 이름.
                 </th>
                 <th className="py-2 pr-3" scope="col">
-                  管理员
+                  관리자
                 </th>
                 <th className="py-2 pr-3" scope="col">
-                  已禁用
+                  사용 중지됨.
                 </th>
                 <th className="py-2 pr-3" scope="col">
-                  在线
+                  온라인.
                 </th>
                 <th className="py-2 pr-3" scope="col">
-                  最后活跃
+                  최근 활동
                 </th>
                 <th className="py-2 pr-3" scope="col">
-                  调用次数
+                  호출 횟수.
                 </th>
                 <th className="py-2 pr-3" scope="col">
-                  生成字数
+                  생성된 글자 수.
                 </th>
                 <th className="py-2 pr-3" scope="col">
-                  一次性密码
+                  일회용 비밀번호.
                 </th>
                 <th className="py-2 pr-3" scope="col">
-                  操作
+                  작동하다, 조작하다, 실행하다. (문맥에 따라 적절한 단어 선택)
                 </th>
               </tr>
             </thead>
@@ -685,7 +685,7 @@ export function AdminUsersPage() {
                         onClick={() => void copyTempPassword(u.id)}
                         type="button"
                       >
-                        复制并隐藏
+                        복사하여 숨기기.
                       </button>
                     ) : (
                       <span className="text-subtext">-</span>
@@ -700,7 +700,7 @@ export function AdminUsersPage() {
                         type="button"
                         title="일회용 비밀번호가 생성되었습니다. (현재 페이지에서만 표시되며, 즉시 복사하여 사용하시기 바랍니다.)"
                       >
-                        重置密码
+                        비밀번호 재설정.
                       </button>
                       <button
                         className="btn btn-secondary btn-sm"
@@ -717,7 +717,7 @@ export function AdminUsersPage() {
               {visibleUsers.length === 0 ? (
                 <tr>
                   <td className="py-3 text-xs text-subtext" colSpan={10}>
-                    暂无数据
+                    데이터가 없습니다.
                   </td>
                 </tr>
               ) : null}

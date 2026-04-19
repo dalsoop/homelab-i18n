@@ -37,10 +37,10 @@ export function RouteErrorPage() {
 
           <div className="mt-5 flex flex-wrap items-center gap-2">
             <button className="btn btn-primary" onClick={() => window.location.reload()} type="button">
-              刷新页面
+              페이지 새로 고침.
             </button>
             <button className="btn btn-secondary" onClick={() => window.location.assign("/")} type="button">
-              返回首页
+              홈페이지로 돌아가기.
             </button>
           </div>
         </div>

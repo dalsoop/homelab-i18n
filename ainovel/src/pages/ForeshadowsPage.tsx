@@ -33,7 +33,7 @@ const OPEN_LOOPS_LIMIT_MAX = 200;
 
 function labelForChapter(chapter: ChapterListItem): string {
   const title = String(chapter.title || "").trim();
-  return title ? `第${chapter.number}章：${title}` : `第${chapter.number}章`;
+  return title ? `제.${chapter.number}장(章)${title}` : `제.${chapter.number}장(章)`;
 }
 
 export function ForeshadowsPage() {
@@ -124,8 +124,8 @@ export function ForeshadowsPage() {
       const ok = await confirm.confirm({
         title: "앞서 언급된 힌트나 복선이 모두 회수되었나요?",
         description: chapterId
-          ? `将把该伏笔标记为已回收，并记录回收发生在所选章节（${resolvedChapterLabel ?? chapterId}）。`
-          : "해당 伏笔은 처리 완료로 표시하되, 처리 내용에 대한 기록은 남기지 않습니다.",
+          ? `해당 힌트를 회수된 것으로 표시하고, 회수가 발생한 장을 기록합니다.${resolvedChapterLabel ?? chapterId}）。`
+          : "해당 복선.은 처리 완료로 표시하되, 처리 내용에 대한 기록은 남기지 않습니다.",
         confirmText: "재활용 표시.",
         cancelText: "취소하다.",
       });
@@ -165,7 +165,7 @@ export function ForeshadowsPage() {
   return (
     <DebugPageShell
       title="복선이 드러나는 시간 순서."
-      description={<>列出未回收伏笔（open loops），支持筛选/排序与标记回收（可选关联章节用于回溯）。</>}
+      description={<>회수되지 않은 떡밥 목록.open loops），필터링 기능 지원./정렬 및 마킹을 통한 재활용(선택적으로 관련 장을 연결하여 추적 가능하도록 함).。</>}
       actions={
         <div className="flex flex-wrap items-center gap-2">
           <RequestIdBadge requestId={requestId} />
@@ -177,15 +177,15 @@ export function ForeshadowsPage() {
     >
       <DebugDetails title="도움.">
         <div className="grid gap-1 text-xs text-subtext">
-          <div>只显示未回收伏笔：已回收（resolved_at_chapter_id != null）不会出现在列表中。</div>
-          <div>建议：在回收前选择“回收章节”，用于后续追溯伏笔在哪一章闭环。</div>
+          <div>회수되지 않은 힌트만 표시: 회수됨 (resolved_at_chapter_id != null）목록에 나타나지 않습니다.。</div>
+          <div>제안: 재활용하기 전에 ‘재활용할 부분’을 선택하여, 나중에 이야기의 흐름이 어떻게 연결되는지 추적할 때 어느 부분에서 이야기가 마무리되는지 확인할 수 있도록 합니다.。</div>
         </div>
       </DebugDetails>
 
       <div className="grid gap-3">
         <div className="grid gap-2 sm:grid-cols-2">
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">筛选（标题/内容）</span>
+            <span className="text-xs text-subtext">선별 (제목)/내용)</span>
             <input
               className="input"
               value={searchText}
@@ -198,7 +198,7 @@ export function ForeshadowsPage() {
             />
             <div className="flex gap-2">
               <button className="btn btn-secondary" onClick={() => submitQuery()} disabled={loading} type="button">
-                应用
+                응용.
               </button>
               <button
                 className="btn btn-secondary"
@@ -210,14 +210,14 @@ export function ForeshadowsPage() {
                 disabled={loading}
                 type="button"
               >
-                清空
+                비우다.
               </button>
             </div>
-            {queryText ? <div className="text-[11px] text-subtext">当前筛选：{queryText}</div> : null}
+            {queryText ? <div className="text-[11px] text-subtext">현재 필터링 조건:{queryText}</div> : null}
           </label>
 
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">排序</span>
+            <span className="text-xs text-subtext">정렬하다.</span>
             <select
               className="select"
               value={order}
@@ -227,16 +227,16 @@ export function ForeshadowsPage() {
               }}
               aria-label="foreshadows_order"
             >
-              <option value="timeline_desc">按时间线（从新到旧）</option>
-              <option value="importance_desc">按重要性（从高到低）</option>
-              <option value="updated_desc">按更新时间（从新到旧）</option>
+              <option value="timeline_desc">시간 순서대로 (최신순에서 오래된 순서대로).</option>
+              <option value="importance_desc">중요도에 따라 (높은 것부터 낮은 순서대로).</option>
+              <option value="updated_desc">최신순으로 (가장 최근부터 오래된 순서대로)</option>
             </select>
-            <div className="text-[11px] text-subtext">排序会在服务端执行。</div>
+            <div className="text-[11px] text-subtext">정렬 작업은 서버 측에서 처리됩니다.。</div>
           </label>
         </div>
 
         <label className="grid gap-1">
-          <span className="text-xs text-subtext">回收章节（可选，用于回溯）</span>
+          <span className="text-xs text-subtext">이전 장(챕터)으로 돌아가기 (선택 사항, 이전 단계로 되돌릴 때 사용).</span>
           <select
             className="select"
             value={resolvedAtChapterId}
@@ -244,7 +244,7 @@ export function ForeshadowsPage() {
             disabled={loadingChapters || chapterOptions.length === 0}
             aria-label="foreshadows_resolve_chapter_id"
           >
-            <option value="">不关联章节</option>
+            <option value="">관련 없는 장(章)</option>
             {chapterOptions.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.label}
@@ -252,14 +252,14 @@ export function ForeshadowsPage() {
             ))}
           </select>
           {chapterOptions.length === 0 ? (
-            <div className="text-[11px] text-subtext">暂无章节（可能尚未创建大纲）。仍可直接回收但不关联章节。</div>
+            <div className="text-[11px] text-subtext">아직 챕터가 생성되지 않았거나 목차 구성이 완료되지 않았습니다. 하지만 챕터와 연결하지 않고도 바로 회수할 수 있습니다.。</div>
           ) : null}
         </label>
       </div>
 
       <div className="flex items-center justify-between gap-2 text-xs text-subtext" aria-labelledby={titleId}>
         <div id={titleId}>
-          未回收：{items.length}
+          회수되지 않음:{items.length}
           {hasMore ? "(내용이 잘림)" : ""}
         </div>
         <div className="flex items-center gap-2">
@@ -278,12 +278,12 @@ export function ForeshadowsPage() {
               {limit >= OPEN_LOOPS_LIMIT_MAX ? "최대치에 도달했습니다." : "더 불러오기."}
             </button>
           ) : null}
-          {loading ? <div>加载中...</div> : null}
+          {loading ? <div>불러오는 중입니다....</div> : null}
         </div>
       </div>
 
       {items.length === 0 ? (
-        <div className="rounded-atelier border border-border bg-surface p-4 text-sm text-subtext">暂无未回收伏笔。</div>
+        <div className="rounded-atelier border border-border bg-surface p-4 text-sm text-subtext">아직 회수되지 않은 복선이 없습니다.。</div>
       ) : (
         <div className="grid gap-2">
           {items.map((it) => (
@@ -304,7 +304,7 @@ export function ForeshadowsPage() {
                     onClick={() => navigate(`/projects/${projectId}/writing?chapterId=${it.chapter_id}`)}
                     type="button"
                   >
-                    跳转章节
+                    해당 장으로 이동.
                   </button>
                   <button
                     className="btn btn-secondary"
@@ -312,7 +312,7 @@ export function ForeshadowsPage() {
                     onClick={() => navigate(`/projects/${projectId}/chapter-analysis?chapterId=${it.chapter_id}`)}
                     type="button"
                   >
-                    标注页
+                    주석 페이지.
                   </button>
                   <button
                     className="btn btn-primary"
@@ -320,7 +320,7 @@ export function ForeshadowsPage() {
                     onClick={() => void resolve(it.id)}
                     type="button"
                   >
-                    标记回收
+                    재활용 표시.
                   </button>
                 </div>
               </div>

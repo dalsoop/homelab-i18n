@@ -616,7 +616,7 @@ export function ContextPreviewDrawer(props: Props) {
             onClick={() => downloadPreviewBundle()}
             type="button"
           >
-            下载预览 bundle
+            미리 보기 다운로드. bundle
           </button>
           <button
             className="btn btn-secondary"
@@ -633,14 +633,14 @@ export function ContextPreviewDrawer(props: Props) {
       </div>
 
       <div className="mt-4 rounded-atelier border border-border bg-surface p-3 text-[11px] text-subtext">
-        <div className="text-xs text-ink">用途</div>
+        <div className="text-xs text-ink">용도.</div>
         <div className="mt-1">
-          用于预览“生成前可能注入的上下文”与调试信息（WorldBook / RAG / 结构化记忆等），帮助排查“为什么写成这样”。
+          “생성 전에 주입될 수 있는 컨텍스트”를 미리 보고 디버깅 정보를 확인하는 데 사용됩니다.WorldBook / RAG / 구조화된 기억 등과 같은 기능을 통해, 왜 이렇게 작성하게 되었는지 그 원인을 파악하는 데 도움을 줄 수 있습니다.”。
         </div>
-        <div className="mt-2 text-xs text-ink">风险</div>
+        <div className="mt-2 text-xs text-ink">위험.</div>
         <ul className="mt-1 list-disc pl-5">
-          <li>页面可能包含隐私/敏感内容：分享/截图前请确认，并避免公开传播</li>
-          <li>可用“下载预览 bundle”导出排障材料；按设计不应包含 API Key（分享前仍建议自行快速检索）</li>
+          <li>이 페이지에는 개인 정보가 포함될 수 있습니다./민감한 내용 공유./스크린샷을 찍기 전에 내용을 확인하고, 무단으로 유포하지 않도록 주의하십시오.</li>
+          <li>다운로드하여 미리 보기 가능. bundle”문제 해결에 필요한 자료를 추출하고, 설계도면에는 포함되지 않아야 할 항목을 확인한다. API Key（공유하기 전에 먼저 직접 빠르게 검색해 보는 것이 좋습니다.</li>
         </ul>
       </div>
 
@@ -663,8 +663,8 @@ export function ContextPreviewDrawer(props: Props) {
           </div>
           {memoryInjectionEnabled && packLogs.length ? (
             <div className="mt-2 text-[11px] text-subtext">
-              模块状态：已启用 {packLogStats.enabledCount} 项，已禁用 {packLogStats.disabledCount} 项（展开“Pack
-              sections”查看原因）。
+              모듈 상태: 활성화됨. {packLogStats.enabledCount} 항목이 비활성화되었습니다. {packLogStats.disabledCount} 항목(펼치기)“Pack
+              sections”원인을 확인하세요.。
             </div>
           ) : null}
         </div>
@@ -673,9 +673,9 @@ export function ContextPreviewDrawer(props: Props) {
           <div className="panel p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-sm text-ink">预览参数（preview API）</div>
+                <div className="text-sm text-ink">미리보기 매개변수(preview API）</div>
                 <div className="mt-1 text-[11px] text-subtext">
-                  当前预览应尽量与“AI 生成”抽屉一致；可手动修改后点刷新。
+                  현재 미리보기는 최종 결과물과 최대한 유사하게 표시해야 합니다.“AI “생성” 버튼과 “설정” 버튼이 동일하게 표시됩니다. 필요에 따라 수동으로 수정 후 “새로 고침” 버튼을 클릭하여 변경 사항을 적용할 수 있습니다.。
                   {syncedAt ? <span className="ml-2">synced_at: {syncedAt}</span> : null}
                 </div>
               </div>
@@ -685,13 +685,13 @@ export function ContextPreviewDrawer(props: Props) {
                 onClick={() => void syncPreviewFromGenerate()}
                 type="button"
               >
-                同步生成设置
+                동시 설정 생성.
               </button>
             </div>
 
             <div className="mt-4 grid gap-3">
               <label className="text-xs text-subtext">
-                memory_query_text（用于 pack 预览）
+                memory_query_text（사용 용도. pack 미리 보기.
                 <textarea
                   className="textarea mt-1 min-h-24 w-full"
                   name="memory_preview_query_text"
@@ -730,7 +730,7 @@ export function ContextPreviewDrawer(props: Props) {
 
               <details className="rounded-atelier border border-border bg-surface p-3">
                 <summary className="ui-transition-fast cursor-pointer text-xs text-subtext hover:text-ink">
-                  预算覆盖（budget_overrides，可选）
+                  예산 범위는 다음을 포함합니다.budget_overrides，선택 사항입니다.
                 </summary>
                 <div className="mt-3 grid gap-2">
                   {(
@@ -762,7 +762,7 @@ export function ContextPreviewDrawer(props: Props) {
                       />
                     </label>
                   ))}
-                  <div className="text-[11px] text-subtext">仅影响预览，不会改变实际生成的注入预算。</div>
+                  <div className="text-[11px] text-subtext">미리보기 화면에만 영향을 미치며, 실제 생성되는 예산에는 변경 사항이 없습니다.。</div>
                 </div>
               </details>
             </div>
@@ -814,10 +814,10 @@ export function ContextPreviewDrawer(props: Props) {
         {memoryInjectionEnabled ? (
           <details className="panel p-4">
             <summary className="ui-transition-fast cursor-pointer text-sm text-ink hover:text-ink">
-              原始数据（JSON）
+              원본 데이터(JSON）
             </summary>
             <div className="mt-3 text-xs text-subtext">
-              建议优先用顶部「下载预览 bundle」导出文件。需要复制粘贴时，可用下方按钮。
+              상단에 있는 ‘다운로드 및 미리보기’ 버튼을 먼저 사용하시기를 권장합니다. bundle」파일을 내보냅니다. 복사 및 붙여넣기가 필요한 경우 아래 버튼을 사용하세요.。
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               <button
@@ -834,7 +834,7 @@ export function ContextPreviewDrawer(props: Props) {
                 }}
                 type="button"
               >
-                复制 pack JSON
+                복사하다. pack JSON
               </button>
               <button
                 className="btn btn-secondary"
@@ -862,7 +862,7 @@ export function ContextPreviewDrawer(props: Props) {
                 }}
                 type="button"
               >
-                复制预览设置 JSON
+                복사본 설정 미리보기. JSON
               </button>
             </div>
 
@@ -891,7 +891,7 @@ export function ContextPreviewDrawer(props: Props) {
                 onClick={() => void loadContextOptimizerSetting()}
                 type="button"
               >
-                刷新状态
+                상태 업데이트.
               </button>
             </div>
             <div className="mt-1 text-[11px] text-subtext">
@@ -906,7 +906,7 @@ export function ContextPreviewDrawer(props: Props) {
             </div>
             {contextOptimizerSettingsError ? (
               <div className="mt-2 text-xs text-danger">
-                settings 加载失败：{contextOptimizerSettingsError.message} ({contextOptimizerSettingsError.code})
+                settings 불러오기 실패.{contextOptimizerSettingsError.message} ({contextOptimizerSettingsError.code})
                 {contextOptimizerSettingsError.requestId ? (
                   <span className="ml-2">request_id: {contextOptimizerSettingsError.requestId}</span>
                 ) : null}
@@ -916,7 +916,7 @@ export function ContextPreviewDrawer(props: Props) {
             {contextOptimizerEnabled ? (
               <div className="mt-3 grid gap-2">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="text-xs text-subtext">基于后端 prompt_preview 对比（sys.memory.*）</div>
+                  <div className="text-xs text-subtext">백엔드 기반. prompt_preview 비교 (sys.memory.*）</div>
                   <button
                     className="btn btn-ghost px-2 py-1 text-xs"
                     disabled={optimizerCompareLoading}
@@ -926,14 +926,14 @@ export function ContextPreviewDrawer(props: Props) {
                     }}
                     type="button"
                   >
-                    刷新对比
+                    새로 고침 후 비교.
                   </button>
                 </div>
 
                 {optimizerCompareLoading ? <div className="text-xs text-subtext">{UI_COPY.common.loading}</div> : null}
                 {optimizerCompareError ? (
                   <div className="text-xs text-danger">
-                    对比失败：{optimizerCompareError.message} ({optimizerCompareError.code})
+                    실패 사례 비교.{optimizerCompareError.message} ({optimizerCompareError.code})
                     {optimizerCompareError.requestId ? (
                       <span className="ml-2">request_id: {optimizerCompareError.requestId}</span>
                     ) : null}
@@ -998,7 +998,7 @@ export function ContextPreviewDrawer(props: Props) {
               </div>
             ) : (
               <div className="mt-3 text-xs text-subtext">
-                未启用时不会执行对比请求。可在 SettingsPage 开启后再查看摘要与 diff。
+                활성화되지 않은 상태에서는 비교 요청이 실행되지 않습니다. 다음에서 설정할 수 있습니다. SettingsPage 열람하기 전에 먼저 요약 내용을 확인하세요. diff。
               </div>
             )}
           </div>
@@ -1024,7 +1024,7 @@ export function ContextPreviewDrawer(props: Props) {
                         void (async () => {
                           try {
                             await writeClipboardText(textMd || "");
-                            toast.toastSuccess("已复制 text_md");
+                            toast.toastSuccess("복사되었습니다. text_md");
                           } catch {
                             toast.toastError("복사가 실패했습니다.");
                           }
@@ -1032,7 +1032,7 @@ export function ContextPreviewDrawer(props: Props) {
                       }}
                       type="button"
                     >
-                      复制
+                      복사하다.
                     </button>
                   </div>
                   <pre className="mt-2 max-h-64 overflow-auto rounded-atelier border border-border bg-surface p-3 text-xs text-ink">
@@ -1072,7 +1072,7 @@ export function ContextPreviewDrawer(props: Props) {
                   {errorCode ? <div className="mt-2 text-xs text-danger">error: {errorCode}</div> : null}
                   <details className="mt-3">
                     <summary className="ui-transition-fast cursor-pointer text-xs text-subtext hover:text-ink">
-                      tables.text_md（最终注入文本）
+                      tables.text_md（최종적으로 텍스트에 삽입합니다.
                     </summary>
                     <div className="mt-2 flex justify-end">
                       <button
@@ -1089,7 +1089,7 @@ export function ContextPreviewDrawer(props: Props) {
                         }}
                         type="button"
                       >
-                        复制
+                        복사하다.
                       </button>
                     </div>
                     <pre className="mt-2 max-h-64 overflow-auto rounded-atelier border border-border bg-surface p-3 text-xs text-ink">
@@ -1131,11 +1131,11 @@ export function ContextPreviewDrawer(props: Props) {
                         }}
                         type="button"
                       >
-                        复制 JSON
+                        복사하다. JSON
                       </button>
                     </div>
                     {items.length === 0 ? (
-                      <div className="mt-2 text-sm text-subtext">（空）</div>
+                      <div className="mt-2 text-sm text-subtext">（(공)</div>
                     ) : (
                       <pre className="mt-2 max-h-64 overflow-auto rounded-atelier border border-border bg-canvas p-3 text-xs text-ink">
                         {JSON.stringify(items, null, 2)}

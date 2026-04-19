@@ -83,5 +83,5 @@ export function getImportProposalDisabledReason(status: string | null | undefine
   if (normalized === "done") return null;
   if (normalized === "queued" || normalized === "running") return "제안을 적용하려면 먼저 가져오기를 완료해야 합니다.";
   if (normalized === "failed") return "가져오기 작업이 실패하여 제안을 적용할 수 없습니다. 먼저 다시 시도해 주세요.";
-  return `当前状态“${status}”暂不支持应用提案。`;
+  return `현재 상태.“${status}”현재는 앱 제안을 지원하지 않습니다.。`;
 }

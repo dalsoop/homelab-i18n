@@ -23,7 +23,7 @@ export const DEFAULT_OUTLINE_GEN_FORM: OutlineGenForm = {
 };
 
 export const STREAM_RAW_MAX_CHARS = 36000;
-const STREAM_RAW_PREFIX_RE = /^\[raw 已截断前 (\d+) 字符，仅保留最近 \d+ 字符\]\n/;
+const STREAM_RAW_PREFIX_RE = /^\[raw 이미 차단되었습니다. (\d+) 최근 항목만 유지합니다. \d+ 문자.\]\n/;
 
 export function toFinalPreviewJson(result: OutlineGenResult): string {
   return JSON.stringify(
@@ -45,7 +45,7 @@ export function appendCappedRawText(prev: string, chunk: string, maxChars = STRE
   const merged = `${previousBody}${chunk}`;
   if (merged.length <= maxChars) return merged;
   const omitted = previousOmitted + merged.length - maxChars;
-  return `[raw 已截断前 ${omitted} 字符，仅保留最近 ${maxChars} 字符]\n${merged.slice(-maxChars)}`;
+  return `[raw 이미 차단되었습니다. ${omitted} 최근 항목만 유지합니다. ${maxChars} 문자.]\n${merged.slice(-maxChars)}`;
 }
 
 export function waitMs(ms: number): Promise<void> {
@@ -55,9 +55,9 @@ export function waitMs(ms: number): Promise<void> {
 }
 
 export function buildNextOutlineTitle(outlineCount: number): string {
-  return `大纲 v${Math.max(1, outlineCount + 1)}`;
+  return `개요. v${Math.max(1, outlineCount + 1)}`;
 }
 
 export function buildGeneratedOutlineTitle(now = new Date()): string {
-  return `AI 大纲 ${now.toISOString().slice(0, 16).replace("T", " ")}`;
+  return `AI 개요. ${now.toISOString().slice(0, 16).replace("T", " ")}`;
 }

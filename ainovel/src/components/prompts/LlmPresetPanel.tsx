@@ -153,9 +153,9 @@ function maxTokensHint(
 ): string {
   if (!caps) return "";
   const parts: string[] = [];
-  if (caps.max_tokens_recommended) parts.push(`推荐 ${caps.max_tokens_recommended}`);
-  if (caps.max_tokens_limit) parts.push(`上限 ${caps.max_tokens_limit}`);
-  if (caps.context_window_limit) parts.push(`上下文 ${caps.context_window_limit}`);
+  if (caps.max_tokens_recommended) parts.push(`추천합니다. ${caps.max_tokens_recommended}`);
+  if (caps.max_tokens_limit) parts.push(`최대치, 상한, 한계치. ${caps.max_tokens_limit}`);
+  if (caps.context_window_limit) parts.push(`맥락. ${caps.context_window_limit}`);
   return parts.join(" · ");
 }
 
@@ -167,7 +167,7 @@ function ModuleEditor(props: ModuleEditorProps) {
   const extraValidation = useMemo(() => validateExtraJson(props.form.extra), [props.form.extra]);
   const extraErrorText = extraValidation.ok
     ? ""
-    : `extra JSON 无效${extraValidation.line ? `（第 ${extraValidation.line} 行，第 ${extraValidation.column ?? 1} 列）` : ""}：${extraValidation.message}`;
+    : `extra JSON 유효하지 않음.${extraValidation.line ? `（제. ${extraValidation.line} 알겠습니다. 몇 번째인지요? ${extraValidation.column ?? 1} 목록)` : ""}：${extraValidation.message}`;
   const tokenHint = maxTokensHint(props.capabilities);
   const responsesProvider =
     props.form.provider === "openai_responses" || props.form.provider === "openai_responses_compatible";
@@ -193,7 +193,7 @@ function ModuleEditor(props: ModuleEditorProps) {
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <label className="grid gap-1">
-          <span className="text-xs text-subtext">服务商（provider）</span>
+          <span className="text-xs text-subtext">서비스 제공업체(provider）</span>
           <select
             className="select"
             name={fieldName("provider")}
@@ -213,20 +213,20 @@ function ModuleEditor(props: ModuleEditorProps) {
               }))
             }
           >
-            <option value="openai">openai（官方）</option>
-            <option value="openai_responses">openai_responses（官方 /v1/responses）</option>
-            <option value="openai_compatible">openai_compatible（中转/本地）</option>
-            <option value="openai_responses_compatible">openai_responses_compatible（中转 /v1/responses）</option>
+            <option value="openai">openai（공식 (공식적인)</option>
+            <option value="openai_responses">openai_responses（공식적인. /v1/responses）</option>
+            <option value="openai_compatible">openai_compatible（환승./현지.</option>
+            <option value="openai_responses_compatible">openai_responses_compatible（환승. /v1/responses）</option>
             <option value="anthropic">anthropic（Claude）</option>
             <option value="gemini">gemini</option>
           </select>
           <div className="text-[11px] text-subtext">
-            当前：{providerLabel(props.form.provider)}。兼容网关通常需要可访问的 `base_url`。
+            현재:{providerLabel(props.form.provider)}。호환성 게이트웨이는 일반적으로 접근 가능한 인터페이스를 필요로 합니다. `base_url`。
           </div>
         </label>
 
         <label className="grid gap-1">
-          <span className="text-xs text-subtext">模型（model）</span>
+          <span className="text-xs text-subtext">모델(model）</span>
           <input
             className="input"
             list={`${props.moduleId}_models`}
@@ -246,7 +246,7 @@ function ModuleEditor(props: ModuleEditorProps) {
         </label>
 
         <label className="grid gap-1 md:col-span-2">
-          <span className="text-xs text-subtext">接口地址（base_url）</span>
+          <span className="text-xs text-subtext">인터페이스 주소(base_url）</span>
           <input
             className="input"
             disabled={props.saving}
@@ -260,13 +260,13 @@ function ModuleEditor(props: ModuleEditorProps) {
             onChange={(e) => props.setForm((v) => ({ ...v, base_url: e.target.value }))}
           />
           <div className="text-[11px] text-subtext">
-            OpenAI / OpenAI-compatible 一般包含 `/v1`；Anthropic/Gemini 一般为 host。
+            OpenAI / OpenAI-compatible 일반적으로 포함됩니다. `/v1`；Anthropic/Gemini 대개, 일반적으로. host。
           </div>
         </label>
       </div>
 
       <details className="mt-4 rounded-atelier border border-border/60 bg-canvas px-4 py-3" open={props.dirty}>
-        <summary className="cursor-pointer select-none text-sm font-medium text-ink">高级参数与推理配置</summary>
+        <summary className="cursor-pointer select-none text-sm font-medium text-ink">고급 매개변수 및 추론 설정.</summary>
         <div className="mt-3 grid gap-4 md:grid-cols-3">
           <label className="grid gap-1">
             <span className="text-xs text-subtext">temperature</span>
@@ -325,7 +325,7 @@ function ModuleEditor(props: ModuleEditorProps) {
           )}
 
           <label className="grid gap-1 md:col-span-2">
-            <span className="text-xs text-subtext">stop（逗号分隔）</span>
+            <span className="text-xs text-subtext">stop（쉼표로 구분합니다.</span>
             <input
               className="input"
               value={props.form.stop}
@@ -349,7 +349,7 @@ function ModuleEditor(props: ModuleEditorProps) {
                 value={props.form.reasoning_effort}
                 onChange={(e) => props.setForm((v) => ({ ...v, reasoning_effort: e.target.value }))}
               >
-                <option value="">（默认）</option>
+                <option value="">（기본값.</option>
                 <option value="minimal">minimal</option>
                 <option value="low">low</option>
                 <option value="medium">medium</option>
@@ -366,7 +366,7 @@ function ModuleEditor(props: ModuleEditorProps) {
                 value={props.form.text_verbosity}
                 onChange={(e) => props.setForm((v) => ({ ...v, text_verbosity: e.target.value }))}
               >
-                <option value="">（默认）</option>
+                <option value="">（기본값.</option>
                 <option value="low">low</option>
                 <option value="medium">medium</option>
                 <option value="high">high</option>
@@ -382,7 +382,7 @@ function ModuleEditor(props: ModuleEditorProps) {
                   onChange={(e) => props.setForm((v) => ({ ...v, anthropic_thinking_enabled: e.target.checked }))}
                   type="checkbox"
                 />
-                <span className="text-sm text-ink">启用 thinking</span>
+                <span className="text-sm text-ink">활성화하다. thinking</span>
               </label>
               <label className="grid gap-1 md:col-span-2">
                 <span className="text-xs text-subtext">thinking.budget_tokens</span>
@@ -420,14 +420,14 @@ function ModuleEditor(props: ModuleEditorProps) {
 
           <label className="grid gap-1 md:col-span-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-xs text-subtext">extra（JSON，高级扩展）</span>
+              <span className="text-xs text-subtext">extra（JSON，고급 확장 기능.</span>
               <button
                 className="btn btn-secondary btn-sm"
                 disabled={props.saving || !extraValidation.ok}
                 onClick={onFormatExtra}
                 type="button"
               >
-                一键格式化
+                원클릭 서식 지정.
               </button>
             </div>
             <textarea
@@ -437,7 +437,7 @@ function ModuleEditor(props: ModuleEditorProps) {
               onChange={(e) => props.setForm((v) => ({ ...v, extra: e.target.value }))}
             />
             <div className="text-[11px] text-subtext">
-              保留自定义 provider 字段；推理参数建议优先用上面的结构化控件。
+              사용자 설정 유지. provider 필드; 추론 파라미터 설정 시에는 위에서 제시된 구조화된 컨트롤을 우선적으로 사용하는 것이 좋습니다.。
             </div>
             {extraErrorText ? <div className="text-xs text-warning">{extraErrorText}</div> : null}
           </label>
@@ -469,9 +469,9 @@ export function LlmPresetPanel(props: Props) {
     <section className="panel p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <div className="font-content text-xl text-ink">模型编排配置</div>
+          <div className="font-content text-xl text-ink">모델 구성 및 설정.</div>
           <div className="mt-1 text-xs text-subtext">
-            主模型负责默认调用；任务模块可覆盖特定流程（未覆盖则自动回退主模型）。
+            주 모델은 기본적으로 호출을 담당하고, 특정 프로세스에 대해 작업 모듈에서 이를 재정의할 수 있습니다. (재정의되지 않은 경우, 기본적으로 주 모델로 돌아갑니다.)。
           </div>
         </div>
       </div>
@@ -516,7 +516,7 @@ export function LlmPresetPanel(props: Props) {
                 onClick={props.onSave}
                 type="button"
               >
-                保存主模块
+                주 모듈 저장.
               </button>
             </>
           }
@@ -526,9 +526,9 @@ export function LlmPresetPanel(props: Props) {
       <div className="mt-6 rounded-atelier border border-border/70 bg-canvas p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="grid gap-1">
-            <div className="text-sm font-semibold text-ink">任务模块覆盖</div>
+            <div className="text-sm font-semibold text-ink">작업 모듈 적용 범위.</div>
             <div className="text-xs text-subtext">
-              按流程拆分模型。每个模块都可绑定独立 API 配置库，未绑定则回退项目主配置。
+              절차에 따라 모델을 분할합니다. 각 모듈은 독립적으로 연결될 수 있습니다. API 설정 파일을 찾을 수 없으면 기본 프로젝트 설정을 사용합니다.。
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -538,7 +538,7 @@ export function LlmPresetPanel(props: Props) {
               onChange={(e) => props.onSelectAddTaskKey(e.target.value)}
               disabled={props.addableTasks.length === 0 || props.profileBusy}
             >
-              <option value="">选择要新增的任务模块</option>
+              <option value="">추가할 작업 모듈을 선택하세요.</option>
               {props.addableTasks.map((task) => (
                 <option key={task.key} value={task.key}>
                   [{task.group}] {task.label}
@@ -551,14 +551,14 @@ export function LlmPresetPanel(props: Props) {
               onClick={props.onAddTaskModule}
               type="button"
             >
-              新增模块
+              새로운 모듈 추가.
             </button>
           </div>
         </div>
 
         {props.taskModules.length === 0 ? (
           <div className="mt-4 rounded-atelier border border-dashed border-border p-4 text-xs text-subtext">
-            暂无任务级覆盖。当前所有流程都使用主模块。
+            현재로서는 작업 수준의 커버리지가 설정되어 있지 않습니다. 현재 모든 프로세스는 기본 모듈을 사용하고 있습니다.。
           </div>
         ) : (
           <div className="mt-4 grid gap-4">
@@ -586,11 +586,11 @@ export function LlmPresetPanel(props: Props) {
                         [{task.group}] {task.label}
                       </div>
                       <div className="text-xs text-subtext">{task.description}</div>
-                      <div className="text-[11px] text-subtext">任务键：{task.task_key}</div>
+                      <div className="text-[11px] text-subtext">작업 키:{task.task_key}</div>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                       {task.dirty ? (
-                        <span className="rounded-full bg-warning/15 px-2 py-0.5 text-[11px] text-warning">未保存</span>
+                        <span className="rounded-full bg-warning/15 px-2 py-0.5 text-[11px] text-warning">저장되지 않았습니다.</span>
                       ) : null}
                       <button
                         className="btn btn-secondary btn-sm"
@@ -632,14 +632,14 @@ export function LlmPresetPanel(props: Props) {
                   <RemoteStateNotice state={taskAccessState} className="mb-3" />
 
                   <div className="mb-3 grid gap-1">
-                    <span className="text-xs text-subtext">任务模块绑定的 API 配置库</span>
+                    <span className="text-xs text-subtext">작업 모듈이 연결되었습니다. API 구성 라이브러리.</span>
                     <select
                       className="select"
                       value={task.llm_profile_id ?? ""}
                       onChange={(e) => props.onTaskProfileChange(task.task_key, e.target.value || null)}
                       disabled={taskUiLocked}
                     >
-                      <option value="">（回退主配置）</option>
+                      <option value="">（주 설정을 되돌립니다.</option>
                       {props.profiles.map((profile) => (
                         <option key={`${task.task_key}-${profile.id}`} value={profile.id}>
                           {profile.name} · {profile.provider}/{profile.model}
@@ -647,15 +647,15 @@ export function LlmPresetPanel(props: Props) {
                       ))}
                     </select>
                     <div className="text-[11px] text-subtext">
-                      选择后该任务优先使用该配置库的 API Key。留空表示继承项目主配置绑定的 API Key。
+                      선택한 경우, 해당 작업은 우선적으로 이 구성 라이브러리를 사용합니다. API Key。빈칸으로 두면 기본 프로젝트 구성에 연결된 설정이 상속됩니다. API Key。
                     </div>
                     {effectiveProfile ? (
                       <>
                         <div className="text-[11px] text-subtext">
-                          当前生效配置：{effectiveProfile.name}（{effectiveProfile.provider}/{effectiveProfile.model}）
+                          현재 적용 중인 설정:{effectiveProfile.name}（{effectiveProfile.provider}/{effectiveProfile.model}）
                           {!boundProfile ? "출처: 기본 설정으로 되돌리기." : "출처: 작업 바인딩 구성."}
                           {effectiveProfile.has_api_key
-                            ? `，已保存 Key：${effectiveProfile.masked_api_key ?? "(저장됨)"}`
+                            ? `，저장됨. Key：${effectiveProfile.masked_api_key ?? "(저장됨)"}`
                             : "아직 키가 저장되지 않았습니다."}
                         </div>
                         <div className="mt-1 flex flex-wrap gap-2">
@@ -677,7 +677,7 @@ export function LlmPresetPanel(props: Props) {
                             onClick={() => props.onSaveTaskApiKey(task.task_key)}
                             type="button"
                           >
-                            保存 Key
+                            저장. Key
                           </button>
                           <button
                             className="btn btn-secondary btn-sm"
@@ -685,13 +685,13 @@ export function LlmPresetPanel(props: Props) {
                             onClick={() => props.onClearTaskApiKey(task.task_key)}
                             type="button"
                           >
-                            清除 Key
+                            제거하다. Key
                           </button>
                         </div>
                       </>
                     ) : (
                       <div className="text-[11px] text-subtext">
-                        当前未绑定任务配置且项目主配置为空，请先绑定配置库或设置主配置。
+                        현재 작업 구성이 연결되지 않았고, 프로젝트 기본 구성도 설정되지 않았습니다. 먼저 구성 라이브러리를 연결하거나 기본 구성을 설정해 주십시오.。
                       </div>
                     )}
                   </div>
@@ -717,10 +717,10 @@ export function LlmPresetPanel(props: Props) {
       </div>
 
       <div className="surface mt-6 p-4">
-        <div className="text-sm text-ink">API 配置库（后端持久化）</div>
+        <div className="text-sm text-ink">API 구성 저장소(백엔드 영구 저장)</div>
         <div className="mt-2 grid gap-3 sm:grid-cols-3">
           <label className="grid gap-1 sm:col-span-2">
-            <span className="text-xs text-subtext">选择主配置</span>
+            <span className="text-xs text-subtext">주 구성 요소 선택.</span>
             <select
               className="select"
               name="profile_select"
@@ -728,7 +728,7 @@ export function LlmPresetPanel(props: Props) {
               disabled={props.profileBusy}
               onChange={(e) => props.onSelectProfile(e.target.value ? e.target.value : null)}
             >
-              <option value="">（未绑定后端配置）</option>
+              <option value="">（백엔드 설정이 연결되지 않았습니다. (또는 백엔드 설정을 연결하지 않았습니다.)</option>
               {props.profiles.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name} · {p.provider}/{p.model}
@@ -737,7 +737,7 @@ export function LlmPresetPanel(props: Props) {
             </select>
           </label>
           <label className="grid gap-1 sm:col-span-1">
-            <span className="text-xs text-subtext">新建配置名</span>
+            <span className="text-xs text-subtext">새 구성 이름.</span>
             <input
               className="input"
               disabled={props.profileBusy}
@@ -751,11 +751,11 @@ export function LlmPresetPanel(props: Props) {
 
         {selectedProfile ? (
           <div className="mt-3 text-xs text-subtext">
-            当前主配置：{selectedProfile.name}（{selectedProfile.provider}/{selectedProfile.model}）
+            현재 주요 구성:{selectedProfile.name}（{selectedProfile.provider}/{selectedProfile.model}）
           </div>
         ) : (
           <div className="mt-3 text-xs text-subtext">
-            当前主配置：未绑定。任务模块若也未绑定配置库，将无法调用模型。
+            현재 주 구성 요소는 연결되지 않았습니다. 또한 작업 모듈도 구성 요소 라이브러리에 연결되지 않으면 모델을 호출할 수 없습니다.。
           </div>
         )}
 
@@ -766,7 +766,7 @@ export function LlmPresetPanel(props: Props) {
             onClick={props.onCreateProfile}
             type="button"
           >
-            保存为新配置
+            새 구성으로 저장.
           </button>
           <button
             className="btn btn-secondary px-3 py-2 text-xs"
@@ -774,7 +774,7 @@ export function LlmPresetPanel(props: Props) {
             onClick={props.onUpdateProfile}
             type="button"
           >
-            更新当前配置
+            현재 설정을 업데이트합니다.
           </button>
           <button
             className="btn btn-ghost px-3 py-2 text-xs text-accent hover:bg-accent/10"
@@ -782,26 +782,26 @@ export function LlmPresetPanel(props: Props) {
             onClick={props.onDeleteProfile}
             type="button"
           >
-            删除当前配置
+            현재 설정을 삭제합니다.
           </button>
         </div>
       </div>
 
       <div className="surface mt-4 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="text-sm text-ink">API Key（后端加密）</div>
+          <div className="text-sm text-ink">API Key（서버 측 암호화.</div>
           <button
             className="btn btn-secondary px-3 py-2 text-xs"
             disabled={!props.selectedProfileId || props.profileBusy || !selectedProfile?.has_api_key}
             onClick={props.onClearApiKey}
             type="button"
           >
-            清除 Key
+            제거하다. Key
           </button>
         </div>
         <div className="mt-2 text-xs text-subtext">
           {mainAccessState.stage === "ready"
-            ? `已就绪：${selectedProfile?.masked_api_key ?? "(저장됨)"}。现在可以拉取模型列表并测试连接。`
+            ? `준비 완료.${selectedProfile?.masked_api_key ?? "(저장됨)"}。이제 모델 목록을 가져와 연결 테스트를 할 수 있습니다.。`
             : mainAccessState.stage === "missing_key"
               ? "프로필은 연결되었지만, 아직 키가 저장되지 않았습니다. 키를 저장한 후에 모델 목록을 불러오고 연결 테스트를 진행할 수 있습니다."
               : mainAccessState.stage === "missing_profile"
@@ -823,7 +823,7 @@ export function LlmPresetPanel(props: Props) {
             onClick={props.onSaveApiKey}
             type="button"
           >
-            保存 Key
+            저장. Key
           </button>
         </div>
       </div>

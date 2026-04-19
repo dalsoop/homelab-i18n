@@ -128,28 +128,28 @@ export function AiGenerateDrawer(props: Props) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="font-content text-2xl text-ink" id={titleId}>
-            AI 生成
+            AI 생성.
           </div>
           <div className="mt-1 text-xs text-subtext">
             {props.preset ? `${props.preset.provider} / ${props.preset.model}` : "LLM 구성 정보가 로드되지 않았습니다."}
           </div>
           {hasPromptOverride ? (
             <div className="mt-2 callout-warning">
-              已启用 Prompt 覆盖：生成将使用覆盖文本（可在 Prompt Inspector 回退默认）。
+              활성화되었습니다. Prompt 덮어쓰기: 생성 시 덮어쓰기할 텍스트를 사용합니다(다음에서 설정 가능). Prompt Inspector 기본 설정으로 되돌리기 (기본값으로 복원)。
             </div>
           ) : null}
         </div>
         <button className="btn btn-secondary" aria-label="닫기." onClick={closeDrawer} type="button">
-          关闭
+          닫기.
         </button>
       </div>
 
       <div className="mt-5 grid gap-4">
         <div className="panel p-3">
-          <div className="text-sm font-medium text-ink">基础生成</div>
+          <div className="text-sm font-medium text-ink">기본 생성.</div>
           <div className="mt-3 grid gap-3">
             <label className="grid gap-1">
-              <span className="text-xs text-subtext">用户指令</span>
+              <span className="text-xs text-subtext">사용자 명령어.</span>
               <textarea
                 className="textarea atelier-content"
                 disabled={props.generating}
@@ -164,7 +164,7 @@ export function AiGenerateDrawer(props: Props) {
             </label>
 
             <label className="grid gap-1">
-              <span className="text-xs text-subtext">目标字数（中文按字数=字符数）</span>
+              <span className="text-xs text-subtext">목표 글자 수 (중국어 원문 기준 글자 수)=문자 수</span>
               <input
                 className="input"
                 disabled={props.generating}
@@ -180,7 +180,7 @@ export function AiGenerateDrawer(props: Props) {
             </label>
 
             <label className="grid gap-1">
-              <span className="text-xs text-subtext">风格</span>
+              <span className="text-xs text-subtext">스타일.</span>
               <select
                 className="select"
                 disabled={props.generating || stylesLoading}
@@ -192,7 +192,7 @@ export function AiGenerateDrawer(props: Props) {
                 }}
                 aria-label="gen_style_id"
               >
-                <option value="">自动（使用项目默认）</option>
+                <option value="">자동 (기본 설정 사용)</option>
                 <optgroup label="시스템 기본 설정.">
                   {presets.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -209,15 +209,15 @@ export function AiGenerateDrawer(props: Props) {
                 </optgroup>
               </select>
               <div className="text-[11px] text-subtext">
-                项目默认：{projectDefaultStyle ? projectDefaultStyle.name : "(설정되지 않음)"}
-                {stylesError ? ` | 加载失败：${stylesError.code}` : ""}
+                기본 프로젝트 설정:{projectDefaultStyle ? projectDefaultStyle.name : "(설정되지 않음)"}
+                {stylesError ? ` | 불러오기 실패.${stylesError.code}` : ""}
               </div>
             </label>
           </div>
         </div>
 
         <div className="panel p-3">
-          <div className="text-sm font-medium text-ink">记忆注入</div>
+          <div className="text-sm font-medium text-ink">기억 주입.</div>
 
           <div className="mt-3">
             <label className="flex items-center justify-between gap-3 text-sm text-ink">
@@ -239,7 +239,7 @@ export function AiGenerateDrawer(props: Props) {
             {props.genForm.memory_injection_enabled ? (
               <div className="mt-2 rounded-atelier border border-border bg-surface p-3">
                 <label className="grid gap-1">
-                  <span className="text-xs text-subtext">记忆查询关键词（可选）</span>
+                  <span className="text-xs text-subtext">검색어 (선택 사항)를 입력하여 과거 기록을 검색할 수 있습니다.</span>
                   <input
                     className="input"
                     disabled={props.generating}
@@ -251,14 +251,14 @@ export function AiGenerateDrawer(props: Props) {
                     }}
                   />
                 </label>
-                <div className="mt-1 text-[11px] text-subtext">留空将自动使用“用户指令 + 章节计划”。</div>
+                <div className="mt-1 text-[11px] text-subtext">빈칸으로 두면 자동으로 “사용자 지정”이 적용됩니다. + 장(章)별 계획.”。</div>
 
                 <div className="mt-3 grid gap-2">
-                  <div className="text-xs text-subtext">注入模块</div>
-                  <div className="text-[11px] text-subtext">会影响本次生成提示词，并同步到「上下文预览」。</div>
+                  <div className="text-xs text-subtext">주입 모듈.</div>
+                  <div className="text-[11px] text-subtext">이번 프롬프트 생성에 영향을 미치며, 변경 사항은 ‘컨텍스트 미리보기’에 즉시 반영됩니다.」。</div>
 
                   <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                    <span>世界书（worldbook）</span>
+                    <span>세계 도서(세계 도서).worldbook）</span>
                     <input
                       className="checkbox"
                       checked={props.genForm.memory_modules.worldbook}
@@ -275,7 +275,7 @@ export function AiGenerateDrawer(props: Props) {
                   </label>
 
                   <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                    <span>表格系统（tables）</span>
+                    <span>테이블 시스템(tables）</span>
                     <input
                       className="checkbox"
                       checked={props.genForm.memory_modules.tables}
@@ -292,10 +292,10 @@ export function AiGenerateDrawer(props: Props) {
                   </label>
 
                   <details className="rounded-atelier border border-border bg-surface p-2">
-                    <summary className="cursor-pointer text-sm text-ink">更多模块（高级）</summary>
+                    <summary className="cursor-pointer text-sm text-ink">더 많은 모듈(고급)</summary>
                     <div className="mt-2 grid gap-2">
                       <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                        <span>剧情记忆（story_memory）</span>
+                        <span>이야기 속 기억 (story_memory）</span>
                         <input
                           className="checkbox"
                           checked={props.genForm.memory_modules.story_memory}
@@ -311,7 +311,7 @@ export function AiGenerateDrawer(props: Props) {
                         />
                       </label>
                       <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                        <span>语义历史（semantic_history）</span>
+                        <span>의미론적 역사(의미 변화사)semantic_history）</span>
                         <input
                           className="checkbox"
                           checked={props.genForm.memory_modules.semantic_history}
@@ -327,7 +327,7 @@ export function AiGenerateDrawer(props: Props) {
                         />
                       </label>
                       <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                        <span>未回收伏笔（foreshadow_open_loops）</span>
+                        <span>회수되지 않은 복선.foreshadow_open_loops）</span>
                         <input
                           className="checkbox"
                           checked={props.genForm.memory_modules.foreshadow_open_loops}
@@ -343,7 +343,7 @@ export function AiGenerateDrawer(props: Props) {
                         />
                       </label>
                       <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                        <span>结构化记忆（structured）</span>
+                        <span>구조화된 기억 (structured）</span>
                         <input
                           className="checkbox"
                           checked={props.genForm.memory_modules.structured}
@@ -359,7 +359,7 @@ export function AiGenerateDrawer(props: Props) {
                         />
                       </label>
                       <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                        <span>向量 RAG（vector_rag）</span>
+                        <span>벡터. RAG（vector_rag）</span>
                         <input
                           className="checkbox"
                           checked={props.genForm.memory_modules.vector_rag}
@@ -375,7 +375,7 @@ export function AiGenerateDrawer(props: Props) {
                         />
                       </label>
                       <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                        <span>关系图（graph）</span>
+                        <span>관계도.graph）</span>
                         <input
                           className="checkbox"
                           checked={props.genForm.memory_modules.graph}
@@ -424,7 +424,7 @@ export function AiGenerateDrawer(props: Props) {
             {props.onCancelGenerate ? (
               <div className="flex justify-end">
                 <button className="btn btn-secondary" onClick={props.onCancelGenerate} type="button">
-                  取消生成
+                  생성 취소.
                 </button>
               </div>
             ) : null}
@@ -432,10 +432,10 @@ export function AiGenerateDrawer(props: Props) {
         ) : null}
 
         <div className="panel p-3">
-          <div className="text-sm font-medium text-ink">上下文</div>
+          <div className="text-sm font-medium text-ink">맥락.</div>
           <div className="mt-3 grid gap-3">
             <div className="grid gap-2">
-              <div className="text-xs text-subtext">上下文注入</div>
+              <div className="text-xs text-subtext">컨텍스트 주입.</div>
               <label className="flex items-center gap-2 text-sm text-ink">
                 <input
                   className="checkbox"
@@ -448,7 +448,7 @@ export function AiGenerateDrawer(props: Props) {
                   }}
                   type="checkbox"
                 />
-                世界观
+                세계관.
               </label>
               <label className="flex items-center gap-2 text-sm text-ink">
                 <input
@@ -462,7 +462,7 @@ export function AiGenerateDrawer(props: Props) {
                   }}
                   type="checkbox"
                 />
-                风格
+                스타일.
               </label>
               <label className="flex items-center gap-2 text-sm text-ink">
                 <input
@@ -476,7 +476,7 @@ export function AiGenerateDrawer(props: Props) {
                   }}
                   type="checkbox"
                 />
-                约束
+                제한.
               </label>
               <label className="flex items-center gap-2 text-sm text-ink">
                 <input
@@ -490,7 +490,7 @@ export function AiGenerateDrawer(props: Props) {
                   }}
                   type="checkbox"
                 />
-                大纲
+                개요.
               </label>
               <label className="flex items-center gap-2 text-sm text-ink">
                 <input
@@ -504,7 +504,7 @@ export function AiGenerateDrawer(props: Props) {
                   }}
                   type="checkbox"
                 />
-                智能上下文
+                지능형 상황 인식.
               </label>
               <label className="flex items-center gap-2 text-sm text-ink">
                 <input
@@ -518,12 +518,12 @@ export function AiGenerateDrawer(props: Props) {
                   }}
                   type="checkbox"
                 />
-                严格顺序
+                엄격한 순서.
               </label>
             </div>
 
             <label className="grid gap-1">
-              <span className="text-xs text-subtext">上一章注入</span>
+              <span className="text-xs text-subtext">이전 장 내용 참조.</span>
               <select
                 className="select"
                 disabled={props.generating}
@@ -540,17 +540,17 @@ export function AiGenerateDrawer(props: Props) {
                   }));
                 }}
               >
-                <option value="none">不注入</option>
-                <option value="tail">结尾（推荐）</option>
-                <option value="summary">摘要</option>
-                <option value="content">正文</option>
+                <option value="none">주입하지 않다.</option>
+                <option value="tail">마무리 (추천)</option>
+                <option value="summary">요약.</option>
+                <option value="content">본문.</option>
               </select>
-              <div className="text-[11px] text-subtext">结尾更利于强衔接，减少开头复述。</div>
+              <div className="text-[11px] text-subtext">결론 부분을 강화하여 내용의 연결성을 높이고, 서두 부분의 반복적인 설명을 줄이는 것이 좋습니다.。</div>
             </label>
 
             <div className="grid gap-2">
-              <div className="text-xs text-subtext">注入角色（可选）</div>
-              {props.characters.length === 0 ? <div className="text-sm text-subtext">暂无角色</div> : null}
+              <div className="text-xs text-subtext">캐릭터 삽입 (선택 사항)</div>
+              {props.characters.length === 0 ? <div className="text-sm text-subtext">아직 역할이 지정되지 않았습니다.</div> : null}
               <div className="max-h-40 overflow-auto rounded-atelier border border-border bg-surface p-2">
                 {props.characters.map((c) => (
                   <label key={c.id} className="flex items-center gap-2 px-2 py-1 text-sm text-ink">
@@ -586,28 +586,28 @@ export function AiGenerateDrawer(props: Props) {
             onClick={() => setAdvancedOpen((v) => !v)}
             type="button"
           >
-            <span className="text-sm font-medium text-ink">高级参数</span>
+            <span className="text-sm font-medium text-ink">고급 설정.</span>
             <span aria-hidden="true" className="text-xs text-subtext">
               {advancedOpen ? "접다." : "펼치다."}
             </span>
           </button>
 
           {!advancedOpen ? (
-            <div className="mt-2 text-[11px] text-subtext">默认折叠：流式生成、规划、润色等。</div>
+            <div className="mt-2 text-[11px] text-subtext">기본적으로는 스트리밍 방식의 콘텐츠 생성, 계획 수립, 내용 다듬기 등의 기능이 숨겨진 상태로 설정됩니다.。</div>
           ) : null}
 
           {autoReliableTransport ? (
-            <div className="mt-2 text-xs text-warning">已为规划/润色/正文优化自动启用可靠链路，避免请求超时。</div>
+            <div className="mt-2 text-xs text-warning">계획은 이미 수립되었습니다./다듬다./본문 최적화 기능이 자동으로 활성화되어 안정적인 연결을 유지하고 요청 시간 초과를 방지합니다.。</div>
           ) : null}
 
           {props.preset && props.genForm.stream && !streamProviderSupported && !reliableTransportRequired ? (
-            <div className="mt-2 text-xs text-warning">不支持流式，生成时会自动回退非流式生成</div>
+            <div className="mt-2 text-xs text-warning">스트리밍 방식은 지원하지 않으므로, 생성 과정에서 스트리밍 방식이 아닌 방식으로 자동 전환됩니다.</div>
           ) : null}
 
           {advancedOpen ? (
             <div className="mt-3 grid gap-2" id={advancedPanelId}>
               <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                <span>流式生成（beta）</span>
+                <span>스트리밍 생성(스트리밍 생성).beta）</span>
                 <input
                   className="checkbox"
                   checked={props.genForm.stream}
@@ -622,7 +622,7 @@ export function AiGenerateDrawer(props: Props) {
               </label>
 
               <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                <span>先生成规划</span>
+                <span>선생님, 계획을 세우겠습니다.</span>
                 <input
                   className="checkbox"
                   checked={props.genForm.plan_first}
@@ -637,7 +637,7 @@ export function AiGenerateDrawer(props: Props) {
               </label>
 
               <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                <span>润色</span>
+                <span>다듬다.</span>
                 <input
                   className="checkbox"
                   checked={props.genForm.post_edit}
@@ -656,7 +656,7 @@ export function AiGenerateDrawer(props: Props) {
               </label>
 
               <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                <span>去味/一致性修复</span>
+                <span>냄새 제거./일관성 수정.</span>
                 <input
                   className="checkbox"
                   checked={props.genForm.post_edit_sanitize}
@@ -670,7 +670,7 @@ export function AiGenerateDrawer(props: Props) {
                 />
               </label>
               <label className="flex items-center justify-between gap-3 text-sm text-ink">
-                <span>正文优化</span>
+                <span>본문 내용 개선.</span>
                 <input
                   className="checkbox"
                   checked={props.genForm.content_optimize}
@@ -683,7 +683,7 @@ export function AiGenerateDrawer(props: Props) {
                   type="checkbox"
                 />
               </label>
-              <div className="text-[11px] text-subtext">失败会降级保留原文，并记录原因。</div>
+              <div className="text-[11px] text-subtext">실패 시에는 원래 내용을 유지하고 실패 원인을 기록합니다.。</div>
             </div>
           ) : (
             <div id={advancedPanelId} hidden />
@@ -691,7 +691,7 @@ export function AiGenerateDrawer(props: Props) {
         </div>
 
         <div className="panel p-3 text-xs text-subtext">
-          生成与编辑内容会自动保存（有短暂延迟），也可随时点击“保存”或 Ctrl/Cmd+S 立即保存。
+          생성하거나 편집한 내용은 자동으로 저장됩니다(저장하는 데 약간의 시간이 걸릴 수 있습니다). 또한 언제든지 “저장” 버튼을 클릭하여 저장할 수도 있습니다. Ctrl/Cmd+S 지금 저장하세요.。
         </div>
       </div>
 
@@ -702,7 +702,7 @@ export function AiGenerateDrawer(props: Props) {
           onClick={props.onOpenPromptInspector}
           type="button"
         >
-          预检/审查{hasPromptOverride ? "(현재 적용 중입니다.)" : ""}
+          사전 점검./검토하다, 조사하다, 심사하다.{hasPromptOverride ? "(현재 적용 중입니다.)" : ""}
         </button>
         {props.postEditCompareAvailable ? (
           <button
@@ -711,7 +711,7 @@ export function AiGenerateDrawer(props: Props) {
             onClick={() => props.onOpenPostEditCompare?.()}
             type="button"
           >
-            润色对比/回退
+            다듬고 비교하기./후퇴하다. / 후퇴. / (명령형) 후퇴!
           </button>
         ) : null}
         {props.contentOptimizeCompareAvailable ? (
@@ -721,7 +721,7 @@ export function AiGenerateDrawer(props: Props) {
             onClick={() => props.onOpenContentOptimizeCompare?.()}
             type="button"
           >
-            正文优化对比/回退
+            본문 내용 개선 비교 분석./후퇴하다. / 후퇴. / (명령형) 후퇴!
           </button>
         ) : null}
         {hasPromptOverride ? (
@@ -731,7 +731,7 @@ export function AiGenerateDrawer(props: Props) {
             onClick={() => props.setGenForm((v) => ({ ...v, prompt_override: null }))}
             type="button"
           >
-            回退默认
+            기본 설정으로 되돌리기.
           </button>
         ) : null}
         <button

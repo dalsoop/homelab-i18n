@@ -91,7 +91,7 @@ export function NumericTablesPage() {
     }
   }, [focus, pid, selectedTableId, toast]);
 
-  if (!pid) return <div className="text-subtext">缺少 projectId</div>;
+  if (!pid) return <div className="text-subtext">부족하다. / 부족하다. projectId</div>;
 
   return (
     <DebugPageShell
@@ -101,22 +101,22 @@ export function NumericTablesPage() {
       <DebugDetails title="설명.">
         <div className="grid gap-1 text-xs text-subtext">
           <div>
-            本页为「数值表格（NumericTables）」的 AdvancedDebug：用表格记录钱/时间/等级/资源；不是图谱底座数据。
+            이 페이지는 ‘수치 표(NumericTables）」의. AdvancedDebug：표를 사용하여 돈을 기록합니다./시간./등급./자료; 맵 데이터의 기본 데이터는 아님.。
           </div>
-          <div>支持直接编辑表与行（project_tables / project_table_rows）。</div>
+          <div>테이블과 행을 직접 편집할 수 있도록 지원합니다.project_tables / project_table_rows）。</div>
         </div>
       </DebugDetails>
 
       <DebugDetails title="AI 업데이트 (table_ai_update)">
         <div className="grid gap-3">
           <div className="grid gap-1 text-xs text-subtext">
-            <div>点击后会创建一个 ProjectTask（可在 Task Center 查看结果、失败可重试）。</div>
-            <div>任务成功后会产出一个 ChangeSet（可 apply / rollback）。</div>
+            <div>클릭하면 새로운 항목이 생성됩니다. ProjectTask（가능합니다. Task Center 결과 확인, 실패 시 재시도 가능.。</div>
+            <div>임무가 성공적으로 완료되면 결과물이 생성됩니다. ChangeSet（괜찮습니다. / 좋습니다. / 가능합니다. / 허락합니다. apply / rollback）。</div>
           </div>
 
           <div className="grid gap-2 lg:grid-cols-[1fr,2fr]">
             <label className="grid gap-1">
-              <div className="text-xs text-subtext">目标表</div>
+              <div className="text-xs text-subtext">목표표.</div>
               <select
                 className="select"
                 id="numeric_tables_select_table"
@@ -137,13 +137,13 @@ export function NumericTablesPage() {
               {tablesError ? <div className="text-xs text-danger">{tablesError}</div> : null}
               <div className="flex flex-wrap items-center gap-2">
                 <button className="btn btn-secondary btn-sm" onClick={() => void loadTables()} type="button">
-                  刷新表列表
+                  표 목록 새로 고침.
                 </button>
               </div>
             </label>
 
             <label className="grid gap-1">
-              <div className="text-xs text-subtext">Focus（可选）</div>
+              <div className="text-xs text-subtext">Focus（선택 사항입니다.</div>
               <textarea
                 className="textarea min-h-[88px]"
                 id="numeric_tables_ai_focus"
@@ -164,7 +164,7 @@ export function NumericTablesPage() {
               aria-label="AI 업데이트 작업을 생성합니다 (numeric_tables_ai_schedule)."
               type="button"
             >
-              {scheduling ? "생성 중..." : `AI 提议更新${selectedTable ? `：${selectedTable.name}` : ""}`}
+              {scheduling ? "생성 중..." : `AI 제안합니다. 변경을 제안합니다.${selectedTable ? `：${selectedTable.name}` : ""}`}
             </button>
 
             {lastTaskId ? (
@@ -173,19 +173,19 @@ export function NumericTablesPage() {
                   className="btn btn-secondary"
                   to={`/projects/${pid}/tasks?project_task_id=${encodeURIComponent(lastTaskId)}`}
                 >
-                  打开 Task Center（定位本次任务）
+                  열다. Task Center（이번 임무의 목표를 설정합니다.
                 </Link>
                 <button
                   className="btn btn-secondary"
                   onClick={() => void copyText(lastTaskId, { title: "복사가 실패했습니다. task_id를 직접 복사해 주세요." })}
                   type="button"
                 >
-                  复制 task_id
+                  복사하다. task_id
                 </button>
               </>
             ) : (
               <Link className="btn btn-secondary" to={`/projects/${pid}/tasks`}>
-                打开 Task Center
+                열다. Task Center
               </Link>
             )}
           </div>

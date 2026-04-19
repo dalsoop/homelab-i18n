@@ -78,7 +78,7 @@ export function WorldbookPreviewPanel(props: {
 
       {enabled && worldbookPreview.triggered.length === 0 ? (
         <div className="mt-2 text-xs text-subtext">
-          未命中：请检查本章计划/指令里的关键词是否包含条目 keywords/aliases，或将条目设为 constant 以强制注入。
+          목표 달성에 실패했습니다. 해당 장의 계획을 다시 확인해 주세요./명령어에 지정된 키워드가 항목에 포함되어 있는지 확인합니다. keywords/aliases，항목을 다음과 같이 설정합니다. constant 강제 삽입 공격.。
         </div>
       ) : null}
 

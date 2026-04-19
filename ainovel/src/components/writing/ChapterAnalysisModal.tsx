@@ -32,20 +32,20 @@ export function ChapterAnalysisModal(props: {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="font-content text-xl text-ink" id={titleId}>
-            章节分析
+            장(章) 분석.
           </div>
           <div className="mt-1 text-xs text-subtext">
-            分析与重写只会写入“生成记录”；保存到记忆库会写入长期记忆（不影响章节正文）。
+            분석 및 재작성 기능은 ‘생성 기록’에만 기록됩니다. 메모리 뱅크에 저장하면 장기 기억으로 저장되지만, 챕터의 본문 내용에는 영향을 주지 않습니다.。
           </div>
         </div>
         <button className="btn btn-secondary" aria-label="닫기." onClick={props.onClose} disabled={busy} type="button">
-          关闭
+          닫기.
         </button>
       </div>
 
       <div className="mt-4 grid gap-3">
         <label className="grid gap-1">
-          <span className="text-xs text-subtext">分析重点（可选）</span>
+          <span className="text-xs text-subtext">분석 주요 내용 (선택 사항)</span>
           <input
             className="input"
             value={props.analysisFocus}
@@ -74,7 +74,7 @@ export function ChapterAnalysisModal(props: {
               onClick={() => void navigator.clipboard.writeText(props.analysisResult?.generation_run_id ?? "")}
               type="button"
             >
-              复制 run_id
+              복사하다. run_id
             </button>
           ) : null}
         </div>
@@ -83,7 +83,7 @@ export function ChapterAnalysisModal(props: {
           <div className="grid gap-4">
             {props.analysisResult.parse_error?.message ? (
               <div className="rounded-atelier border border-border bg-surface p-3 text-sm text-accent">
-                解析失败：{props.analysisResult.parse_error.message}
+                분석 실패.{props.analysisResult.parse_error.message}
                 {props.analysisResult.parse_error.hint ? (
                   <div className="mt-1 text-xs text-subtext">hint: {props.analysisResult.parse_error.hint}</div>
                 ) : null}
@@ -97,16 +97,16 @@ export function ChapterAnalysisModal(props: {
             ) : null}
 
             <div className="grid gap-3 rounded-atelier border border-border bg-surface p-3">
-              <div className="text-sm text-ink">本章摘要</div>
+              <div className="text-sm text-ink">본 장의 요약.</div>
               <div className="text-sm text-ink">
                 {(props.analysisResult.analysis?.chapter_summary ?? "").trim() || "(공)"}
               </div>
             </div>
 
             <div className="grid gap-2 rounded-atelier border border-border bg-surface p-3">
-              <div className="text-sm text-ink">Hooks / 钩子</div>
+              <div className="text-sm text-ink">Hooks / 갈고리.</div>
               {(props.analysisResult.analysis?.hooks ?? []).length === 0 ? (
-                <div className="text-sm text-subtext">（无）</div>
+                <div className="text-sm text-subtext">（없음.</div>
               ) : (
                 <div className="grid gap-2">
                   {(props.analysisResult.analysis?.hooks ?? []).map((it, idx) => (
@@ -119,7 +119,7 @@ export function ChapterAnalysisModal(props: {
                             onClick={() => props.onLocateInEditor(it.excerpt ?? "")}
                             type="button"
                           >
-                            定位
+                            위치 파악.
                           </button>
                         ) : null}
                       </div>
@@ -131,9 +131,9 @@ export function ChapterAnalysisModal(props: {
             </div>
 
             <div className="grid gap-2 rounded-atelier border border-border bg-surface p-3">
-              <div className="text-sm text-ink">Foreshadows / 伏笔</div>
+              <div className="text-sm text-ink">Foreshadows / 복선.</div>
               {(props.analysisResult.analysis?.foreshadows ?? []).length === 0 ? (
-                <div className="text-sm text-subtext">（无）</div>
+                <div className="text-sm text-subtext">（없음.</div>
               ) : (
                 <div className="grid gap-2">
                   {(props.analysisResult.analysis?.foreshadows ?? []).map((it, idx) => (
@@ -146,7 +146,7 @@ export function ChapterAnalysisModal(props: {
                             onClick={() => props.onLocateInEditor(it.excerpt ?? "")}
                             type="button"
                           >
-                            定位
+                            위치 파악.
                           </button>
                         ) : null}
                       </div>
@@ -158,9 +158,9 @@ export function ChapterAnalysisModal(props: {
             </div>
 
             <div className="grid gap-2 rounded-atelier border border-border bg-surface p-3">
-              <div className="text-sm text-ink">Plot Points / 情节点</div>
+              <div className="text-sm text-ink">Plot Points / 감정적 클라이맥스.</div>
               {(props.analysisResult.analysis?.plot_points ?? []).length === 0 ? (
-                <div className="text-sm text-subtext">（无）</div>
+                <div className="text-sm text-subtext">（없음.</div>
               ) : (
                 <div className="grid gap-2">
                   {(props.analysisResult.analysis?.plot_points ?? []).map((it, idx) => (
@@ -173,7 +173,7 @@ export function ChapterAnalysisModal(props: {
                             onClick={() => props.onLocateInEditor(it.excerpt ?? "")}
                             type="button"
                           >
-                            定位
+                            위치 파악.
                           </button>
                         ) : null}
                       </div>
@@ -185,9 +185,9 @@ export function ChapterAnalysisModal(props: {
             </div>
 
             <div className="grid gap-2 rounded-atelier border border-border bg-surface p-3">
-              <div className="text-sm text-ink">Suggestions / 修改建议</div>
+              <div className="text-sm text-ink">Suggestions / 수정 제안.</div>
               {(props.analysisResult.analysis?.suggestions ?? []).length === 0 ? (
-                <div className="text-sm text-subtext">（无）</div>
+                <div className="text-sm text-subtext">（없음.</div>
               ) : (
                 <div className="grid gap-2">
                   {(props.analysisResult.analysis?.suggestions ?? []).map((it, idx) => (
@@ -205,14 +205,14 @@ export function ChapterAnalysisModal(props: {
                             onClick={() => props.onLocateInEditor(it.excerpt ?? "")}
                             type="button"
                           >
-                            定位
+                            위치 파악.
                           </button>
                         ) : null}
                       </div>
                       {it.excerpt ? <div className="mt-2 text-xs text-subtext">{it.excerpt}</div> : null}
-                      {it.issue ? <div className="mt-2 text-sm text-ink">问题：{it.issue}</div> : null}
+                      {it.issue ? <div className="mt-2 text-sm text-ink">문제:{it.issue}</div> : null}
                       {it.recommendation ? (
-                        <div className="mt-2 text-sm text-ink">建议：{it.recommendation}</div>
+                        <div className="mt-2 text-sm text-ink">제안합니다. / 다음과 같이 제안합니다. / 제안 드립니다.{it.recommendation}</div>
                       ) : null}
                     </div>
                   ))}
@@ -222,7 +222,7 @@ export function ChapterAnalysisModal(props: {
 
             {props.analysisResult.analysis?.overall_notes ? (
               <div className="grid gap-2 rounded-atelier border border-border bg-surface p-3">
-                <div className="text-sm text-ink">总体备注</div>
+                <div className="text-sm text-ink">전반적인 참고 사항.</div>
                 <div className="text-sm text-ink">{props.analysisResult.analysis.overall_notes}</div>
               </div>
             ) : null}
@@ -237,13 +237,13 @@ export function ChapterAnalysisModal(props: {
             </details>
           </div>
         ) : (
-          <div className="text-sm text-subtext">暂无分析结果。</div>
+          <div className="text-sm text-subtext">분석 결과가 아직 없습니다.。</div>
         )}
 
         <div className="grid gap-3 rounded-atelier border border-border bg-surface p-3">
-          <div className="text-sm text-ink">按建议重写（覆盖编辑器正文）</div>
+          <div className="text-sm text-ink">제안에 따라 내용을 다시 작성합니다(기존 내용을 덮어씁니다).</div>
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">重写指令（可选）</span>
+            <span className="text-xs text-subtext">명령어 재작성(선택 사항)</span>
             <input
               className="input"
               value={props.rewriteInstruction}
@@ -252,7 +252,7 @@ export function ChapterAnalysisModal(props: {
             />
           </label>
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-xs text-subtext">重写结果不会自动保存，记得 Ctrl/Cmd+S 保存。</div>
+            <div className="text-xs text-subtext">수정된 내용은 자동으로 저장되지 않으니, 저장하는 것을 잊지 마세요. Ctrl/Cmd+S 저장.。</div>
             <button
               className="btn btn-primary"
               disabled={!props.analysisResult || busy}

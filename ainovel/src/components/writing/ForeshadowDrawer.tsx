@@ -144,7 +144,7 @@ export function ForeshadowDrawer(props: {
             {loading ? copy.refreshing : copy.refresh}
           </button>
           <button className="btn btn-secondary" aria-label="닫기." onClick={props.onClose} type="button">
-            关闭
+            닫기.
           </button>
         </div>
       </div>

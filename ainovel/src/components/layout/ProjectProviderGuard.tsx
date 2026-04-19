@@ -11,14 +11,14 @@ export function ProjectProviderGuard() {
   if (loading) {
     return (
       <div className="panel p-6">
-        <div className="text-sm text-subtext">加载项目中...</div>
+        <div className="text-sm text-subtext">프로젝트 로딩 중입니다....</div>
       </div>
     );
   }
   if (error) {
     return (
       <div className="panel p-6">
-        <div className="font-content text-xl text-ink">项目加载失败</div>
+        <div className="font-content text-xl text-ink">프로젝트 로딩에 실패했습니다.</div>
         <div className="mt-2 text-sm text-subtext">{error.message}</div>
         {error.requestId ? (
           <div className="mt-1 flex items-center gap-2 text-xs text-subtext">
@@ -38,7 +38,7 @@ export function ProjectProviderGuard() {
         ) : null}
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <button className="btn btn-secondary" onClick={() => void refresh()} type="button">
-            重试
+            다시 시도하세요.
           </button>
           <Link className="btn btn-ghost" to="/" aria-label="홈페이지로 돌아가기 (project_guard_back_home)">
             {UI_COPY.nav.backToHome}
@@ -52,14 +52,14 @@ export function ProjectProviderGuard() {
   if (!exists) {
     return (
       <div className="panel p-6">
-        <div className="font-content text-xl text-ink">项目不存在或无权限</div>
-        <div className="mt-2 text-sm text-subtext">请返回{UI_COPY.nav.home}重新选择项目，或在左侧切换其他项目。</div>
+        <div className="font-content text-xl text-ink">해당 프로젝트가 존재하지 않거나 접근 권한이 없습니다.</div>
+        <div className="mt-2 text-sm text-subtext">돌아가 주세요.{UI_COPY.nav.home}프로젝트를 다시 선택하거나, 왼쪽에서 다른 프로젝트로 전환하세요.。</div>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <Link className="btn btn-secondary" to="/" aria-label="홈페이지로 돌아가기 (project_guard_back_home)">
             {UI_COPY.nav.backToHome}
           </Link>
           <button className="btn btn-ghost" onClick={() => void refresh()} type="button">
-            重新加载项目列表
+            프로젝트 목록을 다시 로드합니다.
           </button>
         </div>
       </div>

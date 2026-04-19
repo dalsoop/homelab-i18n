@@ -36,7 +36,7 @@ export function ProjectWizardShell(props: { projectId: string; children: React.R
       currentStep: next?.key ?? "export",
       primaryAction: next
         ? {
-            label: `下一步：${next.title}`,
+            label: `다음 단계:${next.title}`,
             onClick: () => navigate(next.href),
           }
         : {

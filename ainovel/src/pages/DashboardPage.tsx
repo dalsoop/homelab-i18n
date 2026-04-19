@@ -136,7 +136,7 @@ export function DashboardPage() {
     const nextHref = wizard?.nextHref;
     if (wizard && nextHref) {
       return {
-        label: wizard.nextTitle ? `继续：${wizard.nextTitle}` : "공사를 계속 진행한다.",
+        label: wizard.nextTitle ? `계속합니다. / 계속 진행합니다. / 계속하겠습니다. / 이어서.${wizard.nextTitle}` : "공사를 계속 진행한다.",
         onClick: () => navigate(nextHref),
         ariaLabel: "다음 단계로 진행합니다. (다음 단계로)",
       };
@@ -153,10 +153,10 @@ export function DashboardPage() {
     <div className="grid gap-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
-          <div className="font-content text-3xl text-ink">{greeting}，欢迎回来</div>
+          <div className="font-content text-3xl text-ink">{greeting}，환영합니다. (Hwan-yeong-ham-ni-da.)</div>
           <div className="mt-1 text-sm text-subtext">
             {recommendedProject
-              ? `继续「${recommendedProject.name}」的创作，或从下方选择其他项目。`
+              ? `계속하세요. / 계속 진행하세요. / 계속합니다. (문맥에 따라 적절하게 선택)「${recommendedProject.name}」작품을 만들거나, 아래에서 다른 항목을 선택하세요.。`
               : "첫 번째 프로젝트를 시작하는 것부터 시작하세요."}
           </div>
         </div>
@@ -187,15 +187,15 @@ export function DashboardPage() {
           type="button"
         >
           <div className="font-content text-2xl text-ink">+</div>
-          <div className="text-sm text-subtext">新建项目</div>
+          <div className="text-sm text-subtext">새 프로젝트 생성.</div>
         </button>
 
         <div className="panel p-6">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="font-content text-xl text-ink">推荐流程</div>
+              <div className="font-content text-xl text-ink">추천 절차.</div>
               <div className="mt-1 text-xs text-subtext">
-                {recommendedProject ? `基于最近项目「${recommendedProject.name}」：` : "프로젝트를 생성한 후, 다음 단계로 바로 진행할 수 있습니다."}
+                {recommendedProject ? `최근 프로젝트를 바탕으로.「${recommendedProject.name}」：` : "프로젝트를 생성한 후, 다음 단계로 바로 진행할 수 있습니다."}
               </div>
             </div>
             {recommendedProject ? (
@@ -205,7 +205,7 @@ export function DashboardPage() {
                 aria-label="최근 프로젝트 계속하기 (dashboard_continue_latest)"
                 type="button"
               >
-                继续
+                계속하세요. / 계속 진행하세요. / 계속합니다. (문맥에 따라 적절하게 선택)
               </button>
             ) : null}
           </div>
@@ -218,7 +218,7 @@ export function DashboardPage() {
                   aria-label="프로젝트 설정 (대시보드 추천 설정)"
                   type="button"
                 >
-                  项目设置
+                  프로젝트 설정.
                 </button>
                 <button
                   className="btn btn-secondary justify-start"
@@ -226,7 +226,7 @@ export function DashboardPage() {
                   aria-label="시작 가이드 (대시보드 추천 마법사)"
                   type="button"
                 >
-                  开工向导
+                  공사 시작 안내서.
                 </button>
                 <button
                   className="btn btn-secondary justify-start"
@@ -234,18 +234,18 @@ export function DashboardPage() {
                   aria-label="글쓰기 (글쓰기)"
                   type="button"
                 >
-                  写作
+                  작문.
                 </button>
               </div>
 
               {recommendedWizardLoading ? (
-                <div className="mt-3 text-xs text-subtext">计算完成度...</div>
+                <div className="mt-3 text-xs text-subtext">계산 완료율....</div>
               ) : recommendedWizard ? (
                 <div className="mt-3 rounded-atelier border border-border bg-canvas p-3">
                   <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-subtext">
-                    <div>完成度：{recommendedWizard.percent}%</div>
+                    <div>완성도:{recommendedWizard.percent}%</div>
                     <div className="truncate">
-                      {recommendedWizard.nextTitle ? `下一步：${recommendedWizard.nextTitle}` : "완료되었습니다."}
+                      {recommendedWizard.nextTitle ? `다음 단계:${recommendedWizard.nextTitle}` : "완료되었습니다."}
                     </div>
                   </div>
                   <ProgressBar ariaLabel="추천 절차 완료율." className="mt-2" value={recommendedWizard.percent} />
@@ -255,7 +255,7 @@ export function DashboardPage() {
                       onClick={() => navigate(recommendedWizard.nextHref ?? "")}
                       type="button"
                     >
-                      {recommendedWizard.nextTitle ? `继续：${recommendedWizard.nextTitle}` : "계속하세요. / 계속 진행하세요. / 계속합니다. (문맥에 따라 적절하게 선택)"}
+                      {recommendedWizard.nextTitle ? `계속합니다. / 계속 진행합니다. / 계속하겠습니다. / 이어서.${recommendedWizard.nextTitle}` : "계속하세요. / 계속 진행하세요. / 계속합니다. (문맥에 따라 적절하게 선택)"}
                     </button>
                   ) : null}
                 </div>
@@ -263,16 +263,16 @@ export function DashboardPage() {
             </>
           ) : (
             <div className="mt-4 grid gap-2">
-              <div className="text-xs text-subtext">建议流程：</div>
+              <div className="text-xs text-subtext">제안하는 절차는 다음과 같습니다.</div>
               <ol className="list-decimal pl-5 text-xs text-subtext">
-                <li>新建项目</li>
-                <li>项目设置：补齐世界观/风格/约束</li>
-                <li>模型配置：保存并测试连接</li>
-                <li>大纲 → 写作 → 预览/导出</li>
+                <li>새 프로젝트 생성.</li>
+                <li>프로젝트 설정: 세계관 보완./스타일./제한.</li>
+                <li>모델 구성: 저장 후 연결 테스트.</li>
+                <li>개요. → 작문. → 미리 보기./내보내기.</li>
               </ol>
-              <div className="mt-1 text-xs text-subtext">提示：也可以先新建项目，再从“推荐流程”一键进入下一步。</div>
+              <div className="mt-1 text-xs text-subtext">참고: 먼저 새 프로젝트를 만들고, ‘추천 워크플로’를 통해 다음 단계로 바로 이동할 수도 있습니다.。</div>
               <button className="btn btn-secondary mt-2 w-full" onClick={() => setCreateOpen(true)} type="button">
-                打开创建项目
+                새 프로젝트 만들기 (창)
               </button>
             </div>
           )}
@@ -293,7 +293,7 @@ export function DashboardPage() {
 
         {!loading && projects.length === 0 && error ? (
           <div className="panel p-6">
-            <div className="font-content text-xl text-ink">项目加载失败</div>
+            <div className="font-content text-xl text-ink">프로젝트 로딩에 실패했습니다.</div>
             <div className="mt-2 text-sm text-subtext">{error.message}</div>
             {error.requestId ? (
               <div className="mt-1 flex items-center gap-2 text-xs text-subtext">
@@ -312,7 +312,7 @@ export function DashboardPage() {
               </div>
             ) : null}
             <button className="btn btn-secondary mt-4" onClick={() => void refresh()} type="button">
-              重试
+              다시 시도하세요.
             </button>
           </div>
         ) : null}
@@ -349,7 +349,7 @@ export function DashboardPage() {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="truncate font-content text-xl text-ink">{p.name}</div>
-                  <div className="mt-1 text-xs text-subtext">{p.genre ? `类型：${p.genre}` : "유형이 입력되지 않았습니다."}</div>
+                  <div className="mt-1 text-xs text-subtext">{p.genre ? `유형:${p.genre}` : "유형이 입력되지 않았습니다."}</div>
                 </div>
                 <div className="flex shrink-0 gap-2">
                   <button
@@ -360,7 +360,7 @@ export function DashboardPage() {
                     }}
                     type="button"
                   >
-                    向导
+                    가이드. 안내자.
                   </button>
                   <button
                     className="btn btn-ghost px-3 py-2 text-xs text-accent hover:bg-accent/10"
@@ -385,7 +385,7 @@ export function DashboardPage() {
                     }}
                     type="button"
                   >
-                    删除
+                    삭제하다.
                   </button>
                 </div>
               </div>
@@ -396,14 +396,14 @@ export function DashboardPage() {
 
               <div className="mt-4">
                 {wizardLoading ? (
-                  <div className="text-xs text-subtext">计算完成度...</div>
+                  <div className="text-xs text-subtext">계산 완료율....</div>
                 ) : wizard ? (
                   <>
                     <div className="flex items-center justify-between gap-3 text-xs text-subtext">
-                      <div>完成度：{wizard.percent}%</div>
-                      <div className="truncate">{wizard.nextTitle ? `下一步：${wizard.nextTitle}` : "완료되었습니다."}</div>
+                      <div>완성도:{wizard.percent}%</div>
+                      <div className="truncate">{wizard.nextTitle ? `다음 단계:${wizard.nextTitle}` : "완료되었습니다."}</div>
                     </div>
-                    <ProgressBar ariaLabel={`${p.name} 完成度`} className="mt-2" value={wizard.percent} />
+                    <ProgressBar ariaLabel={`${p.name} 완성도.`} className="mt-2" value={wizard.percent} />
                   </>
                 ) : null}
               </div>
@@ -418,10 +418,10 @@ export function DashboardPage() {
         panelClassName="surface max-w-lg p-6"
         ariaLabel="프로젝트 생성하기."
       >
-        <div className="font-content text-2xl text-ink">创建项目</div>
+        <div className="font-content text-2xl text-ink">프로젝트 생성하기.</div>
         <div className="mt-4 grid gap-3">
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">项目名</span>
+            <span className="text-xs text-subtext">프로젝트명.</span>
             <input
               className="input"
               name="name"
@@ -430,7 +430,7 @@ export function DashboardPage() {
             />
           </label>
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">类型（可选）</span>
+            <span className="text-xs text-subtext">유형(선택 사항)</span>
             <input
               className="input"
               name="genre"
@@ -439,7 +439,7 @@ export function DashboardPage() {
             />
           </label>
           <label className="grid gap-1">
-            <span className="text-xs text-subtext">一句话梗概（可选）</span>
+            <span className="text-xs text-subtext">요약 (선택 사항)</span>
             <textarea
               className="textarea"
               name="logline"
@@ -451,7 +451,7 @@ export function DashboardPage() {
         </div>
         <div className="mt-5 flex justify-end gap-2">
           <button className="btn btn-secondary" onClick={() => setCreateOpen(false)} type="button">
-            取消
+            취소하다.
           </button>
           <button
             className="btn btn-primary"
@@ -481,7 +481,7 @@ export function DashboardPage() {
             }}
             type="button"
           >
-            创建
+            생성하다.
           </button>
         </div>
       </Modal>

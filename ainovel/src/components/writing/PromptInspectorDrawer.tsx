@@ -224,13 +224,13 @@ export function PromptInspectorDrawer(props: Props) {
             Prompt Inspector
           </div>
           <div className="mt-1 text-xs text-subtext">
-            生成前预检（不调用 LLM）{requestId ? <span className="ml-2">request_id: {requestId}</span> : null}
+            생성 전 사전 점검 (함수 호출하지 않음). LLM）{requestId ? <span className="ml-2">request_id: {requestId}</span> : null}
           </div>
         </div>
         <div className="flex items-center gap-2">
           {overrideEnabled ? (
             <button className="btn btn-secondary" disabled={loading} onClick={clearOverride} type="button">
-              回退默认
+              기본 설정으로 되돌리기.
             </button>
           ) : null}
           <button
@@ -239,21 +239,21 @@ export function PromptInspectorDrawer(props: Props) {
             onClick={() => void loadPrecheck()}
             type="button"
           >
-            刷新预检
+            새로 고침을 통해 사전 검사를 다시 시작합니다.
           </button>
           <button className="btn btn-secondary" onClick={onClose} type="button">
-            关闭
+            닫기.
           </button>
         </div>
       </div>
 
       {overrideEnabled ? (
-        <div className="mt-3 callout-warning">已启用覆盖提示词：生成将使用覆盖文本（可随时回退）。</div>
+        <div className="mt-3 callout-warning">덮어쓰기 프롬프트가 활성화되었습니다. 이제 입력하신 텍스트를 기준으로 결과물이 생성되며, 필요에 따라 언제든지 이전 설정으로 되돌릴 수 있습니다.。</div>
       ) : null}
 
       {error ? (
         <div className="mt-3 callout-danger">
-          <div className="font-medium">预检失败</div>
+          <div className="font-medium">사전 검사 실패.</div>
           <div className="mt-1">
             {error.code}: {error.message}
             {error.requestId ? <span className="ml-2 text-[11px]">request_id: {error.requestId}</span> : null}
@@ -264,7 +264,7 @@ export function PromptInspectorDrawer(props: Props) {
       <div className="mt-4 grid gap-4">
         <div className="panel p-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-sm font-medium text-ink">预检参数</div>
+            <div className="text-sm font-medium text-ink">사전 점검 매개변수.</div>
             <div className="flex items-center gap-3 text-xs text-subtext">
               <label className="flex items-center gap-2">
                 <input
@@ -274,7 +274,7 @@ export function PromptInspectorDrawer(props: Props) {
                   type="radio"
                   name="prompt_inspector_mode"
                 />
-                替换
+                대체하다.
               </label>
               <label className="flex items-center gap-2">
                 <input
@@ -284,7 +284,7 @@ export function PromptInspectorDrawer(props: Props) {
                   type="radio"
                   name="prompt_inspector_mode"
                 />
-                追加
+                추가.
               </label>
               {precheck?.macro_seed ? <span>macro_seed: {precheck.macro_seed}</span> : null}
               {precheck?.task ? <span>task: {precheck.task}</span> : null}
@@ -293,7 +293,7 @@ export function PromptInspectorDrawer(props: Props) {
         </div>
 
         <div className="panel p-3">
-          <div className="text-sm font-medium text-ink">最终 Prompt（只读）</div>
+          <div className="text-sm font-medium text-ink">결국. Prompt（읽기 전용.</div>
           <div className="mt-2 grid gap-3">
             <details>
               <summary className="ui-transition-fast cursor-pointer text-xs text-subtext hover:text-ink">
@@ -329,7 +329,7 @@ export function PromptInspectorDrawer(props: Props) {
         </div>
 
         <div className="panel p-3">
-          <div className="text-sm font-medium text-ink">注入段落（memory_pack）</div>
+          <div className="text-sm font-medium text-ink">[텍스트 삽입]memory_pack）</div>
           <div className="mt-2 grid gap-2">
             {packTextBlocks.length === 0 ? (
               <div className="text-xs text-subtext">
@@ -362,10 +362,10 @@ export function PromptInspectorDrawer(props: Props) {
         </div>
 
         <div className="panel p-3">
-          <div className="text-sm font-medium text-ink">覆盖文本（可选）</div>
+          <div className="text-sm font-medium text-ink">덮어쓸 텍스트(선택 사항)</div>
           <div className="mt-2 grid gap-3">
             <label className="grid gap-1">
-              <span className="text-xs text-subtext">system（覆盖）</span>
+              <span className="text-xs text-subtext">system（포함하다, 포함시키다, 포괄하다, 덮다, 덮어씌우다.</span>
               <textarea
                 className="textarea min-h-[140px]"
                 aria-label="prompt_override_system"
@@ -375,7 +375,7 @@ export function PromptInspectorDrawer(props: Props) {
               />
             </label>
             <label className="grid gap-1">
-              <span className="text-xs text-subtext">user（覆盖）</span>
+              <span className="text-xs text-subtext">user（포함하다, 포함시키다, 포괄하다, 덮다, 덮어씌우다.</span>
               <textarea
                 className="textarea min-h-[140px]"
                 aria-label="prompt_override_user"
@@ -391,11 +391,11 @@ export function PromptInspectorDrawer(props: Props) {
                 onClick={() => void executeOverride()}
                 type="button"
               >
-                使用覆盖文本执行
+                덮어쓰기 텍스트를 사용하여 실행합니다.
               </button>
             </div>
             <div className="text-[11px] text-subtext">
-              提示：使用覆盖后，“生成/追加生成”也会继续沿用覆盖文本，直到回退默认。
+              덮어쓰기 기능을 사용한 후에는 “생성”이 나타납니다./추가 생성 기능은 기본 설정으로 되돌릴 때까지 기존 텍스트를 덮어쓰는 방식으로 계속 작동합니다.。
             </div>
           </div>
         </div>

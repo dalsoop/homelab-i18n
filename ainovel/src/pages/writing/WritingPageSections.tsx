@@ -262,9 +262,9 @@ export function WritingChapterListDrawer(props: WritingChapterListDrawerProps) {
       panelClassName={`h-full ${CHAPTER_LIST_SIDEBAR_WIDTH_CLASS} overflow-hidden border-r border-border bg-surface shadow-sm`}
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <div className="text-sm text-ink">章节列表</div>
+        <div className="text-sm text-ink">목차.</div>
         <button className="btn btn-secondary" onClick={props.onClose} type="button">
-          关闭
+          닫기.
         </button>
       </div>
 

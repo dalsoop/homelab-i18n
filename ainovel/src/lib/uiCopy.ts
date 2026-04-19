@@ -60,7 +60,7 @@ export const UI_COPY = {
     subtitle: "자주 쓰는 용어 빠른 참조 + 페이지 설명 템플릿 (사용 시기 / 위험 / 예시).",
     termsTitle: "자주 쓰는 용어 (빠른 참조)",
     terms: [
-      { label: "프롬프트 (prompt)", description: "给模型的指令文本；一般由“目标 + 约束 + 输入/输出格式”组成。" },
+      { label: "프롬프트 (prompt)", description: "모델에 제공되는 명령어 텍스트입니다. 일반적으로 “목표”로 시작합니다. + 제한. + 입력./출력 형식으로 구성됩니다.。" },
       { label: "벡터화（embedding）", description: "텍스트를 벡터로 변환하여 검색에 활용합니다. 모델/인터페이스 설정이 필요하며 비용과 시간이 소요될 수 있습니다." },
       { label: "재순위 정렬(rerank)", description: "후보 결과를 재정렬하여 검색 품질을 높여요. 일반적으로 추가 연산이 한 번 발생해요." },
       { label: "검색 증강 생성 (RAG)", description: "관련 단락을 먼저 검색한 후 생성 컨텍스트에 주입합니다. 일관성 및 인용 강화에 사용됩니다." },
@@ -71,12 +71,12 @@ export const UI_COPY = {
     tipsTitle: "문제 해결 팁",
     tips: [
       "오류 발생 시: 요청 ID（request_id）와 재현 단계（무엇을 클릭/입력했는지）를 먼저 기록해 주세요.",
-      "遇到“加载慢/不稳定”：先看是否需要重建索引/入库，以及是否有大量数据导致分页/渲染压力。",
+      "“로딩 속도가 느립니다”라는 메시지가 표시될 때./“불안정” 상태가 발생하면, 먼저 인덱스를 재구축할 필요가 있는지 확인해 보세요./데이터 저장 및 대량 데이터로 인해 페이지 분할이 필요한지 여부./압박감을 조성하다.。",
     ],
   },
   search: {
     title: "검색 엔진",
-    subtitle: "VSCode 式全项目搜索（多源聚合，可筛选与跳转；替代旧“术语表/术语映射”入口）",
+    subtitle: "VSCode 전체 프로젝트 용어 검색 (다양한 소스에서 수집, 필터링 및 연결 기능 제공; 기존 ‘용어집’ 대체)./“용어 매핑” 항목.",
     queryPlaceholder: "키워드 입력…",
     search: "검색",
     clear: "비우기",
@@ -108,9 +108,9 @@ export const UI_COPY = {
   },
   chapterAnalysis: {
     introTitle: "용도 설명",
-    introLine1: "将“剧情记忆标注”高亮映射回正文，便于核对与定位；点击高亮或右侧列表可跳转到对应片段。",
+    introLine1: "“스토리라인 메모 표시” 기능을 사용하여 텍스트 내에서 해당 부분을 강조 표시하여 원본 텍스트와 비교하고 특정 부분을 쉽게 찾을 수 있도록 합니다. 강조 표시된 부분을 클릭하거나 오른쪽 목록에서 해당 항목을 선택하면 해당 부분으로 바로 이동합니다.。",
     introLine2: "주의: 여기서는 스토리 기억 (Hook/복선/플롯/요약)을 관리하며, 세계관 설정 (인물/장소/아이템)과는 다릅니다.",
-    entryLine: "入口：写作页（选中章节）→ 右上角“标注回溯”（需要 chapterId）。",
+    entryLine: "입력: 글쓰기 페이지 (선택한 장)→ 오른쪽 상단의 “주석 추적” 기능 (필요). chapterId）。",
     storyMemoryTitle: "스토리 기억(StoryMemory)",
     storyMemorySubtitle:
       "이 항목들은 역추적 및 검색에 사용됩니다. 수동으로 추가/편집/병합/완료 표시/삭제할 수 있습니다. 자동 업데이트（plot_auto_update）도 플롯 메모리에만 기록되며 세계관 설정은 변경되지 않습니다.",
@@ -122,7 +122,7 @@ export const UI_COPY = {
     save: "RAG 설정 저장",
     dryRunTitle: "설정 테스트 (dry-run)",
     backendEnvFallbackHint: "설정이 불확실한 경우 비워두면 백엔드가 환경 변수에서 자동으로 읽어옵니다.",
-    pendingClearSuffix: " | 将在保存时清除",
+    pendingClearSuffix: " | 저장 시 내용이 삭제됩니다.",
     rerankTitle: "Rerank(재정렬)",
     rerankConfigDetailsTitle: "Rerank 제공자 설정",
     rerankProviderLabel: "Rerank 제공자(provider, 프로젝트 재정의, 비워두면=백엔드 환경 변수 사용)",
@@ -139,8 +139,8 @@ export const UI_COPY = {
   structuredMemory: {
     title: "그래프 기반 데이터（StructuredMemory）",
     subtitle: "그래프 기반 데이터 테이블: 엔티티 / 관계 / 이벤트 / 복선 / 증거（인물 관계 편집 및 롤백 포함）.",
-    usageHint: "何时用：排查“图谱抽取/增量更新/注入”是否写入底层表，或需要按关键词检索与导出操作（不是数值表格）。",
-    exampleHint: "示例：在查询框输入人物名，再切换到“关系/证据”观察命中与数量变化。",
+    usageHint: "언제 사용해야 할까요: “지식 그래프 추출” 오류 해결./점진적 업데이트./“주입” 기능이 기본 데이터 테이블에 직접 적용되는지, 아니면 키워드 검색 및 데이터 추출 기능을 통해 적용되는지 확인해야 합니다. (단, 이 기능은 숫자 데이터 표가 아닌 다른 형태의 데이터에 적용됩니다.)。",
+    exampleHint: "예시: 검색창에 인물 이름을 입력한 후 “관계” 탭으로 전환합니다./“증거” 관찰 결과와 수량 변화의 일치 여부.。",
     bulkOpsHint: "일괄 작업은 Memory Update의 ops JSON을 생성합니다. 복사 후 Memory Update에 붙여넣고 Apply해야 적용됩니다.",
     bulkOpsRisk: "주의: Apply는 메모리 테이블을 직접 수정합니다. 선택 범위를 먼저 확인하고, 필요한 경우 JSON 백업을 먼저 복사하세요.",
     tabs: {
@@ -215,8 +215,8 @@ export const UI_COPY = {
       step1: "단계 1: 제안 (Propose)",
       step2: "단계 2: 검토 (Review)",
       step3: "단계 3: 적용 (Apply)",
-      step1Hint: "提议：生成一组“对结构化记忆的变更建议”，不会立即写入。",
-      step2Hint: "审核：逐项选择要应用的变更；建议先看“变更前/变更后”。",
+      step1Hint: "제안: 구조화된 메모리에 대한 변경 제안을 담은 일련의 제안서를 생성하되, 즉시 적용하지는 않습니다.。",
+      step2Hint: "변경 사항을 적용하기 전에 각 변경 사항을 개별적으로 검토하고, 먼저 “변경 전” 내용을 확인하는 것이 좋습니다./변경 후.”。",
       step3Hint: "적용: 수락된 항목을 데이터베이스에 저장합니다. 반복 클릭은 멱등성이 보장됩니다 (중복 저장 없음).",
       inputTitle: "입력（JSON, 선택 사항）",
       inputHint: "고급 사용법: ops 배열 또는 ops 필드를 포함한 객체를 지원합니다.",
@@ -239,7 +239,7 @@ export const UI_COPY = {
       applyResultTitle: "적용 결과 (Apply Result)",
       warnings: "경고",
       warningsZero: "경고: 0",
-      missingProposeHint: "请先在“步骤 1”生成提议（Propose）。",
+      missingProposeHint: "먼저 “단계”에서 1”제안 초안 작성.Propose）。",
     },
     foreshadowDrawer: {
       title: "복선 패널",
@@ -252,7 +252,7 @@ export const UI_COPY = {
       filterLabel: "필터",
       filterPlaceholder: "키워드 입력（여러 단어는 공백으로 구분）",
       filterHint: "제목/본문 미리보기/챕터 ID로 필터링할 수 있습니다. 여러 키워드는 공백으로 구분하세요.",
-      empty: "暂无开放伏笔。你可以先在“章节分析”里保存到记忆库，再回来查看。",
+      empty: "아직 숨겨진 내용을 공개할 단계가 아닙니다. 먼저 “장 분석”에서 내용을 저장해두었다가 다시 확인해 보세요.。",
       noTitle: "(제목 없음)",
       metaChapterId: "챕터",
       metaScore: "중요도",
@@ -269,14 +269,14 @@ export const UI_COPY = {
   },
   worldbook: {
     entriesCountPrefix: "총 ",
-    entriesCountSuffix: " 条",
+    entriesCountSuffix: " 개",
     refresh: "새로고침",
     create: "새 항목 만들기",
 
     bulkMode: "일괄 모드",
     bulkModeHint: "일괄 모드에서: 항목 클릭 = 선택/해제, 전체 선택 시 현재 필터 결과의 모든 항목이 선택됩니다.",
     bulkSelectedPrefix: "선택됨: ",
-    bulkSelectedSuffix: " 条",
+    bulkSelectedSuffix: " 개",
     bulkSelectAll: "전체 선택",
     bulkClearSelection: "선택 비우기",
     bulkEnable: "일괄 활성화",
@@ -290,23 +290,23 @@ export const UI_COPY = {
 
     bulkEnableTitle: "항목을 일괄 활성화할까요?",
     bulkEnableDescPrefix: "활성화될 항목: ",
-    bulkEnableDescSuffix: " 条。",
+    bulkEnableDescSuffix: " 개。",
     bulkDisableTitle: "항목을 일괄 비활성화할까요?",
     bulkDisableDescPrefix: "비활성화될 예정: ",
-    bulkDisableDescSuffix: " 条。",
+    bulkDisableDescSuffix: " 개。",
     bulkUpdateTitle: "항목을 일괄 업데이트할까요?",
     bulkUpdateDescPrefix: "업데이트될 항목: ",
-    bulkUpdateDescSuffix: " 条。",
+    bulkUpdateDescSuffix: " 개。",
     bulkDeleteTitle: "항목을 일괄 삭제할까요?",
     bulkDeleteDescPrefix: "삭제될 예정: ",
-    bulkDeleteDescSuffix: " 条，删除后无法恢复。",
+    bulkDeleteDescSuffix: " 삭제하면 복구할 수 없습니다.。",
     bulkDuplicateTitle: "항목을 복사할까요?",
     bulkDuplicateDescPrefix: "복사될 항목: ",
-    bulkDuplicateDescSuffix: " 条并进入编辑。",
+    bulkDuplicateDescSuffix: " 문장을 선택하여 편집 모드로 들어갑니다.。",
 
     entriesTitle: "항목 목록",
     entriesHint:
-      "关键词条目：命中关键词才会注入。常驻（constant）条目：始终注入、会占用预算，建议少量使用。条目很多时列表会分页渲染，点击“显示更多”继续加载。",
+      "키워드가 일치해야만 적용됩니다. (항상 적용됩니다.)constant）항목: 항상 적용하면 예산이 소모되므로, 필요한 경우에만 제한적으로 사용하는 것이 좋습니다. 항목 수가 많을 경우 목록이 여러 페이지로 나뉘어 표시되며, “더 보기”를 클릭하면 나머지 항목이 추가로 로드됩니다.。",
     empty: "항목이 없습니다",
 
     tagEnabled: "활성화",
@@ -329,7 +329,7 @@ export const UI_COPY = {
     previewUseInDrawerHint: "편집 패널이 열려 있을 때는 패널 내에서 미리보기를 실행해 주세요.",
     previewFailed: "미리보기 실패",
     previewTriggeredPrefix: "트리거 ",
-    previewTriggeredSuffix: " 条",
+    previewTriggeredSuffix: " 개",
     previewTruncated: "잘렸습니다 (상한 초과)",
     previewTriggeredList: "항목 트리거",
     previewNoTriggered: "트리거된 항목이 없습니다",
@@ -375,9 +375,9 @@ export const UI_COPY = {
   },
   rag: {
     title: "Vector RAG 관리",
-    subtitle: "状态 / 查询 / 入库 / 重建索引：用于排查“注入不生效/命中不稳定/索引过期”。",
-    usageHint: "何时用：写作时感觉“世界书/上下文注入不生效”或检索结果不稳定时，先来这里看状态与命中。",
-    exampleHint: "示例：输入章节片段或关键词（如“dragon”）点击“查询”，检查命中来源与注入结果。",
+    subtitle: "상태. / 조회하다. / 검색하다. / 문의하다. / 확인하다. / 입고. / 인덱스를 재구축하여 “주입이 제대로 적용되지 않는” 문제를 해결합니다./정확도가 떨어지다. / 명중률이 낮다. / 결과가 예측하기 어렵다./인덱스가 만료되었습니다.”。",
+    usageHint: "글을 쓸 때 “세상이 다 담겨 있는 듯한” 느낌이 들 때 사용하세요./컨텍스트 주입이 제대로 작동하지 않거나 검색 결과가 불안정할 때, 먼저 이 페이지에서 상태 및 적중 여부를 확인해 보세요.。",
+    exampleHint: "예시: 챕터의 일부 내용이나 키워드(예: )를 입력하세요.“dragon”）“검색”을 클릭하여 일치하는 결과와 삽입 결과를 확인하세요.。",
     riskHint: "주의: 색인 저장/재구성에 시간이 걸릴 수 있으며, 온라인 모델로 구성된 경우 비용이 발생할 수 있습니다.",
 
     settings: "모델 설정 (Vector RAG)",
@@ -406,8 +406,8 @@ export const UI_COPY = {
   graph: {
     title: "그래프",
     subtitle: "그래프 컨텍스트（GraphContext）: 쿼리 매칭 엔티티 + 1-hop 관계 + 증거 재생. 인물 관계 편집으로 이동을 지원합니다.",
-    usageHint: "何时用：想确认“哪些实体/关系被识别并注入”，或从查询结果跳到人物关系编辑/证据定位。",
-    exampleHint: "示例：把章节中的一句话粘贴到查询框，点击“查询”，查看命中实体与证据来源。",
+    usageHint: "언제 사용하면 좋을까요? “어떤 개체를 확인하고 싶을 때”/관계가 식별되어 연결되거나, 검색 결과에서 바로 인물 관계 편집으로 이동합니다./증거 위치 파악.。",
+    exampleHint: "예시: 챕터의 문장 하나를 검색창에 복사하여 붙여넣은 후 “검색”을 클릭하면 해당 문장과 관련된 정보 및 출처를 확인할 수 있습니다.。",
     riskHint: "주의: 이 페이지는 고급 디버그 페이지로 일부 원시 결과 및 증거 단편이 표시됩니다. 공유 환경에서 프로젝트 내용이 노출되지 않도록 주의하세요.",
 
     enabledToggle: "활성화（enabled）",
@@ -446,8 +446,8 @@ export const UI_COPY = {
 
     intro: "여기서 프리셋과 프롬프트 블록을 관리하고 백엔드 렌더링 미리보기를 생성합니다.",
     recommendedFlow: "권장 흐름: 모델 설정 → (초보자 템플릿/스튜디오) → 개요 생성 → 챕터 생성 → 기억 업데이트",
-    quickStart: "快速开始：选中预设 → 编辑模板片段 → 右侧预览 → 回到写作页点击“AI 生成”。",
-    advancedHint: "提示：这里是高级模式；若你只想改“关键提示词”，建议从“新手：Prompt 模板”开始。",
+    quickStart: "빠르게 시작하려면: 미리 설정된 옵션을 선택하세요. → 편집 템플릿 조각. → 오른쪽 미리보기. → 작성 페이지로 돌아가려면 클릭하세요.“AI 생성.”。",
+    advancedHint: "참고: 이곳은 고급 모드입니다. ‘핵심 키워드’만 변경하고 싶다면 ‘초급’ 모드에서 시작하는 것이 좋습니다.Prompt “템플릿” 시작.。",
 
     conceptTitle: "개념 설명 (프리셋/프롬프트 블록/우선순위)",
 
@@ -481,7 +481,7 @@ export const UI_COPY = {
     title: "분형 기억(Fractal)",
     tag: "Fractal",
     subtitle: "프랙탈 메모리 주입 텍스트를 확인/재생하여 메모리 주입 및 요약이 예상대로 작동하는지 진단하는 데 사용합니다.",
-    usageHint: "何时用：写作中出现“记忆注入不生效/摘要异常/上下文不稳定”等问题时。",
+    usageHint: "언제 사용해야 하는가: 글을 쓰던 중 “메모리 주입이 제대로 작동하지 않음”이라는 문제가 발생했을 때./요약 내용에 오류가 있습니다./맥락이 일관되지 않거나 하는 문제에 직면했을 때.。",
     riskHint: "주의: 이 페이지는 고급 디버그 페이지로 일부 prompt/내부 상태가 표시됩니다. 공유 환경에서 프로젝트 내용이 노출되지 않도록 주의하세요.",
   },
   taskCenter: {

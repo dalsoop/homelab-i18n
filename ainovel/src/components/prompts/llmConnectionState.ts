@@ -63,8 +63,8 @@ export function deriveLlmModuleAccessState(options: DeriveOptions): LlmModuleAcc
     return createBlockedState(
       "provider_mismatch",
       "원격 연결 상태: 제공업체가 일치하지 않음.",
-      `当前模块 provider = ${options.moduleProvider}，${sourceLabel} provider = ${effectiveProfile.provider}。先让两者一致，再拉取模型列表或测试连接。`,
-      `${sourceLabel} 与当前模块 provider 不一致。`,
+      `현재 모듈. provider = ${options.moduleProvider}，${sourceLabel} provider = ${effectiveProfile.provider}。먼저 두 가지를 일치시킨 후 모델 목록을 가져오거나 연결 테스트를 수행합니다.。`,
+      `${sourceLabel} 현재 모듈과 함께. provider 일치하지 않음.。`,
       effectiveProfile,
     );
   }
@@ -73,8 +73,8 @@ export function deriveLlmModuleAccessState(options: DeriveOptions): LlmModuleAcc
     return createBlockedState(
       "missing_key",
       "원격 연결 상태: 프로필과 연결되었으나 키가 저장되지 않았습니다.",
-      `${sourceLabel} 已绑定，但还没有保存 API Key。保存 Key 后才能拉取模型列表或测试连接。`,
-      `${sourceLabel} 还没有保存 API Key。`,
+      `${sourceLabel} 연결되었지만 아직 저장되지 않았습니다. API Key。저장. Key 모델 목록을 가져오거나 연결 테스트를 수행하기 전에 먼저 해당 작업을 수행해야 합니다.。`,
+      `${sourceLabel} 아직 저장되지 않았습니다. API Key。`,
       effectiveProfile,
     );
   }
@@ -83,19 +83,19 @@ export function deriveLlmModuleAccessState(options: DeriveOptions): LlmModuleAcc
     stage: "ready",
     tone: "success",
     title: "원격 상태: 원격 요청 가능.",
-    detail: `${sourceLabel} 已就绪：${profileSummary(effectiveProfile)}。现在可以拉取模型列表，也可以测试连接。`,
+    detail: `${sourceLabel} 준비 완료.${profileSummary(effectiveProfile)}。이제 모델 목록을 가져오거나 연결 상태를 테스트할 수 있습니다.。`,
     actionReason: null,
     effectiveProfile,
   };
 }
 
 export function describeModelListState(modelList: LlmModelListState, accessState: LlmModuleAccessState): string {
-  if (accessState.actionReason) return `当前不可拉取模型列表：${accessState.actionReason}`;
+  if (accessState.actionReason) return `현재 모델 목록을 가져올 수 없습니다.${accessState.actionReason}`;
   if (modelList.loading) return "현재 제공업체와 기본 URL을 기준으로 모델 목록을 가져오는 중입니다.";
-  if (modelList.error) return `拉取失败：${modelList.error}。仍可手动输入 model。`;
-  if (modelList.warning) return `远端返回提醒：${modelList.warning}。仍可手动输入 model。`;
+  if (modelList.error) return `다운로드 실패:${modelList.error}。여전히 직접 입력할 수 있습니다. model。`;
+  if (modelList.warning) return `원격 접속 종료 알림:${modelList.warning}。여전히 직접 입력할 수 있습니다. model。`;
   if (modelList.options.length > 0) {
-    return `已拉取 ${modelList.options.length} 个候选模型；可下拉选择，也可手动输入 model。`;
+    return `이미 가져왔습니다. / 이미 다운로드했습니다. / 이미 가져왔습니다. (문맥에 따라 적절하게 선택) ${modelList.options.length} 후보 모델을 여러 개 제시하며, 드롭다운 메뉴에서 선택하거나 직접 입력할 수도 있습니다. model。`;
   }
   if (modelList.requestId) {
     return "원격 서버에 모델 목록을 요청했지만, 후보 모델을 찾을 수 없습니다. 제공업체(provider) 또는 기본 URL(base_url)을 확인하거나, 직접 모델 이름을 입력해 주세요.";

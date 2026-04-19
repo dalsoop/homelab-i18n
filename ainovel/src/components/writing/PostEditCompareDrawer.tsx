@@ -78,7 +78,7 @@ export function PostEditCompareDrawer(props: Props) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="font-content text-2xl text-ink" id={titleId}>
-            润色对比
+            다듬고 비교하기.
           </div>
           <div className="mt-1 text-xs text-subtext">
             {props.requestId ? (
@@ -91,13 +91,13 @@ export function PostEditCompareDrawer(props: Props) {
           </div>
         </div>
         <button className="btn btn-secondary" onClick={onClose} type="button">
-          关闭
+          닫기.
         </button>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-subtext">视图</span>
+          <span className="text-xs text-subtext">보기, 시점, 관점, 전망. (문맥에 따라 적절한 단어 선택)</span>
           {(["diff", "raw", "post_edit"] as const).map((v) => (
             <button
               key={v}
@@ -116,14 +116,14 @@ export function PostEditCompareDrawer(props: Props) {
             onClick={applyRaw}
             type="button"
           >
-            采用原稿
+            원문 사용.
           </button>
           <button
             className={props.appliedChoice === "post_edit" ? "btn btn-primary" : "btn btn-secondary"}
             onClick={applyPostEdit}
             type="button"
           >
-            采用后处理稿
+            수정본을 사용합니다.
           </button>
         </div>
       </div>

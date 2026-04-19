@@ -123,13 +123,13 @@ export function FractalPage() {
   const fractalStatusText = result
     ? fractalEnabled
       ? "활성화되었습니다."
-      : `未启用（${result.disabled_reason ?? "unknown"}）`
+      : `사용 중지됨.${result.disabled_reason ?? "unknown"}）`
     : "로드 중입니다.";
   const v2StatusText = result
     ? v2Enabled
       ? "활성화되었습니다."
       : v2
-        ? `未启用（${v2.disabled_reason ?? v2.status ?? "unknown"}）`
+        ? `사용 중지됨.${v2.disabled_reason ?? v2.status ?? "unknown"}）`
         : "사용 중지됨 (사용 불가)."
     : "로드 중입니다.";
   const conclusionText = result
@@ -188,22 +188,22 @@ export function FractalPage() {
 
       <div className="rounded-atelier border border-border bg-surface p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="text-sm text-ink">状态与结论</div>
+          <div className="text-sm text-ink">상태 및 결론.</div>
           <RequestIdBadge requestId={requestId} />
         </div>
         <div className="mt-1 text-xs text-subtext">
-          分形记忆：{fractalStatusText} | LLM 摘要：{v2StatusText}
-          {result?.updated_at ? ` | 更新时间：${result.updated_at}` : ""}
+          프랙탈 기억.{fractalStatusText} | LLM 요약:{v2StatusText}
+          {result?.updated_at ? ` | 최신 업데이트 시간:${result.updated_at}` : ""}
         </div>
         <div className="mt-1 text-xs text-subtext">{conclusionText}</div>
       </div>
 
       <div className="rounded-atelier border border-border bg-surface p-3">
-        <div className="text-sm text-ink">生成结果预览</div>
+        <div className="text-sm text-ink">결과 미리보기.</div>
         <div className="mt-3 grid gap-3 lg:grid-cols-2">
           <div className="rounded-atelier border border-border bg-canvas p-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="text-sm text-ink">确定性（deterministic）</div>
+              <div className="text-sm text-ink">확실성.deterministic）</div>
               <div className="flex items-center gap-2 text-xs text-subtext">
                 <span className="truncate">{result?.prompt_block?.identifier ?? "-"}</span>
                 <button
@@ -229,7 +229,7 @@ export function FractalPage() {
 
           <div className="rounded-atelier border border-border bg-canvas p-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="text-sm text-ink">LLM 摘要（v2）</div>
+              <div className="text-sm text-ink">LLM 요약 (v2）</div>
               <div className="flex items-center gap-2 text-xs text-subtext">
                 <span className="truncate">{result?.prompt_block_v2?.identifier ?? "-"}</span>
                 <button
@@ -250,7 +250,7 @@ export function FractalPage() {
             </div>
             {!v2Enabled ? (
               <div className="mt-2 rounded-atelier border border-border bg-surface p-3 text-xs text-subtext">
-                LLM 摘要当前未启用，将回退至确定性结果。原因：{v2?.disabled_reason ?? v2?.status ?? "원인 불명."}
+                LLM 요약 기능이 현재 활성화되지 않았으므로, 기본 설정으로 되돌립니다. 그 이유는 다음과 같습니다.{v2?.disabled_reason ?? v2?.status ?? "원인 불명."}
                 {v2?.error_code ? ` | error_code=${v2.error_code}` : ""}
                 {v2?.error_type ? ` | error_type=${v2.error_type}` : ""}
               </div>

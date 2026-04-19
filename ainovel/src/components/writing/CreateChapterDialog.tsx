@@ -38,18 +38,18 @@ export function CreateChapterDialog(props: Props) {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="font-content text-xl text-ink" id={titleId}>
-            新增章节
+            새로운 장 추가.
           </div>
-          <div className="mt-1 text-xs text-subtext">章号 / 标题 / 要点</div>
+          <div className="mt-1 text-xs text-subtext">장 번호. / 제목. / 요점.</div>
         </div>
         <button className="btn btn-secondary" aria-label="닫기." onClick={onClose} disabled={saving} type="button">
-          关闭
+          닫기.
         </button>
       </div>
 
       <div className="mt-4 grid gap-3">
         <label className="grid gap-1">
-          <span className="text-xs text-subtext">章号</span>
+          <span className="text-xs text-subtext">장 번호.</span>
           <input
             className="input"
             min={1}
@@ -60,7 +60,7 @@ export function CreateChapterDialog(props: Props) {
           />
         </label>
         <label className="grid gap-1">
-          <span className="text-xs text-subtext">标题</span>
+          <span className="text-xs text-subtext">제목.</span>
           <input
             className="input"
             name="title"
@@ -69,7 +69,7 @@ export function CreateChapterDialog(props: Props) {
           />
         </label>
         <label className="grid gap-1">
-          <span className="text-xs text-subtext">要点</span>
+          <span className="text-xs text-subtext">요점.</span>
           <textarea
             className="textarea atelier-content"
             name="plan"
@@ -82,7 +82,7 @@ export function CreateChapterDialog(props: Props) {
 
       <div className="mt-5 flex justify-end gap-2">
         <button className="btn btn-secondary" onClick={onClose} disabled={saving} type="button">
-          取消
+          취소하다.
         </button>
         <button className="btn btn-primary" disabled={saving} onClick={props.onSubmit} type="button">
           {saving ? "생성 중..." : "생성하다."}
