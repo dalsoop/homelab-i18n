@@ -281,6 +281,9 @@ cmd_project(){
   local sub="${1:-help}"
   shift || true
   case "$sub" in
+    new) cmd_project_new "$@" ;;
+    delete|rm) cmd_project_delete "$@" ;;
+    clone) cmd_project_clone "$@" ;;
     list)
       require_up
       compose "exec -T postgres psql -U ainovel -d ainovel -c 'SELECT id, name, genre FROM projects ORDER BY updated_at DESC;'"
@@ -345,12 +348,201 @@ EOF
   esac
 }
 
+# ── CRUD 헬퍼 ────────────────────────────────────────────────────────────
+
+_sql_exec(){
+  require_up
+  compose "exec -T postgres psql -U ainovel -d ainovel -v ON_ERROR_STOP=1"
+}
+_sql_q(){
+  require_up
+  compose "exec -T postgres psql -U ainovel -d ainovel -At -v ON_ERROR_STOP=1"
+}
+_require_proj(){
+  [ -n "${1:-}" ] || die "프로젝트 id 필요"
+  local r=$(compose "exec -T postgres psql -U ainovel -d ainovel -At -c \"SELECT 1 FROM projects WHERE id='$1';\"" 2>/dev/null | tr -d ' ')
+  [ "$r" = "1" ] || die "프로젝트 $1 없음"
+}
+_read_file_or_arg(){
+  # $1: 파일경로 또는 "-" (stdin) 또는 직접 텍스트 (prefix 가 `file:` 일 때만 파일)
+  if [ "$1" = "-" ]; then cat
+  elif [ -f "$1" ]; then cat "$1"
+  else echo "$1"
+  fi
+}
+_json_escape(){ python3 -c 'import json,sys;print(json.dumps(sys.stdin.read(), ensure_ascii=False))'; }
+
+# ── 프로젝트 CRUD ────────────────────────────────────────────────────────
+
+cmd_project_new(){
+  # $1=name, $2=--genre, $3=--logline
+  local name="$1"; shift || true
+  local genre="" logline=""
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --genre) genre="$2"; shift 2;;
+      --logline) logline="$2"; shift 2;;
+      *) shift;;
+    esac
+  done
+  [ -n "$name" ] || die "pxi run ainovel project new <name> [--genre G] [--logline L]"
+  require_up
+  local pid=$(pct exec "$VMID" -- bash -lc "cat /proc/sys/kernel/random/uuid")
+  local oid=$(pct exec "$VMID" -- bash -lc "cat /proc/sys/kernel/random/uuid")
+  echo "INSERT INTO projects (id, owner_user_id, name, genre, logline, created_at, updated_at) VALUES ('$pid','admin','$name',$([ -n "$genre" ] && echo "'$genre'" || echo NULL),$([ -n "$logline" ] && echo "'$logline'" || echo NULL),NOW(),NOW());
+INSERT INTO project_memberships (project_id, user_id, role, created_at, updated_at) VALUES ('$pid','admin','owner',NOW(),NOW()) ON CONFLICT DO NOTHING;
+INSERT INTO outlines (id, project_id, title, content_md, structure_json, created_at, updated_at) VALUES ('$oid','$pid','기본 개요','','{}',NOW(),NOW());
+UPDATE projects SET active_outline_id='$oid' WHERE id='$pid';
+INSERT INTO project_settings (project_id, vector_index_dirty, context_optimizer_enabled, auto_update_worldbook_enabled, auto_update_characters_enabled, auto_update_story_memory_enabled, auto_update_graph_enabled, auto_update_vector_enabled, auto_update_search_enabled, auto_update_fractal_enabled, auto_update_tables_enabled) VALUES ('$pid',false,true,true,true,true,true,true,true,true,true) ON CONFLICT DO NOTHING;" | _sql_exec >/dev/null 2>&1
+  ok "생성됨: $pid ($name)"
+  echo "$pid"
+}
+
+cmd_project_delete(){
+  [ -n "${1:-}" ] || die "pxi run ainovel project delete <id>"
+  _require_proj "$1"
+  # CASCADE 의존 — projects PK 삭제하면 FK 들 자동
+  echo "DELETE FROM projects WHERE id='$1';" | _sql_exec >/dev/null
+  ok "프로젝트 $1 삭제"
+}
+
+cmd_project_clone(){
+  local src="$1" newname="${2:-}"
+  [ -n "$src" ] && [ -n "$newname" ] || die "pxi run ainovel project clone <src_id> <new_name>"
+  _require_proj "$src"
+  local tmp="/tmp/pxi-clone-$$.json"
+  "$EXPORT_SCRIPT" "$src" > "$tmp"
+  local new_pid=$(cmd_project_new "$newname" 2>/dev/null | tail -1)
+  "$IMPORT_SCRIPT" "$new_pid" "$tmp" >/dev/null
+  rm -f "$tmp"
+  ok "클론됨: $src → $new_pid ($newname)"
+}
+
+# ── 챕터 CRUD ────────────────────────────────────────────────────────────
+
+cmd_chapter_add(){
+  local pid="$1" n="$2" title="$3"; shift 3 || die "pxi run ainovel chapter add <proj> <n> <title> [--from-file F]"
+  _require_proj "$pid"
+  local body=""
+  while [ $# -gt 0 ]; do case "$1" in --from-file) body=$(cat "$2"); shift 2;; *) shift;; esac; done
+  local content=$(echo "$body" | _json_escape)
+  python3 -c "import json; d={'chapters':[{'number':$n,'title':$(echo "$title"|_json_escape),'content_md':$content,'status':'drafting'}]}; open('/tmp/_pxi_ch.json','w').write(json.dumps(d,ensure_ascii=False))"
+  "$IMPORT_SCRIPT" "$pid" /tmp/_pxi_ch.json >/dev/null
+  ok "ch$n 추가"
+}
+
+cmd_chapter_update(){
+  local pid="$1" n="$2"; shift 2 || die "pxi run ainovel chapter update <proj> <n> [--title T] [--from-file F] [--status drafting|done]"
+  _require_proj "$pid"
+  local sets=""
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --title) sets+=", title='$(echo "$2" | sed "s/'/''/g")'"; shift 2;;
+      --from-file) local c=$(cat "$2" | sed "s/'/''/g"); sets+=", content_md='$c'"; shift 2;;
+      --status) sets+=", status='$2'"; shift 2;;
+      *) shift;;
+    esac
+  done
+  [ -n "$sets" ] || die "변경사항 없음"
+  sets="${sets:2}"
+  echo "UPDATE chapters SET $sets, updated_at=NOW() WHERE project_id='$pid' AND number=$n;" | _sql_exec >/dev/null
+  ok "ch$n 업데이트"
+}
+
+cmd_chapter_delete(){
+  local pid="$1" n="$2"
+  [ -n "$pid" ] && [ -n "$n" ] || die "pxi run ainovel chapter delete <proj> <n>"
+  echo "DELETE FROM chapters WHERE project_id='$pid' AND number=$n;" | _sql_exec >/dev/null
+  ok "ch$n 삭제"
+}
+
+# ── 캐릭터 / 월드북 / 복선 / 용어집 / 기억 CRUD ──────────────────────────
+
+cmd_character_add(){
+  local pid="$1" name="$2"; shift 2 || die "pxi run ainovel character add <proj> <name> [--role R] [--profile-file F]"
+  _require_proj "$pid"
+  local role="" prof=""
+  while [ $# -gt 0 ]; do case "$1" in --role) role="$2"; shift 2;; --profile-file) prof=$(cat "$2"); shift 2;; *) shift;; esac; done
+  python3 -c "import json; d={'characters':[{'name':$(echo "$name"|_json_escape),'role':$(echo "$role"|_json_escape),'profile':$(echo "$prof"|_json_escape),'notes':''}]}; open('/tmp/_pxi_c.json','w').write(json.dumps(d,ensure_ascii=False))"
+  "$IMPORT_SCRIPT" "$pid" /tmp/_pxi_c.json >/dev/null
+  ok "character '$name' 추가"
+}
+
+cmd_character_delete(){
+  local pid="$1" name="$2"
+  [ -n "$pid" ] && [ -n "$name" ] || die "pxi run ainovel character delete <proj> <name>"
+  echo "DELETE FROM characters WHERE project_id='$pid' AND name='$(echo "$name" | sed "s/'/''/g")';" | _sql_exec >/dev/null
+  ok "character '$name' 삭제"
+}
+
+cmd_worldbook_add(){
+  local pid="$1" title="$2"; shift 2 || die "pxi run ainovel worldbook add <proj> <title> [--from-file F] [--priority must|important|optional|drop_first]"
+  _require_proj "$pid"
+  local content="" prio="important"
+  while [ $# -gt 0 ]; do case "$1" in --from-file) content=$(cat "$2"); shift 2;; --priority) prio="$2"; shift 2;; *) shift;; esac; done
+  python3 -c "import json; d={'worldbook':[{'title':$(echo "$title"|_json_escape),'content_md':$(echo "$content"|_json_escape),'priority':'$prio','enabled':True,'constant':False,'keywords':[]}]}; open('/tmp/_pxi_wb.json','w').write(json.dumps(d,ensure_ascii=False))"
+  # import 는 DELETE+INSERT 모드라 단건 추가는 SQL 직접이 안전
+  local cj=$(echo "$content" | sed "s/'/''/g")
+  local tj=$(echo "$title" | sed "s/'/''/g")
+  echo "INSERT INTO worldbook_entries (id, project_id, title, content_md, enabled, constant, keywords_json, exclude_recursion, prevent_recursion, char_limit, priority, updated_at) VALUES (gen_random_uuid()::varchar, '$pid', '$tj', '$cj', true, false, '[]', false, false, 0, '$prio', NOW());" | _sql_exec >/dev/null
+  ok "worldbook '$title' 추가"
+}
+
+cmd_foreshadow_add(){
+  local pid="$1"; shift || die "pxi run ainovel foreshadow add <proj> --chapter N --title T [--content-file F] [--resolved-at M]"
+  _require_proj "$pid"
+  local ch="" title="" content="" ra=""
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --chapter) ch="$2"; shift 2;;
+      --title) title="$2"; shift 2;;
+      --content-file) content=$(cat "$2"); shift 2;;
+      --resolved-at) ra="$2"; shift 2;;
+      *) shift;;
+    esac
+  done
+  [ -n "$ch" ] && [ -n "$title" ] || die "--chapter N --title T 필수"
+  local cid=$(echo "SELECT id FROM chapters WHERE project_id='$pid' AND number=$ch" | _sql_q)
+  local rcid="NULL"
+  [ -n "$ra" ] && rcid="'$(echo "SELECT id FROM chapters WHERE project_id='$pid' AND number=$ra" | _sql_q)'"
+  local tj=$(echo "$title" | sed "s/'/''/g")
+  local cj=$(echo "$content" | sed "s/'/''/g")
+  echo "INSERT INTO foreshadows (id, project_id, chapter_id, resolved_at_chapter_id, title, content_md, resolved, created_at, updated_at) VALUES (gen_random_uuid()::varchar, '$pid', '$cid', $rcid, '$tj', '$cj', $([ -n "$ra" ] && echo 1 || echo 0), NOW(), NOW());" | _sql_exec >/dev/null
+  ok "foreshadow '$title' (ch$ch$([ -n "$ra" ] && echo " → ch$ra")) 추가"
+}
+
+cmd_glossary_add(){
+  local pid="$1" term="$2"; shift 2 || die "pxi run ainovel glossary add <proj> <term> [--aliases \"a,b,c\"]"
+  _require_proj "$pid"
+  local aliases="[]"
+  while [ $# -gt 0 ]; do case "$1" in --aliases) aliases=$(python3 -c "import json,sys;print(json.dumps([x.strip() for x in '$2'.split(',') if x.strip()]))"); shift 2;; *) shift;; esac; done
+  local tj=$(echo "$term" | sed "s/'/''/g")
+  echo "INSERT INTO glossary_terms (id, project_id, term, aliases_json, sources_json, origin, enabled, created_at, updated_at) VALUES (gen_random_uuid()::varchar, '$pid', '$tj', '$aliases', '[]', 'manual', 1, NOW(), NOW());" | _sql_exec >/dev/null
+  ok "glossary '$term' 추가"
+}
+
+cmd_memory_add(){
+  local pid="$1" ch="$2" type="$3" title="$4"; shift 4 || die "pxi run ainovel memory add <proj> <chapter> <type> <title> [--from-file F] [--importance 0.8]"
+  _require_proj "$pid"
+  local content="" imp="0.7"
+  while [ $# -gt 0 ]; do case "$1" in --from-file) content=$(cat "$2"); shift 2;; --importance) imp="$2"; shift 2;; *) shift;; esac; done
+  local cid=$(echo "SELECT id FROM chapters WHERE project_id='$pid' AND number=$ch" | _sql_q)
+  local nexttl=$(echo "SELECT COALESCE(MAX(story_timeline),0)+1 FROM story_memories WHERE project_id='$pid'" | _sql_q)
+  local tj=$(echo "$title" | sed "s/'/''/g")
+  local cj=$(echo "$content" | sed "s/'/''/g")
+  echo "INSERT INTO story_memories (id, project_id, chapter_id, memory_type, title, content, importance_score, tags_json, story_timeline, text_position, text_length, is_foreshadow, created_at, updated_at) VALUES (gen_random_uuid()::varchar, '$pid', '$cid', '$type', '$tj', '$cj', $imp, '[]', $nexttl, 0, 0, 0, NOW(), NOW());" | _sql_exec >/dev/null
+  ok "memory '$title' (ch$ch, $type) 추가"
+}
+
 # ── 챕터 조작 (본편 내용 직접 다루기) ─────────────────────────────────────
 
 cmd_chapter(){
   local sub="${1:-list}"; shift || true
   require_up
   case "$sub" in
+    add) cmd_chapter_add "$@" ;;
+    update) cmd_chapter_update "$@" ;;
+    delete|rm) cmd_chapter_delete "$@" ;;
     list)
       [ -n "${1:-}" ] || die "pxi run ainovel chapter list <proj_id>"
       compose "exec -T postgres psql -U ainovel -d ainovel -c \"SELECT number, title, status, LENGTH(content_md) AS len FROM chapters WHERE project_id='$1' ORDER BY number;\""
@@ -522,18 +714,32 @@ pxi-ainovel — Ai-Novel 관리 CLI (LXC 50176)
                                      --no-rebuild: 재빌드 스킵
 
 프로젝트 데이터 API:
+  project new <name> [--genre G] [--logline L]   신규 프로젝트 (id stdout)
+  project delete <id>                프로젝트 + CASCADE 삭제
+  project clone <src> <new_name>     프로젝트 복제 (export→new→import)
   project list                       모든 프로젝트 목록
   project audit <id>                 빈 테이블·미흡 지점 JSON 리포트
   project export <id> [out.json]     현재 상태 JSON 덤프
   project import <id> <file.json>    JSON 으로 테이블 upsert (--dry-run)
   project reset-tasks <id>           failed·cancelled task + proposed cs 청소
 
-챕터:
-  chapter list <proj>                장 목록
-  chapter show <proj> <n>            장 본문 stdout
+챕터 CRUD:
+  chapter list <proj>
+  chapter show <proj> <n>            본문 stdout
+  chapter add <proj> <n> <title> [--from-file F]
+  chapter update <proj> <n> [--title T] [--from-file F] [--status S]
+  chapter delete <proj> <n>
   chapter set-status <proj> <n> <s>  drafting|done
-  chapter generate <proj> <n>        Gemma 4로 auto_update 전체 스케줄
+  chapter generate <proj> <n>        Gemma 4로 auto_update 스케줄
   chapter analyze <proj> <n>         plot_analysis 재생성
+
+그래프·메모리 요소:
+  character add <proj> <name> [--role R] [--profile-file F]
+  character delete <proj> <name>
+  worldbook add <proj> <title> [--from-file F] [--priority must|important|optional|drop_first]
+  foreshadow add <proj> --chapter N --title T [--content-file F] [--resolved-at M]
+  glossary add <proj> <term> [--aliases "a,b,c"]
+  memory add <proj> <chapter> <type> <title> [--from-file F] [--importance 0.8]
 
 LLM 질의·인프라:
   ask <proj> <질문>                  Gemma 4에 프로젝트 컨텍스트 포함 질의
@@ -578,6 +784,32 @@ main(){
     translate-backend) cmd_translate_backend "$@" ;;
     project) cmd_project "$@" ;;
     chapter) cmd_chapter "$@" ;;
+    character)
+      case "${1:-}" in
+        add) shift; cmd_character_add "$@" ;;
+        delete|rm) shift; cmd_character_delete "$@" ;;
+        *) die "character {add | delete}";;
+      esac ;;
+    worldbook)
+      case "${1:-}" in
+        add) shift; cmd_worldbook_add "$@" ;;
+        *) die "worldbook {add}";;
+      esac ;;
+    foreshadow)
+      case "${1:-}" in
+        add) shift; cmd_foreshadow_add "$@" ;;
+        *) die "foreshadow {add}";;
+      esac ;;
+    glossary)
+      case "${1:-}" in
+        add) shift; cmd_glossary_add "$@" ;;
+        *) die "glossary {add}";;
+      esac ;;
+    memory)
+      case "${1:-}" in
+        add) shift; cmd_memory_add "$@" ;;
+        *) die "memory {add}";;
+      esac ;;
     ask) cmd_ask "$@" ;;
     embed) cmd_embed "$@" ;;
     rag-rebuild) cmd_rag_rebuild "$@" ;;
