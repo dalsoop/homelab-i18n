@@ -9,6 +9,8 @@ APP_ROOT="/opt/ainovel"
 HOMELAB_I18N="/root/homelab-i18n/ainovel"
 FRONTEND_SCRIPT="$HOMELAB_I18N/scripts/zh-to-ko.py"
 DB_SCRIPT="$HOMELAB_I18N/scripts/db-zh-to-ko.py"
+BACKEND_SCRIPT="$HOMELAB_I18N/scripts/backend-zh-to-ko.py"
+BACKEND_FIX_SCRIPT="$HOMELAB_I18N/scripts/backend-final-fix.py"
 TIMER_UNIT="ainovel-translate.timer"
 SERVICE_UNIT="ainovel-translate.service"
 
@@ -104,6 +106,16 @@ cmd_translate_db(){
   log "DB 번역"
   "$DB_SCRIPT" translate "$@"
   ok "DB 번역 완료"
+}
+
+cmd_translate_backend(){
+  require_up
+  [ -x "$BACKEND_SCRIPT" ] || die "$BACKEND_SCRIPT 없음"
+  log "backend Python seed 번역 (TranslateGemma 4-way)"
+  "$BACKEND_SCRIPT" run
+  [ -x "$BACKEND_FIX_SCRIPT" ] && python3 "$BACKEND_FIX_SCRIPT" || true
+  compose "restart backend rq_worker" >/dev/null
+  ok "backend 번역 + 재시작 완료"
 }
 
 cmd_translate(){
@@ -224,6 +236,8 @@ pxi-ainovel — Ai-Novel 관리 CLI (LXC 50176)
   scan                               프론트엔드 + DB 한자 카운트
   translate-frontend [...]           프론트 번역만 (한자 0까지)
   translate-db [...]                 DB 번역만
+  translate-backend                  backend Python seed 번역 + 재시작
+                                     (새 프로젝트 생성이 한국어 seed로 되게)
   translate [--include-templates]    프론트 + DB 번역 + rebuild
                                      --include-templates: LLM 프롬프트까지
                                      --no-rebuild: 재빌드 스킵
@@ -251,6 +265,7 @@ main(){
     install|up|down|ps|logs|rebuild|status|scan|translate|help) "cmd_$cmd" "$@" ;;
     translate-frontend) cmd_translate_frontend "$@" ;;
     translate-db) cmd_translate_db "$@" ;;
+    translate-backend) cmd_translate_backend "$@" ;;
     auto-on) cmd_auto_on "$@" ;;
     auto-off) cmd_auto_off "$@" ;;
     auto-status) cmd_auto_status "$@" ;;
