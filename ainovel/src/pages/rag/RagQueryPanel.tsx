@@ -18,7 +18,7 @@ import {
 const SOURCE_LABEL: Record<VectorSource, string> = {
   worldbook: "세계 백과사전 (segye baekgwasajeon)",
   outline: "개요.",
-  chapter: "장(章)",
+  chapter: "장(장)",
   story_memory: "이야기 기억 (iyagi gieok)",
 };
 

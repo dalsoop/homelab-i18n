@@ -110,11 +110,11 @@ export function ChapterAnalysisPage() {
     <div className="grid min-w-0 gap-4 overflow-x-hidden">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="font-content text-2xl text-ink">장(章) 표시를 통해 이전 내용 추적.</div>
+          <div className="font-content text-2xl text-ink">장(장) 표시를 통해 이전 내용 추적.</div>
           <div className="mt-1 text-xs text-subtext">
             {chapter ? (
               <>
-                제. {chapter.number} 장(章) · {(chapter.title ?? "").trim() || "제목 없음."}
+                제. {chapter.number} 장(장) · {(chapter.title ?? "").trim() || "제목 없음."}
               </>
             ) : chapterId ? (
               <span className="font-mono break-all">{chapterId}</span>
@@ -197,7 +197,7 @@ export function ChapterAnalysisPage() {
           ) : !chapter ? (
             <div className="p-3 text-sm text-subtext">해당 장이 아직 로드되지 않았습니다.。</div>
           ) : !(chapter.content_md ?? "").trim() ? (
-            <div className="p-3 text-sm text-subtext">해당 장(章)의 내용은 없습니다.。</div>
+            <div className="p-3 text-sm text-subtext">해당 장(장)의 내용은 없습니다.。</div>
           ) : (
             <div className="rounded-atelier border border-border bg-canvas p-4">
               <AnnotatedText

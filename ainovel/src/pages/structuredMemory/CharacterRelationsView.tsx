@@ -394,7 +394,7 @@ export function CharacterRelationsView(props: {
               to={`/projects/${projectId}/graph`}
               aria-label="structured_character_relations_open_graph"
             >
-              도해(圖解) 자료. Query
+              도해(도해.) 자료. Query
             </Link>
           </div>
         </div>

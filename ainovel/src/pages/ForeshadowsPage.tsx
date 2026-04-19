@@ -33,7 +33,7 @@ const OPEN_LOOPS_LIMIT_MAX = 200;
 
 function labelForChapter(chapter: ChapterListItem): string {
   const title = String(chapter.title || "").trim();
-  return title ? `제.${chapter.number}장(章)${title}` : `제.${chapter.number}장(章)`;
+  return title ? `제.${chapter.number}장(장)${title}` : `제.${chapter.number}장(장)`;
 }
 
 export function ForeshadowsPage() {
@@ -244,7 +244,7 @@ export function ForeshadowsPage() {
             disabled={loadingChapters || chapterOptions.length === 0}
             aria-label="foreshadows_resolve_chapter_id"
           >
-            <option value="">관련 없는 장(章)</option>
+            <option value="">관련 없는 장(장)</option>
             {chapterOptions.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.label}

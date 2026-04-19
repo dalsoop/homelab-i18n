@@ -251,7 +251,7 @@ export function AiGenerateDrawer(props: Props) {
                     }}
                   />
                 </label>
-                <div className="mt-1 text-[11px] text-subtext">빈칸으로 두면 자동으로 “사용자 지정”이 적용됩니다. + 장(章)별 계획.”。</div>
+                <div className="mt-1 text-[11px] text-subtext">빈칸으로 두면 자동으로 “사용자 지정”이 적용됩니다. + 장(장)별 계획.”。</div>
 
                 <div className="mt-3 grid gap-2">
                   <div className="text-xs text-subtext">주입 모듈.</div>
@@ -420,7 +420,7 @@ export function AiGenerateDrawer(props: Props) {
               <span className="truncate">{props.streamProgress?.message ?? "연결 중..."}</span>
               <span className="shrink-0">{props.streamProgress?.progress ?? 0}%</span>
             </div>
-            <ProgressBar ariaLabel="장(章)별 내용 생성 진행 상황." value={props.streamProgress?.progress ?? 0} />
+            <ProgressBar ariaLabel="장(장)별 내용 생성 진행 상황." value={props.streamProgress?.progress ?? 0} />
             {props.onCancelGenerate ? (
               <div className="flex justify-end">
                 <button className="btn btn-secondary" onClick={props.onCancelGenerate} type="button">

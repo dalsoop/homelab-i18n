@@ -156,7 +156,7 @@ export function SettingsCoreSections(props: SettingsCoreSectionsProps) {
       <section className="panel p-6">
         <div className="grid gap-1">
           <div className="font-content text-xl">자동 업데이트(권장)</div>
-          <div className="text-xs text-subtext">장(章)의 최종 원고 확정.done）자동으로 백그라운드 업데이트 작업을 실행하므로 일반 사용자는 이 기능을 활성화해 두는 것이 좋습니다.。</div>
+          <div className="text-xs text-subtext">장(장)의 최종 원고 확정.done）자동으로 백그라운드 업데이트 작업을 실행하므로 일반 사용자는 이 기능을 활성화해 두는 것이 좋습니다.。</div>
         </div>
 
         <div className="mt-4 grid gap-2">

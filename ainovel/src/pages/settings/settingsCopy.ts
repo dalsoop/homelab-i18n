@@ -13,7 +13,7 @@ export const SETTINGS_COPY = {
     ariaLabel: "쿼리 전처리 (쿼리 사전 처리)",
     title: "쿼리 전처리 (쿼리 사전 처리)",
     subtitle: "`query_text`를 먼저 “정제/노이즈 제거”하여 WorldBook, Vector RAG, Graph 검색의 안정성을 높입니다(기본적으로 비활성화).",
-    featureHint: "기능: #태그 추출, 제외 규칙 제거, 그리고 선택적으로 장(章) 참조 인식 기능 강화(index_ref_enhance).",
+    featureHint: "기능: #태그 추출, 제외 규칙 제거, 그리고 선택적으로 장(장) 참조 인식 기능 강화(index_ref_enhance).",
     enableLabel: "`query_preprocessing` 기능 활성화 (기본적으로 비활성화되어 있음).",
     tagsLabel: "태그(각 줄에 하나씩 입력; #태그와 일치하는 항목만 추출; 비워두면 모든 태그 추출)",
     tagsHint: "최대 50개 항목까지 가능하며, 각 항목은 최대 64자까지 입력할 수 있습니다.",

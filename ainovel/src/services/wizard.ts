@@ -209,7 +209,7 @@ export function computeWizardProgress(input: WizardComputeInput): WizardProgress
     }),
     makeStep({
       key: "chapters",
-      title: "장(章)의 기본적인 구조를 구성하다.",
+      title: "장(장)의 기본적인 구조를 구성하다.",
       description: "개요에서 한 번의 클릭으로 챕터의 기본 구조를 생성하거나, 글쓰기 페이지에서 직접 챕터를 만들 수 있습니다.",
       href: `${base}/outline`,
       done: (input.chapters?.length ?? 0) > 0,
@@ -333,7 +333,7 @@ export function computeWizardProgressFromSummary(input: WizardSummaryComputeInpu
     }),
     makeStep({
       key: "chapters",
-      title: "장(章)의 기본적인 구조를 구성하다.",
+      title: "장(장)의 기본적인 구조를 구성하다.",
       description: "개요에서 한 번의 클릭으로 챕터의 기본 구조를 생성하거나, 글쓰기 페이지에서 직접 챕터를 만들 수 있습니다.",
       href: `${base}/outline`,
       done: totalChapters > 0,

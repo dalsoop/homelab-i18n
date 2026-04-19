@@ -201,7 +201,7 @@ export function TaskCenterChangeSetsSection(props: TaskCenterChangeSetsSectionPr
               <div className="min-w-0">
                 <div className="truncate text-sm text-ink">{item.title || item.summary_md || item.id}</div>
                 <div className="mt-1 truncate text-xs text-subtext">
-                  장(章) ID：{item.chapter_id || "-"} | 최신 업데이트 시간:{item.updated_at || item.created_at || "-"}
+                  장(장) ID：{item.chapter_id || "-"} | 최신 업데이트 시간:{item.updated_at || item.created_at || "-"}
                 </div>
                 {item.request_id ? (
                   <RequestIdRow
@@ -542,7 +542,7 @@ export function TaskCenterDetailDrawer(props: TaskCenterDetailDrawerProps) {
             <div className="text-sm text-ink">{TASK_CENTER_COPY.detailOverview}</div>
             <div className="mt-2 grid gap-1 text-xs text-subtext">
               <div>
-                장(章) ID：<span className="font-mono text-ink">{props.selected.item.chapter_id || "-"}</span>
+                장(장) ID：<span className="font-mono text-ink">{props.selected.item.chapter_id || "-"}</span>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <span>상태:</span>

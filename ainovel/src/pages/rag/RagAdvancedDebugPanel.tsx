@@ -65,7 +65,7 @@ export function RagAdvancedDebugPanel(props: {
 
       <div className="mt-3 grid gap-4">
         <div className="rounded-atelier border border-border bg-canvas p-3 text-xs text-subtext">
-          기본 정보만 기본적으로 표시합니다.{UI_COPY.rag.rerankTitle} 구성 및 입고./재건(再建).ingest/rebuild）원래 결과는 모두 여기에 모아서 표시합니다.。
+          기본 정보만 기본적으로 표시합니다.{UI_COPY.rag.rerankTitle} 구성 및 입고./재건(재건하다.).ingest/rebuild）원래 결과는 모두 여기에 모아서 표시합니다.。
         </div>
 
         <div className="rounded-atelier border border-border bg-surface p-4">

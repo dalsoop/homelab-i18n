@@ -292,7 +292,7 @@ export function ChapterReaderPage() {
       <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
         <div className="inline-flex items-center gap-2 text-sm text-ink">
           <BookOpen size={16} />
-          {"장(章)"}
+          {"장(장)"}
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -533,7 +533,7 @@ export function ChapterReaderPage() {
         </div>
 
         <div className="min-w-0 truncate text-xs text-subtext">
-          {activeChapterSummary ? `현재 읽고 있는 페이지: 제 ${activeChapterSummary.number} 장(章)` : "장을 선택하세요."}
+          {activeChapterSummary ? `현재 읽고 있는 페이지: 제${activeChapterSummary.number}장(장)` : "장을 선택하세요."}
         </div>
 
         {activeChapterSummary ? (
@@ -557,7 +557,7 @@ export function ChapterReaderPage() {
               <>
                 <div className="mb-4">
                   <div className="font-content text-2xl text-ink">
-                    제. {activeChapterSummary.number} 장(章)
+                    제. {activeChapterSummary.number} 장(장)
                     {activeChapterSummary.title?.trim() ? ` · ${activeChapterSummary.title}` : ""}
                   </div>
                   {activeChapterSummary.status !== "done" ? (

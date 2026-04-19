@@ -185,7 +185,7 @@ export function ProjectWizardPage() {
         if (err.code === "CONFLICT" && err.status === 409) {
           const replaceOk = await confirm.confirm({
             title: "이미 해당 장이 존재합니다. 덮어쓰기를 진행하시겠습니까?",
-            description: `현재 개요 아래의 모든 챕터(본문 포함)가 영구적으로 삭제됩니다. 덮어쓰기 기능을 사용하면 이 작업을 되돌릴 수 없습니다./요약, 약 ${chapters.length} 제(章)를 변경할 수 없을 뿐만 아니라, 변경하더라도 되돌릴 수도 없습니다.。`,
+            description: `현재 개요 아래의 모든 챕터(본문 포함)가 영구적으로 삭제됩니다. 덮어쓰기 기능을 사용하면 이 작업을 되돌릴 수 없습니다./요약, 약 ${chapters.length} 제(장)를 변경할 수 없을 뿐만 아니라, 변경하더라도 되돌릴 수도 없습니다.。`,
             confirmText: "계속해서 덮다.",
             danger: true,
           });
@@ -308,7 +308,7 @@ export function ProjectWizardPage() {
           <div className="surface p-4">
             <div className="grid gap-2">
               <div className="font-content text-base text-ink">빠른 시작 (자동)</div>
-              <div className="text-xs text-subtext">한 번의 클릭으로 개요 생성. → 저장. → 장(章)의 기본 구조 만들기. → 글쓰기 페이지로 이동합니다.。</div>
+              <div className="text-xs text-subtext">한 번의 클릭으로 개요 생성. → 저장. → 장(장)의 기본 구조 만들기. → 글쓰기 페이지로 이동합니다.。</div>
               <div className="text-xs text-subtext">
                 먼저 완료하는 것을 권장합니다.「{UI_COPY.nav.projectSettings} / {UI_COPY.nav.prompts}」，생성 실패를 방지하기 위해.。
               </div>

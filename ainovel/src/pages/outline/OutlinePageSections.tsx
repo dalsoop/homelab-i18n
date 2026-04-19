@@ -319,7 +319,7 @@ export function OutlineGenerationModal(props: OutlineGenerationModalProps) {
             <details className="panel p-3" open>
               <summary className="ui-transition-fast cursor-pointer text-xs text-subtext hover:text-ink">
                 {OUTLINE_COPY.streamPreviewTitle}
-                {props.preview ? ` · 분석 완료. ${props.preview.chapters.length} 장(章)` : ""}
+                {props.preview ? ` · 분석 완료. ${props.preview.chapters.length} 장(장)` : ""}
               </summary>
               <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-words text-xs text-ink">
                 {props.streamPreviewJson}

@@ -690,7 +690,7 @@ export function PromptStudioPage() {
             <div className="grid gap-1 text-sm text-subtext">
               <div>
                 <span className="font-medium text-ink">사전 설정(사전 설정).Preset）</span>：“힌트 청사진” 세트를 통해.{" "}
-                <span className="font-medium text-ink">active_for</span> 어떤 작업에 이 도구를 사용할지 결정합니다(개요)./장(章)/계획./다듬어서.。
+                <span className="font-medium text-ink">active_for</span> 어떤 작업에 이 도구를 사용할지 결정합니다(개요)./장(장)/계획./다듬어서.。
               </div>
               <div>
                 <span className="font-medium text-ink">힌트 블록.Block）</span>：정렬 가능./시작 및 종료, 지원합니다.

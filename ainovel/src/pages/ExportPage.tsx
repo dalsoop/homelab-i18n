@@ -166,7 +166,7 @@ export function ExportPage() {
           </div>
 
           <div className="grid gap-2">
-            <div className="text-xs text-subtext">장(章)의 범위.</div>
+            <div className="text-xs text-subtext">장(장)의 범위.</div>
             <AtelierOptionControl
               checked={form.chapters === "all"}
               disabled={exporting}

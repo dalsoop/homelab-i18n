@@ -557,7 +557,7 @@ export function StructuredMemoryPage() {
                   </Link>{" "}
                   또는.{" "}
                   <Link className="underline" to={`/projects/${projectId}/chapter-analysis`}>
-                    장(章) 분석.
+                    장(장) 분석.
                   </Link>{" "}
                   유발하다, 작동시키다, 촉발하다. (문맥에 따라 적절한 단어 선택)“Memory Update”，다시 한번.{" "}
                   <Link className="underline" to={`/projects/${projectId}/tasks`}>

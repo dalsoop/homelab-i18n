@@ -420,7 +420,7 @@ export function CharactersPage() {
               name="name"
               value={form.name}
               onChange={(e) => setForm((v) => ({ ...v, name: e.target.value }))}
-              placeholder="예를 들어, 린모(林默) 씨와 같은 경우를 들 수 있습니다."
+              placeholder="예를 들어, 린모(린모) 씨와 같은 경우를 들 수 있습니다."
             />
             <div className="text-[11px] text-subtext">독자가 기억하기 쉬운 짧은 이름을 사용하는 것이 좋습니다. 이후 검색 및 생성 과정에서 해당 이름이 활용될 예정입니다.。</div>
           </label>

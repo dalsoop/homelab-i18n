@@ -39,7 +39,7 @@ export function WritingToolbar(props: {
               </option>
             ))}
           </select>
-          <span className="text-xs text-subtext">함께. {props.chaptersCount} 장(章)</span>
+          <span className="text-xs text-subtext">함께. {props.chaptersCount} 장(장)</span>
         </div>
 
         <div className="flex items-center gap-2">

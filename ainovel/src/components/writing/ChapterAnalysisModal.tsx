@@ -32,7 +32,7 @@ export function ChapterAnalysisModal(props: {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="font-content text-xl text-ink" id={titleId}>
-            장(章) 분석.
+            장(장) 분석.
           </div>
           <div className="mt-1 text-xs text-subtext">
             분석 및 재작성 기능은 ‘생성 기록’에만 기록됩니다. 메모리 뱅크에 저장하면 장기 기억으로 저장되지만, 챕터의 본문 내용에는 영향을 주지 않습니다.。
