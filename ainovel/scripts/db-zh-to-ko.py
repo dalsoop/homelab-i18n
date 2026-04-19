@@ -44,16 +44,15 @@ UI_TARGETS = [
     ("writing_styles", "name", False, False),
     ("writing_styles", "description", False, False),
     ("prompt_blocks", "name", False, False),
+    # H5: docstring 에 있던 미포함 테이블 — 스키마에 존재 시 자동으로 스캔에만 등장
+    # (컬럼명을 모르므로 실제 번역은 사용자가 확인 후 수동 추가 권장)
 ]
 LLM_TARGETS = [
     ("prompt_blocks", "template", False, True),
     ("writing_styles", "prompt_content", False, True),
 ]
-INDEX_TARGETS = [
-    # source_type='outline'은 사용자 데이터 — WHERE 로 제외
-    ("search_documents", "title", False, False),
-    ("search_documents", "content", False, False),
-]
+# H5: INDEX_TARGETS 제거. search_documents 는 파생 인덱스라 원본 번역 후
+#      별도 재동기화(fix-prompts.sql 등)로 처리 — 여기서 직접 번역하지 않는다.
 
 CJK_CHAR = re.compile(r"[\u4e00-\u9fff]")
 CJK_BLOCK = re.compile(
@@ -67,11 +66,14 @@ cache = json.loads(CACHE_FILE.read_text()) if CACHE_FILE.exists() else {}
 
 
 def sql(query: str) -> str:
-    """postgres에서 쿼리 실행 (raw text result)."""
+    """postgres에서 쿼리 실행 (raw text result).
+
+    H3: sql_write 와 동일하게 stdin 으로 query 전달 — bash 인터폴레이션 제거.
+    """
     r = subprocess.run(
         ["pct", "exec", LXC, "--", "bash", "-c",
-         f"cd /opt/ainovel && docker compose --env-file .env.docker exec -T postgres psql -U ainovel -d ainovel -Atc \"{query}\""],
-        capture_output=True, text=True, timeout=60, check=False,
+         "cd /opt/ainovel && docker compose --env-file .env.docker exec -T postgres psql -U ainovel -d ainovel -AtF$'\\t'"],
+        input=query, capture_output=True, text=True, timeout=60, check=False,
     )
     if r.returncode != 0:
         raise RuntimeError(f"SQL failed: {r.stderr}")

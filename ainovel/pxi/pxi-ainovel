@@ -61,8 +61,9 @@ cmd_install(){
   fi
 
   if [ -z "$skip_auto" ]; then
-    log "자동 번역 타이머 활성화 (daily)"
-    cmd_auto_on daily
+    # C4: README 아키텍처와 일치 — 10분 간격 (새 프로젝트 drift 최소화)
+    log "자동 번역 타이머 활성화 (*:0/10)"
+    cmd_auto_on '*:0/10'
   fi
 
   ok "설치 완료 — https://novel.50.internal.kr"
@@ -129,6 +130,14 @@ cmd_translate(){
       *) break ;;
     esac
   done
+  # C3: timer · 수동 동시 실행 방지. 이미 돌고 있으면 즉시 종료.
+  # sentinel 로 재진입 구분 (flock 이 -c 로 호출할 때는 sentinel 세트)
+  if [ "${AINOVEL_TRANSLATE_LOCKED:-0}" != "1" ]; then
+    log "flock 획득 시도 (/var/lock/ainovel-translate.lock)"
+    AINOVEL_TRANSLATE_LOCKED=1 exec flock -n /var/lock/ainovel-translate.lock "$0" translate "$@"
+    warn "다른 번역 작업 진행 중 — skip"
+    return 0
+  fi
   log "=== 1단계: 프론트엔드 번역 ==="
   "$FRONTEND_SCRIPT" run --lxc "$VMID" --max-rounds 5
   log "=== 2단계: DB 번역 ==="
@@ -155,8 +164,10 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/pxi-ainovel translate --include-templates
+# C3: flock 으로 수동 실행과의 레이스 방지. 이미 돌고 있으면 즉시 종료.
+ExecStart=/usr/bin/flock -n /var/lock/ainovel-translate.lock /usr/local/bin/pxi-ainovel translate --include-templates
 TimeoutStartSec=2h
+SuccessExitStatus=0 1
 StandardOutput=journal
 StandardError=journal
 EOF
