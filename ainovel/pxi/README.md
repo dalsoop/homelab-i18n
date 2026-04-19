@@ -34,11 +34,21 @@ pxi run ainovel translate-frontend
 pxi run ainovel translate-db --include-templates
 
 # 자동 번역 (pve 호스트 systemd timer)
-pxi run ainovel auto-on daily       # 또는 hourly, "*:0/30" 등 OnCalendar 표현
+pxi run ainovel auto-on "*:0/10"    # 10분마다 (권장 — 새 프로젝트 drift 최소화)
+pxi run ainovel auto-on daily       # 또는 hourly / "*:0/30" 등
 pxi run ainovel auto-status
 pxi run ainovel auto-run-now        # 즉시 한 번
 pxi run ainovel auto-off
 ```
+
+## 왜 반복 번역이 필요한가
+
+Ai-Novel은 **프로젝트 생성마다 backend가 중국어 seed로 prompt_blocks / prompt_presets 를 자동 복제**함 (원본 레포 기준). seed 소스코드 (`backend/app/services/prompt_presets.py` 등) 는 그대로 두는 게 안전하고 (LLM 출력 contract가 중국어 기반), 대신 **생성 후 자동 번역 타이머가 backfill** 하는 구조.
+
+- 새 프로젝트 생성 → 중국어 prompt 자동 seed
+- 타이머(기본 10분) → 한국어로 rewrite
+- 사용자가 prompt-studio 여는 시점 대부분 한국어 상태
+- 번역된 prompt도 `{{variables}}` 와 JSON 출력 계약은 보존됨 (세그먼트 번역 + 수동 치환 룰)
 
 ## 아키텍처
 
