@@ -213,6 +213,54 @@ cmd_auto_run_now(){
   journalctl -u "$SERVICE_UNIT" -n 30 --no-pager
 }
 
+# ── LLM 모드 토글 (Gemma 4 ↔ TranslateGemma) ────────────────────────────
+# 96GB VRAM 중 4.7GB(Whisper 60102) + 17GB(TG shim) + 31GB(Gemma 4)의 합이
+# GPU별로 24GB 한도를 넘나들어 동시 상주가 불안정. 모드별 단독 상주로 운용.
+GEMMA_VMID=60104
+TG_VMID=60108
+
+cmd_llm_mode(){
+  local mode="${1:-status}"
+  case "$mode" in
+    gemma|novel)
+      log "모드 전환: Gemma 4 (소설 생성)"
+      ssh -o ConnectTimeout=5 root@10.0.60.1 "pct status $TG_VMID 2>&1" | grep -q running \
+        && ssh root@10.0.60.1 "pct stop $TG_VMID" 2>&1 | tail -1
+      cmd_auto_off >/dev/null 2>&1 || true
+      ssh -o ConnectTimeout=5 root@10.0.60.1 "pct status $GEMMA_VMID 2>&1" | grep -q stopped \
+        && ssh root@10.0.60.1 "pct start $GEMMA_VMID" 2>&1 | tail -1
+      ok "Gemma 4 모드 — Ai-Novel 에서 소설 생성 가능 (http://10.0.60.104:8091)"
+      ;;
+    translate|번역)
+      log "모드 전환: TranslateGemma (번역 배치)"
+      ssh -o ConnectTimeout=5 root@10.0.60.1 "pct status $GEMMA_VMID 2>&1" | grep -q running \
+        && ssh root@10.0.60.1 "pct stop $GEMMA_VMID" 2>&1 | tail -1
+      ssh -o ConnectTimeout=5 root@10.0.60.1 "pct status $TG_VMID 2>&1" | grep -q stopped \
+        && ssh root@10.0.60.1 "pct start $TG_VMID" 2>&1 | tail -1
+      cmd_auto_on '*:0/10' >/dev/null 2>&1 || true
+      ok "TranslateGemma 모드 — 자동 번역 타이머 10분 간격 활성"
+      ;;
+    off|stop)
+      log "모드 전환: 전체 stop (VRAM 회수)"
+      ssh root@10.0.60.1 "pct stop $GEMMA_VMID $TG_VMID 2>&1 | head -3" || true
+      cmd_auto_off >/dev/null 2>&1 || true
+      ok "모든 LLM stop"
+      ;;
+    status|"")
+      local g=$(ssh -o ConnectTimeout=5 root@10.0.60.1 "pct status $GEMMA_VMID 2>&1 | awk '{print \$2}'" 2>&1)
+      local t=$(ssh -o ConnectTimeout=5 root@10.0.60.1 "pct status $TG_VMID 2>&1 | awk '{print \$2}'" 2>&1)
+      local timer=$(systemctl is-active "$TIMER_UNIT" 2>/dev/null || echo "inactive")
+      log "Gemma 4 LXC $GEMMA_VMID: $g"
+      log "TranslateGemma LXC $TG_VMID: $t"
+      log "자동 번역 타이머: $timer"
+      ssh -o ConnectTimeout=5 root@10.0.60.1 'nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv,noheader' 2>&1 | head
+      ;;
+    *)
+      die "모드: gemma | translate | off | status"
+      ;;
+  esac
+}
+
 # ── 상태/헬스 ─────────────────────────────────────────────────────────────
 cmd_status(){
   require_up
@@ -253,6 +301,12 @@ pxi-ainovel — Ai-Novel 관리 CLI (LXC 50176)
                                      --include-templates: LLM 프롬프트까지
                                      --no-rebuild: 재빌드 스킵
 
+LLM 모드 (Gemma 4 ↔ TG 토글):
+  llm-mode status                    현재 모드 (Gemma 4 / TG / off)
+  llm-mode gemma                     Gemma 4 단독 (TG stop, 타이머 off) — 소설 생성용
+  llm-mode translate                 TranslateGemma 단독 (Gemma stop, 타이머 10분) — 번역 배치
+  llm-mode off                       전체 stop (VRAM 회수)
+
 자동 번역 (pve 호스트 systemd timer):
   auto-on [interval]                 타이머 활성 (기본 daily, "hourly" / "*:0/30" 등 지원)
   auto-off                           타이머 제거
@@ -277,6 +331,7 @@ main(){
     translate-frontend) cmd_translate_frontend "$@" ;;
     translate-db) cmd_translate_db "$@" ;;
     translate-backend) cmd_translate_backend "$@" ;;
+    llm-mode|llm) cmd_llm_mode "$@" ;;
     auto-on) cmd_auto_on "$@" ;;
     auto-off) cmd_auto_off "$@" ;;
     auto-status) cmd_auto_status "$@" ;;
