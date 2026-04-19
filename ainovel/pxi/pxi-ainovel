@@ -345,6 +345,142 @@ EOF
   esac
 }
 
+# ── 챕터 조작 (본편 내용 직접 다루기) ─────────────────────────────────────
+
+cmd_chapter(){
+  local sub="${1:-list}"; shift || true
+  require_up
+  case "$sub" in
+    list)
+      [ -n "${1:-}" ] || die "pxi run ainovel chapter list <proj_id>"
+      compose "exec -T postgres psql -U ainovel -d ainovel -c \"SELECT number, title, status, LENGTH(content_md) AS len FROM chapters WHERE project_id='$1' ORDER BY number;\""
+      ;;
+    show)
+      [ -n "${1:-}" ] && [ -n "${2:-}" ] || die "pxi run ainovel chapter show <proj_id> <n>"
+      compose "exec -T postgres psql -U ainovel -d ainovel -At -c \"SELECT content_md FROM chapters WHERE project_id='$1' AND number=$2;\""
+      ;;
+    set-status)
+      [ -n "${1:-}" ] && [ -n "${2:-}" ] && [ -n "${3:-}" ] || die "pxi run ainovel chapter set-status <proj_id> <n> <drafting|done>"
+      compose "exec -T postgres psql -U ainovel -d ainovel -c \"UPDATE chapters SET status='$3', updated_at=NOW() WHERE project_id='$1' AND number=$2;\""
+      ok "ch$2 → $3"
+      ;;
+    generate)
+      [ -n "${1:-}" ] && [ -n "${2:-}" ] || die "pxi run ainovel chapter generate <proj_id> <n>"
+      local pid="$1" n="$2"
+      log "chapter $n 초안 생성 (Gemma 4)"
+      compose "exec -T backend python3 -c \"
+from app.db.session import SessionLocal
+from app.services.project_task_service import schedule_chapter_done_tasks
+from app.models.chapter import Chapter
+db = SessionLocal()
+ch = db.query(Chapter).filter_by(project_id='$pid', number=$n).first()
+if not ch: raise SystemExit('chapter $n not found')
+t = schedule_chapter_done_tasks(db=db, project_id='$pid', actor_user_id='admin', request_id='cli-gen', chapter_id=str(ch.id), chapter_token=ch.updated_at.isoformat().replace('+00:00','Z')+'-cli', reason='cli_generate')
+print('scheduled', len(t), 'tasks')
+\""
+      ok "스케줄됨 — TaskCenter 에서 확인"
+      ;;
+    analyze)
+      [ -n "${1:-}" ] && [ -n "${2:-}" ] || die "pxi run ainovel chapter analyze <proj_id> <n>"
+      log "chapter $2 분석 (Gemma 4, plot_analysis 갱신)"
+      cmd_chapter generate "$1" "$2"
+      ;;
+    *) die "chapter 서브커맨드: list | show | set-status | generate | analyze"
+  esac
+}
+
+# ── LLM 질의 ────────────────────────────────────────────────────────────
+
+cmd_ask(){
+  local pid="${1:-}" ; shift || true
+  local query="$*"
+  [ -n "$pid" ] && [ -n "$query" ] || die "pxi run ainovel ask <proj_id> <질문>"
+  require_up
+  log "Gemma 4 에게 질의 (프로젝트 context 포함)"
+  compose "exec -T backend python3 -c \"
+from app.db.session import SessionLocal
+from app.llm.client import call_llm
+from app.models.chapter import Chapter
+from app.models.story_memory import StoryMemory
+
+db = SessionLocal()
+chs = db.query(Chapter).filter_by(project_id='$pid').order_by(Chapter.number).limit(3).all()
+mems = db.query(StoryMemory).filter_by(project_id='$pid').order_by(StoryMemory.importance_score.desc()).limit(8).all()
+ctx = '\\n'.join([f'[ch{c.number} {c.title}] {(c.summary or c.content_md[:400])}' for c in chs])
+ctx += '\\n\\n기억:\\n' + '\\n'.join([f'- {m.title}: {m.content[:200]}' for m in mems])
+r = call_llm(provider='openai_compatible', base_url='http://10.0.60.104:8091/v1', api_key='sk-local', model='gemma-4-31b-q8', system='프로젝트 assistant. 한국어로 간결히.', user=f'컨텍스트:\\n{ctx}\\n\\n질문: $query', params={'temperature':0.5,'max_tokens':2000}, timeout_seconds=90)
+print(r.text[:3000])
+\""
+}
+
+# ── 인프라 (embedding / RAG) ───────────────────────────────────────────
+
+cmd_embed(){
+  local action="${1:-status}"
+  case "$action" in
+    on)
+      ssh root@10.0.60.1 "pct exec $GEMMA_VMID -- systemctl enable --now llama-embed" 2>&1 | tail -2
+      sleep 3
+      curl -sm 5 -o /dev/null -w "embed HTTP: %{http_code}\n" http://10.0.60.104:8092/v1/models
+      ;;
+    off)
+      ssh root@10.0.60.1 "pct exec $GEMMA_VMID -- systemctl disable --now llama-embed" 2>&1 | tail -2
+      ok "embed stopped"
+      ;;
+    status)
+      ssh root@10.0.60.1 "pct exec $GEMMA_VMID -- systemctl is-active llama-embed" 2>&1
+      curl -sm 3 -o /dev/null -w "embed HTTP: %{http_code}\n" http://10.0.60.104:8092/v1/models
+      ;;
+    *) die "embed: on | off | status"
+  esac
+}
+
+cmd_rag_rebuild(){
+  [ -n "${1:-}" ] || die "pxi run ainovel rag-rebuild <proj_id>"
+  require_up
+  local pid="$1"
+  compose "exec -T postgres psql -U ainovel -d ainovel -c \"UPDATE project_settings SET vector_index_dirty=true, last_vector_build_at=NULL WHERE project_id='$pid';\""
+  compose "exec -T backend python3 -c \"
+from app.db.session import SessionLocal
+from app.services.vector_rag_service import schedule_vector_rebuild_task
+r = schedule_vector_rebuild_task(db=SessionLocal(), project_id='$pid', actor_user_id='admin', request_id='cli-rag', reason='cli_rebuild')
+print('task:', r)
+\""
+  ok "rag rebuild 스케줄 — task 완료 대기"
+}
+
+# ── 유틸 (sql / shell / health / vram) ──────────────────────────────
+
+cmd_sql(){
+  [ -n "${1:-}" ] || die "pxi run ainovel sql \"<query>\""
+  require_up
+  compose "exec -T postgres psql -U ainovel -d ainovel -c \"$1\""
+}
+
+cmd_shell(){
+  require_up
+  local svc="${1:-backend}"
+  require_svc "$svc"
+  log "$svc 컨테이너 shell"
+  pct exec "$VMID" -- bash -lc "cd $APP_ROOT && docker compose --env-file .env.docker exec $svc bash"
+}
+
+cmd_health(){
+  echo "[ainovel]"
+  curl -sk -o /dev/null -w "  https://novel.50.internal.kr/: %{http_code}\n" https://novel.50.internal.kr/
+  curl -sk -o /dev/null -w "  api/health: %{http_code}\n" https://novel.50.internal.kr/api/health
+  echo "[llm]"
+  curl -sm 3 -o /dev/null -w "  Gemma 4 (8091): %{http_code}\n" http://10.0.60.104:8091/v1/models
+  curl -sm 3 -o /dev/null -w "  Embed (8092): %{http_code}\n" http://10.0.60.104:8092/v1/models
+  curl -sm 3 -o /dev/null -w "  TG shim 8082: %{http_code}\n" http://10.0.60.108:8082/translate -X POST -H 'Content-Type: application/json' -d '{"text":"test","source_lang_code":"zh","target_lang_code":"ko"}'
+  echo "[compose]"
+  compose "ps --format '  {{.Name}}: {{.Status}}'"
+}
+
+cmd_vram(){
+  ssh -o ConnectTimeout=3 root@10.0.60.1 'nvidia-smi --query-gpu=index,memory.used,memory.total,utilization.gpu --format=csv,noheader' 2>&1
+}
+
 # ── 상태/헬스 ─────────────────────────────────────────────────────────────
 cmd_status(){
   require_up
@@ -385,12 +521,30 @@ pxi-ainovel — Ai-Novel 관리 CLI (LXC 50176)
                                      --include-templates: LLM 프롬프트까지
                                      --no-rebuild: 재빌드 스킵
 
-프로젝트 데이터 API (빈 곳 찾고 JSON으로 채우기):
+프로젝트 데이터 API:
   project list                       모든 프로젝트 목록
   project audit <id>                 빈 테이블·미흡 지점 JSON 리포트
   project export <id> [out.json]     현재 상태 JSON 덤프
-  project import <id> <file.json>    JSON 으로 테이블 upsert (--dry-run 지원)
+  project import <id> <file.json>    JSON 으로 테이블 upsert (--dry-run)
   project reset-tasks <id>           failed·cancelled task + proposed cs 청소
+
+챕터:
+  chapter list <proj>                장 목록
+  chapter show <proj> <n>            장 본문 stdout
+  chapter set-status <proj> <n> <s>  drafting|done
+  chapter generate <proj> <n>        Gemma 4로 auto_update 전체 스케줄
+  chapter analyze <proj> <n>         plot_analysis 재생성
+
+LLM 질의·인프라:
+  ask <proj> <질문>                  Gemma 4에 프로젝트 컨텍스트 포함 질의
+  embed on|off|status                nomic-embed-text 서버 토글
+  rag-rebuild <proj>                 vector index 재빌드
+
+유틸:
+  sql "<query>"                      postgres 직접 쿼리
+  shell [svc]                        컴포즈 서비스 shell (기본 backend)
+  health                             endpoint 전수 체크
+  vram                               GPU VRAM 현황
 
 LLM 모드 (Gemma 4 ↔ TG 토글):
   llm-mode status                    현재 모드 (Gemma 4 / TG / off)
@@ -423,6 +577,14 @@ main(){
     translate-db) cmd_translate_db "$@" ;;
     translate-backend) cmd_translate_backend "$@" ;;
     project) cmd_project "$@" ;;
+    chapter) cmd_chapter "$@" ;;
+    ask) cmd_ask "$@" ;;
+    embed) cmd_embed "$@" ;;
+    rag-rebuild) cmd_rag_rebuild "$@" ;;
+    sql) cmd_sql "$@" ;;
+    shell) cmd_shell "$@" ;;
+    health) cmd_health "$@" ;;
+    vram) cmd_vram "$@" ;;
     llm-mode|llm) cmd_llm_mode "$@" ;;
     auto-on) cmd_auto_on "$@" ;;
     auto-off) cmd_auto_off "$@" ;;
